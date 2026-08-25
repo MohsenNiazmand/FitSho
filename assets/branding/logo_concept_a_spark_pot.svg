@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" fill="none">
+  <!-- Concept A: Spark Pot  cooking + AI steam spark -->
+  <rect width="108" height="108" rx="24" fill="#FFF8F0"/>
+  <path d="M28 48h52c2 0 4 2 4 4v28c0 10-8 18-18 18H42c-10 0-18-8-18-18V52c0-2 2-4 4-4z" fill="#E85D04"/>
+  <path d="M34 48V42c0-8 6-14 14-14h12c8 0 14 6 14 14v6" stroke="#9B2226" stroke-width="4" stroke-linecap="round"/>
+  <path d="M54 18l2.2 6.5H63l-5.4 4 2.2 6.5L54 31l-5.8 4 2.2-6.5-5.4-4h6.8L54 18z" fill="#9B2226"/>
+</svg>

@@ -1,0 +1,1016 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart' as intl;
+
+import 'app_localizations_en.dart';
+import 'app_localizations_fa.dart';
+
+// ignore_for_file: type=lint
+
+/// Callers can lookup localized strings with an instance of AppLocalizations
+/// returned by `AppLocalizations.of(context)`.
+///
+/// Applications need to include `AppLocalizations.delegate()` in their app's
+/// `localizationDelegates` list, and the locales they support in the app's
+/// `supportedLocales` list. For example:
+///
+/// ```dart
+/// import 'l10n/app_localizations.dart';
+///
+/// return MaterialApp(
+///   localizationsDelegates: AppLocalizations.localizationsDelegates,
+///   supportedLocales: AppLocalizations.supportedLocales,
+///   home: MyApplicationHome(),
+/// );
+/// ```
+///
+/// ## Update pubspec.yaml
+///
+/// Please make sure to update your pubspec.yaml to include the following
+/// packages:
+///
+/// ```yaml
+/// dependencies:
+///   # Internationalization support.
+///   flutter_localizations:
+///     sdk: flutter
+///   intl: any # Use the pinned version from flutter_localizations
+///
+///   # Rest of dependencies
+/// ```
+///
+/// ## iOS Applications
+///
+/// iOS applications define key application metadata, including supported
+/// locales, in an Info.plist file that is built into the application bundle.
+/// To configure the locales supported by your app, you’ll need to edit this
+/// file.
+///
+/// First, open your project’s ios/Runner.xcworkspace Xcode workspace file.
+/// Then, in the Project Navigator, open the Info.plist file under the Runner
+/// project’s Runner folder.
+///
+/// Next, select the Information Property List item, select Add Item from the
+/// Editor menu, then select Localizations from the pop-up menu.
+///
+/// Select and expand the newly-created Localizations item then, for each
+/// locale your application supports, add a new item and select the locale
+/// you wish to add from the pop-up menu in the Value field. This list should
+/// be consistent with the languages listed in the AppLocalizations.supportedLocales
+/// property.
+abstract class AppLocalizations {
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+
+  final String localeName;
+
+  static AppLocalizations of(BuildContext context) {
+    return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
+  }
+
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
+
+  /// A list of this localizations delegate along with the default localizations
+  /// delegates.
+  ///
+  /// Returns a list of localizations delegates containing this delegate along with
+  /// GlobalMaterialLocalizations.delegate, GlobalCupertinoLocalizations.delegate,
+  /// and GlobalWidgetsLocalizations.delegate.
+  ///
+  /// Additional delegates can be added by appending to this list in
+  /// MaterialApp. This list does not have to be used at all if a custom list
+  /// of delegates is preferred or required.
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
+
+  /// A list of this localizations delegate's supported locales.
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('fa'),
+  ];
+
+  /// No description provided for @appName.
+  ///
+  /// In en, this message translates to:
+  /// **'FitSho'**
+  String get appName;
+
+  /// No description provided for @appNamePersian.
+  ///
+  /// In en, this message translates to:
+  /// **'فیت‌شو'**
+  String get appNamePersian;
+
+  /// No description provided for @loginTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get loginTitle;
+
+  /// No description provided for @loginWithMobile.
+  ///
+  /// In en, this message translates to:
+  /// **'Login with mobile number'**
+  String get loginWithMobile;
+
+  /// No description provided for @loginSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your Iranian mobile number to receive a verification code'**
+  String get loginSubtitle;
+
+  /// No description provided for @mobileNumberLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile number'**
+  String get mobileNumberLabel;
+
+  /// No description provided for @mobileNumberHint.
+  ///
+  /// In en, this message translates to:
+  /// **'09XXXXXXXXX'**
+  String get mobileNumberHint;
+
+  /// No description provided for @invalidMobileNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid mobile number (09XXXXXXXXX)'**
+  String get invalidMobileNumber;
+
+  /// No description provided for @sendOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Send verification code'**
+  String get sendOtp;
+
+  /// No description provided for @otpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification code'**
+  String get otpTitle;
+
+  /// No description provided for @otpSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the 6-digit code sent to {mobile}'**
+  String otpSubtitle(String mobile);
+
+  /// No description provided for @verifyOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify and continue'**
+  String get verifyOtp;
+
+  /// No description provided for @resendOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend code'**
+  String get resendOtp;
+
+  /// No description provided for @resendOtpCountdown.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend code in {time}'**
+  String resendOtpCountdown(String time);
+
+  /// No description provided for @resendOtpCountdownPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend code in'**
+  String get resendOtpCountdownPrefix;
+
+  /// No description provided for @resendOtpCountdownSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **''**
+  String get resendOtpCountdownSuffix;
+
+  /// No description provided for @editMobileNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit number'**
+  String get editMobileNumber;
+
+  /// No description provided for @otpEnterInstruction.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the 6-digit verification code'**
+  String get otpEnterInstruction;
+
+  /// No description provided for @otpSentSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification code sent'**
+  String get otpSentSuccess;
+
+  /// No description provided for @otpInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the 6-digit verification code'**
+  String get otpInvalid;
+
+  /// No description provided for @navDashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Dashboard'**
+  String get navDashboard;
+
+  /// No description provided for @navWeeklyPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly Plan'**
+  String get navWeeklyPlan;
+
+  /// No description provided for @navSupplements.
+  ///
+  /// In en, this message translates to:
+  /// **'Supplements'**
+  String get navSupplements;
+
+  /// No description provided for @navProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get navProfile;
+
+  /// No description provided for @profileTabTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profileTabTitle;
+
+  /// No description provided for @profileTabDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile and settings — Phase 6'**
+  String get profileTabDescription;
+
+  /// No description provided for @displayNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Display name'**
+  String get displayNameLabel;
+
+  /// No description provided for @displayNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your name'**
+  String get displayNameHint;
+
+  /// No description provided for @displayNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Display name is required'**
+  String get displayNameRequired;
+
+  /// No description provided for @noDisplayName.
+  ///
+  /// In en, this message translates to:
+  /// **'No name set'**
+  String get noDisplayName;
+
+  /// No description provided for @saveProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Save changes'**
+  String get saveProfile;
+
+  /// No description provided for @profileUpdatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated successfully'**
+  String get profileUpdatedSuccess;
+
+  /// No description provided for @logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Log out'**
+  String get logout;
+
+  /// No description provided for @logoutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Log out'**
+  String get logoutTitle;
+
+  /// No description provided for @logoutConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to log out?'**
+  String get logoutConfirmation;
+
+  /// No description provided for @deleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get deleteAccount;
+
+  /// No description provided for @deleteAccountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get deleteAccountTitle;
+
+  /// No description provided for @deleteAccountConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'This will permanently delete your account and all your data. This action cannot be undone.'**
+  String get deleteAccountConfirmation;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @errorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get errorTitle;
+
+  /// No description provided for @routeNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Route not found: {path}'**
+  String routeNotFound(String path);
+
+  /// No description provided for @managePreferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Dietary preferences'**
+  String get managePreferences;
+
+  /// No description provided for @preferencesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences'**
+  String get preferencesTitle;
+
+  /// No description provided for @preferencesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose dietary restrictions and cuisines you prefer. These help personalize recipe suggestions.'**
+  String get preferencesSubtitle;
+
+  /// No description provided for @preferencesEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'You have not set preferences yet. Select options below and save.'**
+  String get preferencesEmptyHint;
+
+  /// No description provided for @dietaryRestrictionsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Dietary restrictions'**
+  String get dietaryRestrictionsSection;
+
+  /// No description provided for @preferredCuisinesSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferred cuisines'**
+  String get preferredCuisinesSection;
+
+  /// No description provided for @savePreferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Save preferences'**
+  String get savePreferences;
+
+  /// No description provided for @deletePreferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete preferences'**
+  String get deletePreferences;
+
+  /// No description provided for @deletePreferencesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete preferences'**
+  String get deletePreferencesTitle;
+
+  /// No description provided for @deletePreferencesConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete your preferences?'**
+  String get deletePreferencesConfirmation;
+
+  /// No description provided for @preferencesSavedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences saved successfully'**
+  String get preferencesSavedSuccess;
+
+  /// No description provided for @preferencesDeletedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences deleted successfully'**
+  String get preferencesDeletedSuccess;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// No description provided for @dietaryVegan.
+  ///
+  /// In en, this message translates to:
+  /// **'Vegan'**
+  String get dietaryVegan;
+
+  /// No description provided for @dietaryVegetarian.
+  ///
+  /// In en, this message translates to:
+  /// **'Vegetarian'**
+  String get dietaryVegetarian;
+
+  /// No description provided for @dietaryGlutenFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Gluten-free'**
+  String get dietaryGlutenFree;
+
+  /// No description provided for @dietaryDairyFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Dairy-free'**
+  String get dietaryDairyFree;
+
+  /// No description provided for @dietaryHalal.
+  ///
+  /// In en, this message translates to:
+  /// **'Halal'**
+  String get dietaryHalal;
+
+  /// No description provided for @dietaryLowCarb.
+  ///
+  /// In en, this message translates to:
+  /// **'Low-carb'**
+  String get dietaryLowCarb;
+
+  /// No description provided for @dietaryNutFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Nut-free'**
+  String get dietaryNutFree;
+
+  /// No description provided for @cuisinePersian.
+  ///
+  /// In en, this message translates to:
+  /// **'Persian'**
+  String get cuisinePersian;
+
+  /// No description provided for @cuisineItalian.
+  ///
+  /// In en, this message translates to:
+  /// **'Italian'**
+  String get cuisineItalian;
+
+  /// No description provided for @cuisineMediterranean.
+  ///
+  /// In en, this message translates to:
+  /// **'Mediterranean'**
+  String get cuisineMediterranean;
+
+  /// No description provided for @cuisineIndian.
+  ///
+  /// In en, this message translates to:
+  /// **'Indian'**
+  String get cuisineIndian;
+
+  /// No description provided for @cuisineChinese.
+  ///
+  /// In en, this message translates to:
+  /// **'Chinese'**
+  String get cuisineChinese;
+
+  /// No description provided for @cuisineMexican.
+  ///
+  /// In en, this message translates to:
+  /// **'Mexican'**
+  String get cuisineMexican;
+
+  /// No description provided for @cuisineTurkish.
+  ///
+  /// In en, this message translates to:
+  /// **'Turkish'**
+  String get cuisineTurkish;
+
+  /// No description provided for @cuisineFrench.
+  ///
+  /// In en, this message translates to:
+  /// **'French'**
+  String get cuisineFrench;
+
+  /// No description provided for @aiProviderFailure.
+  ///
+  /// In en, this message translates to:
+  /// **'AI service is temporarily unavailable. Please try again.'**
+  String get aiProviderFailure;
+
+  /// No description provided for @networkError.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet connection. Check your network and try again.'**
+  String get networkError;
+
+  /// No description provided for @pressBackAgainToExit.
+  ///
+  /// In en, this message translates to:
+  /// **'Press back again to exit'**
+  String get pressBackAgainToExit;
+
+  /// No description provided for @sessionExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Your session has expired. Please log in again.'**
+  String get sessionExpired;
+
+  /// No description provided for @genericError.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again.'**
+  String get genericError;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @dietOnboardingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Diet profile'**
+  String get dietOnboardingTitle;
+
+  /// No description provided for @dietOnboardingSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your details to get a personalized weekly plan.'**
+  String get dietOnboardingSubtitle;
+
+  /// No description provided for @dietAgeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Age (years)'**
+  String get dietAgeLabel;
+
+  /// No description provided for @dietHeightLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Height (cm)'**
+  String get dietHeightLabel;
+
+  /// No description provided for @dietWeightLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight (kg)'**
+  String get dietWeightLabel;
+
+  /// No description provided for @dietGenderLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get dietGenderLabel;
+
+  /// No description provided for @dietGenderMale.
+  ///
+  /// In en, this message translates to:
+  /// **'Male'**
+  String get dietGenderMale;
+
+  /// No description provided for @dietGenderFemale.
+  ///
+  /// In en, this message translates to:
+  /// **'Female'**
+  String get dietGenderFemale;
+
+  /// No description provided for @dietJobLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Job (optional)'**
+  String get dietJobLabel;
+
+  /// No description provided for @dietGoalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal'**
+  String get dietGoalLabel;
+
+  /// No description provided for @dietGoalNotesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal notes (optional)'**
+  String get dietGoalNotesLabel;
+
+  /// No description provided for @dietActivityLevelLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity level'**
+  String get dietActivityLevelLabel;
+
+  /// No description provided for @dietDoesExerciseLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'I exercise'**
+  String get dietDoesExerciseLabel;
+
+  /// No description provided for @dietExerciseTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise type'**
+  String get dietExerciseTypeLabel;
+
+  /// No description provided for @dietExerciseDaysLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise days per week (1–7)'**
+  String get dietExerciseDaysLabel;
+
+  /// No description provided for @dietDietaryPreferencesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Dietary preferences'**
+  String get dietDietaryPreferencesLabel;
+
+  /// No description provided for @dietAllergiesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Allergies (optional)'**
+  String get dietAllergiesLabel;
+
+  /// No description provided for @dietSaveProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Save profile'**
+  String get dietSaveProfile;
+
+  /// No description provided for @dietFormValidationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please complete all required fields'**
+  String get dietFormValidationError;
+
+  /// No description provided for @dietDaySaturday.
+  ///
+  /// In en, this message translates to:
+  /// **'Saturday'**
+  String get dietDaySaturday;
+
+  /// No description provided for @dietDaySunday.
+  ///
+  /// In en, this message translates to:
+  /// **'Sunday'**
+  String get dietDaySunday;
+
+  /// No description provided for @dietDayMonday.
+  ///
+  /// In en, this message translates to:
+  /// **'Monday'**
+  String get dietDayMonday;
+
+  /// No description provided for @dietDayTuesday.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuesday'**
+  String get dietDayTuesday;
+
+  /// No description provided for @dietDayWednesday.
+  ///
+  /// In en, this message translates to:
+  /// **'Wednesday'**
+  String get dietDayWednesday;
+
+  /// No description provided for @dietDayThursday.
+  ///
+  /// In en, this message translates to:
+  /// **'Thursday'**
+  String get dietDayThursday;
+
+  /// No description provided for @dietDayFriday.
+  ///
+  /// In en, this message translates to:
+  /// **'Friday'**
+  String get dietDayFriday;
+
+  /// No description provided for @dietSlotBreakfast.
+  ///
+  /// In en, this message translates to:
+  /// **'Breakfast'**
+  String get dietSlotBreakfast;
+
+  /// No description provided for @dietSlotMorningSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Morning snack'**
+  String get dietSlotMorningSnack;
+
+  /// No description provided for @dietSlotLunch.
+  ///
+  /// In en, this message translates to:
+  /// **'Lunch'**
+  String get dietSlotLunch;
+
+  /// No description provided for @dietSlotAfternoonSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Afternoon snack'**
+  String get dietSlotAfternoonSnack;
+
+  /// No description provided for @dietSlotDinner.
+  ///
+  /// In en, this message translates to:
+  /// **'Dinner'**
+  String get dietSlotDinner;
+
+  /// No description provided for @dietGeneratePlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate weekly plan'**
+  String get dietGeneratePlan;
+
+  /// No description provided for @dietIAteThis.
+  ///
+  /// In en, this message translates to:
+  /// **'I ate this'**
+  String get dietIAteThis;
+
+  /// No description provided for @dietLastMealTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Last meal'**
+  String get dietLastMealTitle;
+
+  /// No description provided for @dietMealTimesSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Meal times'**
+  String get dietMealTimesSettings;
+
+  /// No description provided for @dietSupplementsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Supplements'**
+  String get dietSupplementsTitle;
+
+  /// No description provided for @dietSupplementsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No supplements yet'**
+  String get dietSupplementsEmpty;
+
+  /// No description provided for @dietNoPlanYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No plan yet. Tap generate to create one.'**
+  String get dietNoPlanYet;
+
+  /// No description provided for @dietWeeklyPlanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly plan'**
+  String get dietWeeklyPlanTitle;
+
+  /// No description provided for @dietDailyCalorieTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily calorie target: {calories} kcal'**
+  String dietDailyCalorieTarget(String calories);
+
+  /// No description provided for @dietIngredientsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ingredients'**
+  String get dietIngredientsTitle;
+
+  /// No description provided for @dietCaloriesShort.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} cal'**
+  String dietCaloriesShort(String value);
+
+  /// No description provided for @dietProteinShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Protein {value}g'**
+  String dietProteinShort(String value);
+
+  /// No description provided for @dietCarbsShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Carbs {value}g'**
+  String dietCarbsShort(String value);
+
+  /// No description provided for @dietFatShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Fat {value}g'**
+  String dietFatShort(String value);
+
+  /// No description provided for @dietUnknownMeal.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown meal'**
+  String get dietUnknownMeal;
+
+  /// No description provided for @dietGoalLoseWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Lose weight'**
+  String get dietGoalLoseWeight;
+
+  /// No description provided for @dietGoalMaintainWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintain weight'**
+  String get dietGoalMaintainWeight;
+
+  /// No description provided for @dietGoalGainWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Gain weight / muscle'**
+  String get dietGoalGainWeight;
+
+  /// No description provided for @dietActivitySedentary.
+  ///
+  /// In en, this message translates to:
+  /// **'Sedentary'**
+  String get dietActivitySedentary;
+
+  /// No description provided for @dietActivityLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Lightly active'**
+  String get dietActivityLight;
+
+  /// No description provided for @dietActivityModerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Moderately active'**
+  String get dietActivityModerate;
+
+  /// No description provided for @dietActivityVeryActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Very active'**
+  String get dietActivityVeryActive;
+
+  /// No description provided for @dietActivityExtraActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Extra active'**
+  String get dietActivityExtraActive;
+
+  /// No description provided for @dietAddSupplement.
+  ///
+  /// In en, this message translates to:
+  /// **'Add supplement'**
+  String get dietAddSupplement;
+
+  /// No description provided for @dietEditSupplement.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit supplement'**
+  String get dietEditSupplement;
+
+  /// No description provided for @dietSupplementNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Supplement name'**
+  String get dietSupplementNameLabel;
+
+  /// No description provided for @dietSupplementDosageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Dosage / instructions'**
+  String get dietSupplementDosageLabel;
+
+  /// No description provided for @dietSupplementTimesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Times (comma-separated, e.g. 08:00, 20:00)'**
+  String get dietSupplementTimesLabel;
+
+  /// No description provided for @dietSupplementLinkedMealLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked meal (optional)'**
+  String get dietSupplementLinkedMealLabel;
+
+  /// No description provided for @dietNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get dietNone;
+
+  /// No description provided for @dietHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Diet History'**
+  String get dietHistoryTitle;
+
+  /// No description provided for @dietHistoryEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No diet history found'**
+  String get dietHistoryEmpty;
+
+  /// No description provided for @dietSlotNotificationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive reminder notification'**
+  String get dietSlotNotificationLabel;
+
+  /// No description provided for @dietHistoryDeleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete plan'**
+  String get dietHistoryDeleteConfirmTitle;
+
+  /// No description provided for @dietHistoryDeleteConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this diet plan?'**
+  String get dietHistoryDeleteConfirmBody;
+
+  /// No description provided for @dietHistoryDeleteConfirmConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get dietHistoryDeleteConfirmConfirm;
+
+  /// No description provided for @dietHistoryDeleteConfirmCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get dietHistoryDeleteConfirmCancel;
+
+  /// No description provided for @dietHistoryDeleteSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan deleted successfully'**
+  String get dietHistoryDeleteSuccess;
+}
+
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
+  const _AppLocalizationsDelegate();
+
+  @override
+  Future<AppLocalizations> load(Locale locale) {
+    return SynchronousFuture<AppLocalizations>(lookupAppLocalizations(locale));
+  }
+
+  @override
+  bool isSupported(Locale locale) =>
+      <String>['en', 'fa'].contains(locale.languageCode);
+
+  @override
+  bool shouldReload(_AppLocalizationsDelegate old) => false;
+}
+
+AppLocalizations lookupAppLocalizations(Locale locale) {
+  // Lookup logic when only language code is specified.
+  switch (locale.languageCode) {
+    case 'en':
+      return AppLocalizationsEn();
+    case 'fa':
+      return AppLocalizationsFa();
+  }
+
+  throw FlutterError(
+    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.',
+  );
+}

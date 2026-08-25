@@ -1,0 +1,192 @@
+{
+  "@@locale": "fa",
+  "appName": "FitSho",
+  "appNamePersian": "فیت‌شو",
+  "loginTitle": "ورود",
+  "loginWithMobile": "ورود با شماره موبایل",
+  "loginSubtitle": "شماره موبایل خود را وارد کنید تا کد تأیید برایتان ارسال شود",
+  "mobileNumberLabel": "شماره موبایل",
+  "mobileNumberHint": "09XXXXXXXXX",
+  "invalidMobileNumber": "شماره موبایل معتبر وارد کنید (09XXXXXXXXX)",
+  "sendOtp": "ارسال کد تأیید",
+  "otpTitle": "کد تأیید",
+  "otpSubtitle": "کد ۶ رقمی ارسال‌شده به {mobile} را وارد کنید",
+  "verifyOtp": "تأیید و ادامه",
+  "resendOtp": "ارسال مجدد کد",
+  "resendOtpCountdown": "ارسال مجدد تا {time} دیگر",
+  "@resendOtpCountdown": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "resendOtpCountdownPrefix": "ارسال مجدد تا",
+  "resendOtpCountdownSuffix": "دیگر",
+  "editMobileNumber": "ویرایش شماره",
+  "otpEnterInstruction": "کد ۶ رقمی ارسال‌شده را وارد کنید",
+  "otpSentSuccess": "کد تأیید ارسال شد",
+  "otpInvalid": "کد تأیید ۶ رقمی را وارد کنید",
+  "navDashboard": "داشبورد",
+  "navWeeklyPlan": "برنامه هفتگی",
+  "navSupplements": "مکمل‌ها",
+  "navProfile": "پروفایل",
+  "profileTabTitle": "پروفایل",
+  "profileTabDescription": "پروفایل و تنظیمات — Phase 6",
+  "displayNameLabel": "نام نمایشی",
+  "displayNameHint": "نام خود را وارد کنید",
+  "displayNameRequired": "نام نمایشی الزامی است",
+  "noDisplayName": "نام ثبت نشده",
+  "saveProfile": "ذخیره تغییرات",
+  "profileUpdatedSuccess": "پروفایل با موفقیت به‌روزرسانی شد",
+  "logout": "خروج از حساب",
+  "logoutTitle": "خروج",
+  "logoutConfirmation": "آیا مطمئن هستید که می‌خواهید خارج شوید؟",
+  "deleteAccount": "حذف حساب کاربری",
+  "deleteAccountTitle": "حذف حساب کاربری",
+  "deleteAccountConfirmation": "با این کار حساب کاربری و تمام اطلاعات شما برای همیشه حذف خواهد شد. این عملیات قابل بازگشت نیست.",
+  "confirm": "تأیید",
+  "cancel": "انصراف",
+  "errorTitle": "خطا",
+  "routeNotFound": "مسیر یافت نشد: {path}",
+  "managePreferences": "ترجیحات غذایی",
+  "preferencesTitle": "ترجیحات",
+  "preferencesSubtitle": "محدودیت‌های غذایی و سبک‌های آشپزی مورد علاقه خود را انتخاب کنید تا پیشنهاد دستور پخت شخصی‌سازی شود.",
+  "preferencesEmptyHint": "هنوز ترجیحی ثبت نکرده‌اید. گزینه‌ها را انتخاب و ذخیره کنید.",
+  "dietaryRestrictionsSection": "محدودیت‌های غذایی",
+  "preferredCuisinesSection": "سبک‌های آشپزی",
+  "savePreferences": "ذخیره ترجیحات",
+  "deletePreferences": "حذف ترجیحات",
+  "deletePreferencesTitle": "حذف ترجیحات",
+  "deletePreferencesConfirmation": "آیا مطمئن هستید که می‌خواهید ترجیحات خود را حذف کنید؟",
+  "preferencesSavedSuccess": "ترجیحات با موفقیت ذخیره شد",
+  "preferencesDeletedSuccess": "ترجیحات با موفقیت حذف شد",
+  "retry": "تلاش مجدد",
+  "dietaryVegan": "وگان",
+  "dietaryVegetarian": "گیاهخواری",
+  "dietaryGlutenFree": "بدون گلوتن",
+  "dietaryDairyFree": "بدون لبنیات",
+  "dietaryHalal": "حلال",
+  "dietaryLowCarb": "کم‌کربوهیدرات",
+  "dietaryNutFree": "بدون آجیل",
+  "cuisinePersian": "ایرانی",
+  "cuisineItalian": "ایتالیایی",
+  "cuisineMediterranean": "مدیترانه‌ای",
+  "cuisineIndian": "هندی",
+  "cuisineChinese": "چینی",
+  "cuisineMexican": "مکزیکی",
+  "cuisineTurkish": "ترکی",
+  "cuisineFrench": "فرانسوی",
+  "aiProviderFailure": "سرویس هوش مصنوعی موقتاً در دسترس نیست. لطفاً دوباره تلاش کنید.",
+  "networkError": "اتصال اینترنت برقرار نیست. شبکه را بررسی و دوباره تلاش کنید.",
+  "pressBackAgainToExit": "برای خروج دوباره دکمه بازگشت را بزنید",
+  "sessionExpired": "نشست شما منقضی شده است. لطفاً دوباره وارد شوید.",
+  "genericError": "خطایی رخ داد. لطفاً دوباره تلاش کنید.",
+  "save": "ذخیره",
+  "edit": "ویرایش",
+  "delete": "حذف",
+  "dietOnboardingTitle": "پروفایل رژیم غذایی",
+  "dietOnboardingSubtitle": "اطلاعات خود را وارد کنید تا برنامه هفتگی شخصی‌سازی‌شده دریافت کنید.",
+  "dietAgeLabel": "سن (سال)",
+  "dietHeightLabel": "قد (سانتی‌متر)",
+  "dietWeightLabel": "وزن (کیلوگرم)",
+  "dietGenderLabel": "جنسیت",
+  "dietGenderMale": "مرد",
+  "dietGenderFemale": "زن",
+  "dietJobLabel": "شغل (اختیاری)",
+  "dietGoalLabel": "هدف",
+  "dietGoalNotesLabel": "توضیحات هدف (اختیاری)",
+  "dietActivityLevelLabel": "سطح فعالیت",
+  "dietDoesExerciseLabel": "ورزش می‌کنم",
+  "dietExerciseTypeLabel": "نوع ورزش",
+  "dietExerciseDaysLabel": "روز ورزش در هفته (۱–۷)",
+  "dietDietaryPreferencesLabel": "ترجیحات غذایی",
+  "dietAllergiesLabel": "حساسیت‌ها (اختیاری)",
+  "dietSaveProfile": "ذخیره پروفایل",
+  "dietFormValidationError": "لطفاً فیلدهای الزامی را تکمیل کنید",
+  "dietDaySaturday": "شنبه",
+  "dietDaySunday": "یکشنبه",
+  "dietDayMonday": "دوشنبه",
+  "dietDayTuesday": "سه‌شنبه",
+  "dietDayWednesday": "چهارشنبه",
+  "dietDayThursday": "پنجشنبه",
+  "dietDayFriday": "جمعه",
+  "dietSlotBreakfast": "صبحانه",
+  "dietSlotMorningSnack": "میان‌وعده صبح",
+  "dietSlotLunch": "ناهار",
+  "dietSlotAfternoonSnack": "میان‌وعده عصر",
+  "dietSlotDinner": "شام",
+  "dietGeneratePlan": "تولید برنامه هفتگی",
+  "dietIAteThis": "خوردم",
+  "dietLastMealTitle": "آخرین وعده",
+  "dietMealTimesSettings": "زمان وعده‌ها",
+  "dietSupplementsTitle": "مکمل‌ها",
+  "dietSupplementsEmpty": "هنوز مکملی ثبت نشده",
+  "dietNoPlanYet": "هنوز برنامه‌ای ندارید. دکمه تولید را بزنید.",
+  "dietWeeklyPlanTitle": "برنامه هفتگی",
+  "dietDailyCalorieTarget": "هدف کالری روزانه: {calories} کیلوکالری",
+  "@dietDailyCalorieTarget": {
+    "placeholders": {
+      "calories": {
+        "type": "String"
+      }
+    }
+  },
+  "dietIngredientsTitle": "مواد لازم",
+  "dietCaloriesShort": "{value} کالری",
+  "@dietCaloriesShort": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "dietProteinShort": "پروتئین {value}g",
+  "@dietProteinShort": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "dietCarbsShort": "کرب {value}g",
+  "@dietCarbsShort": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "dietFatShort": "چربی {value}g",
+  "@dietFatShort": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "dietUnknownMeal": "وعده نامشخص",
+  "dietGoalLoseWeight": "کاهش وزن",
+  "dietGoalMaintainWeight": "حفظ وزن",
+  "dietGoalGainWeight": "افزایش وزن / عضله",
+  "dietActivitySedentary": "کم‌تحرک",
+  "dietActivityLight": "فعالیت سبک",
+  "dietActivityModerate": "فعالیت متوسط",
+  "dietActivityVeryActive": "فعالیت زیاد",
+  "dietActivityExtraActive": "فعالیت بسیار زیاد",
+  "dietAddSupplement": "افزودن مکمل",
+  "dietEditSupplement": "ویرایش مکمل",
+  "dietSupplementNameLabel": "نام مکمل",
+  "dietSupplementDosageLabel": "دوز / نحوه مصرف",
+  "dietSupplementTimesLabel": "ساعات (با کاما جدا کنید، مثلاً 08:00, 20:00)",
+  "dietSupplementLinkedMealLabel": "وعده مرتبط (اختیاری)",
+  "dietNone": "بدون ارتباط",
+  "dietHistoryTitle": "تاریخچه رژیم‌ها",
+  "dietHistoryEmpty": "تاریخچه‌ای یافت نشد",
+  "dietSlotNotificationLabel": "دریافت اعلان یادآوری",
+  "dietHistoryDeleteConfirmTitle": "حذف برنامه",
+  "dietHistoryDeleteConfirmBody": "آیا از حذف این برنامه رژیمی اطمینان دارید؟",
+  "dietHistoryDeleteConfirmConfirm": "حذف",
+  "dietHistoryDeleteConfirmCancel": "انصراف",
+  "dietHistoryDeleteSuccess": "برنامه با موفقیت حذف شد"
+}

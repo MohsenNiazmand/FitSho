@@ -1,0 +1,206 @@
+{
+  "@@locale": "en",
+  "appName": "FitSho",
+  "appNamePersian": "فیت‌شو",
+  "loginTitle": "Login",
+  "loginWithMobile": "Login with mobile number",
+  "loginSubtitle": "Enter your Iranian mobile number to receive a verification code",
+  "mobileNumberLabel": "Mobile number",
+  "mobileNumberHint": "09XXXXXXXXX",
+  "invalidMobileNumber": "Enter a valid mobile number (09XXXXXXXXX)",
+  "sendOtp": "Send verification code",
+  "otpTitle": "Verification code",
+  "otpSubtitle": "Enter the 6-digit code sent to {mobile}",
+  "@otpSubtitle": {
+    "placeholders": {
+      "mobile": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyOtp": "Verify and continue",
+  "resendOtp": "Resend code",
+  "resendOtpCountdown": "Resend code in {time}",
+  "@resendOtpCountdown": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "resendOtpCountdownPrefix": "Resend code in",
+  "resendOtpCountdownSuffix": "",
+  "editMobileNumber": "Edit number",
+  "otpEnterInstruction": "Enter the 6-digit verification code",
+  "otpSentSuccess": "Verification code sent",
+  "otpInvalid": "Enter the 6-digit verification code",
+  "navDashboard": "Dashboard",
+  "navWeeklyPlan": "Weekly Plan",
+  "navSupplements": "Supplements",
+  "navProfile": "Profile",
+  "profileTabTitle": "Profile",
+  "profileTabDescription": "Profile and settings — Phase 6",
+  "displayNameLabel": "Display name",
+  "displayNameHint": "Enter your name",
+  "displayNameRequired": "Display name is required",
+  "noDisplayName": "No name set",
+  "saveProfile": "Save changes",
+  "profileUpdatedSuccess": "Profile updated successfully",
+  "logout": "Log out",
+  "logoutTitle": "Log out",
+  "logoutConfirmation": "Are you sure you want to log out?",
+  "deleteAccount": "Delete account",
+  "deleteAccountTitle": "Delete account",
+  "deleteAccountConfirmation": "This will permanently delete your account and all your data. This action cannot be undone.",
+  "confirm": "Confirm",
+  "cancel": "Cancel",
+  "errorTitle": "Error",
+  "routeNotFound": "Route not found: {path}",
+  "@routeNotFound": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "managePreferences": "Dietary preferences",
+  "preferencesTitle": "Preferences",
+  "preferencesSubtitle": "Choose dietary restrictions and cuisines you prefer. These help personalize recipe suggestions.",
+  "preferencesEmptyHint": "You have not set preferences yet. Select options below and save.",
+  "dietaryRestrictionsSection": "Dietary restrictions",
+  "preferredCuisinesSection": "Preferred cuisines",
+  "savePreferences": "Save preferences",
+  "deletePreferences": "Delete preferences",
+  "deletePreferencesTitle": "Delete preferences",
+  "deletePreferencesConfirmation": "Are you sure you want to delete your preferences?",
+  "preferencesSavedSuccess": "Preferences saved successfully",
+  "preferencesDeletedSuccess": "Preferences deleted successfully",
+  "retry": "Retry",
+  "dietaryVegan": "Vegan",
+  "dietaryVegetarian": "Vegetarian",
+  "dietaryGlutenFree": "Gluten-free",
+  "dietaryDairyFree": "Dairy-free",
+  "dietaryHalal": "Halal",
+  "dietaryLowCarb": "Low-carb",
+  "dietaryNutFree": "Nut-free",
+  "cuisinePersian": "Persian",
+  "cuisineItalian": "Italian",
+  "cuisineMediterranean": "Mediterranean",
+  "cuisineIndian": "Indian",
+  "cuisineChinese": "Chinese",
+  "cuisineMexican": "Mexican",
+  "cuisineTurkish": "Turkish",
+  "cuisineFrench": "French",
+  "aiProviderFailure": "AI service is temporarily unavailable. Please try again.",
+  "networkError": "No internet connection. Check your network and try again.",
+  "pressBackAgainToExit": "Press back again to exit",
+  "sessionExpired": "Your session has expired. Please log in again.",
+  "genericError": "Something went wrong. Please try again.",
+  "save": "Save",
+  "edit": "Edit",
+  "delete": "Delete",
+  "dietOnboardingTitle": "Diet profile",
+  "dietOnboardingSubtitle": "Enter your details to get a personalized weekly plan.",
+  "dietAgeLabel": "Age (years)",
+  "dietHeightLabel": "Height (cm)",
+  "dietWeightLabel": "Weight (kg)",
+  "dietGenderLabel": "Gender",
+  "dietGenderMale": "Male",
+  "dietGenderFemale": "Female",
+  "dietJobLabel": "Job (optional)",
+  "dietGoalLabel": "Goal",
+  "dietGoalNotesLabel": "Goal notes (optional)",
+  "dietActivityLevelLabel": "Activity level",
+  "dietDoesExerciseLabel": "I exercise",
+  "dietExerciseTypeLabel": "Exercise type",
+  "dietExerciseDaysLabel": "Exercise days per week (1–7)",
+  "dietDietaryPreferencesLabel": "Dietary preferences",
+  "dietAllergiesLabel": "Allergies (optional)",
+  "dietSaveProfile": "Save profile",
+  "dietFormValidationError": "Please complete all required fields",
+  "dietDaySaturday": "Saturday",
+  "dietDaySunday": "Sunday",
+  "dietDayMonday": "Monday",
+  "dietDayTuesday": "Tuesday",
+  "dietDayWednesday": "Wednesday",
+  "dietDayThursday": "Thursday",
+  "dietDayFriday": "Friday",
+  "dietSlotBreakfast": "Breakfast",
+  "dietSlotMorningSnack": "Morning snack",
+  "dietSlotLunch": "Lunch",
+  "dietSlotAfternoonSnack": "Afternoon snack",
+  "dietSlotDinner": "Dinner",
+  "dietGeneratePlan": "Generate weekly plan",
+  "dietIAteThis": "I ate this",
+  "dietLastMealTitle": "Last meal",
+  "dietMealTimesSettings": "Meal times",
+  "dietSupplementsTitle": "Supplements",
+  "dietSupplementsEmpty": "No supplements yet",
+  "dietNoPlanYet": "No plan yet. Tap generate to create one.",
+  "dietWeeklyPlanTitle": "Weekly plan",
+  "dietDailyCalorieTarget": "Daily calorie target: {calories} kcal",
+  "@dietDailyCalorieTarget": {
+    "placeholders": {
+      "calories": {
+        "type": "String"
+      }
+    }
+  },
+  "dietIngredientsTitle": "Ingredients",
+  "dietCaloriesShort": "{value} cal",
+  "@dietCaloriesShort": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "dietProteinShort": "Protein {value}g",
+  "@dietProteinShort": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "dietCarbsShort": "Carbs {value}g",
+  "@dietCarbsShort": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "dietFatShort": "Fat {value}g",
+  "@dietFatShort": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "dietUnknownMeal": "Unknown meal",
+  "dietGoalLoseWeight": "Lose weight",
+  "dietGoalMaintainWeight": "Maintain weight",
+  "dietGoalGainWeight": "Gain weight / muscle",
+  "dietActivitySedentary": "Sedentary",
+  "dietActivityLight": "Lightly active",
+  "dietActivityModerate": "Moderately active",
+  "dietActivityVeryActive": "Very active",
+  "dietActivityExtraActive": "Extra active",
+  "dietAddSupplement": "Add supplement",
+  "dietEditSupplement": "Edit supplement",
+  "dietSupplementNameLabel": "Supplement name",
+  "dietSupplementDosageLabel": "Dosage / instructions",
+  "dietSupplementTimesLabel": "Times (comma-separated, e.g. 08:00, 20:00)",
+  "dietSupplementLinkedMealLabel": "Linked meal (optional)",
+  "dietNone": "None",
+  "dietHistoryTitle": "Diet History",
+  "dietHistoryEmpty": "No diet history found",
+  "dietSlotNotificationLabel": "Receive reminder notification",
+  "dietHistoryDeleteConfirmTitle": "Delete plan",
+  "dietHistoryDeleteConfirmBody": "Are you sure you want to delete this diet plan?",
+  "dietHistoryDeleteConfirmConfirm": "Delete",
+  "dietHistoryDeleteConfirmCancel": "Cancel",
+  "dietHistoryDeleteSuccess": "Plan deleted successfully"
+}
