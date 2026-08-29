@@ -152,6 +152,66 @@ abstract class AppLocalizations {
   /// **'Send verification code'**
   String get sendOtp;
 
+  /// No description provided for @legalAgreementPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'By logging in or signing up for FitSho, you agree to our '**
+  String get legalAgreementPrefix;
+
+  /// No description provided for @legalTermsLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms & Conditions'**
+  String get legalTermsLink;
+
+  /// No description provided for @legalAgreementMiddle.
+  ///
+  /// In en, this message translates to:
+  /// **' and '**
+  String get legalAgreementMiddle;
+
+  /// No description provided for @legalPrivacyLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get legalPrivacyLink;
+
+  /// No description provided for @legalAgreementSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **'.'**
+  String get legalAgreementSuffix;
+
+  /// No description provided for @legalTermsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms & Conditions'**
+  String get legalTermsTitle;
+
+  /// No description provided for @legalTermsContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to FitSho. By using this app, you agree to the following:\n\n1. Medical Disclaimer: FitSho is an AI-based smart assistant. All provided plans are suggestions. If you have a specific illness, pregnancy, or special medical conditions, be sure to consult a doctor before starting a diet.\n\n2. Accuracy of Information: Responsibility for the accuracy of entered information (weight, height, age) lies with the user.\n\n3. Fair Use: Any attempt at unauthorized data extraction or abuse of the app\'s AI is prohibited.\n\n4. Changes: FitSho reserves the right to update its rules at any time to improve services.'**
+  String get legalTermsContent;
+
+  /// No description provided for @legalPrivacyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get legalPrivacyTitle;
+
+  /// No description provided for @legalPrivacyContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Your privacy is a red line for FitSho:\n\n1. Data Collection: We receive your physical information solely to accurately calculate diets and calorie counting.\n\n2. Data Security: All your data is kept encrypted on our secure servers.\n\n3. No Sharing: FitSho will never share your personal or contact information with advertising companies or third parties.\n\n4. Right to Delete Data: You can permanently delete your account and all associated data at any time through profile settings.'**
+  String get legalPrivacyContent;
+
+  /// No description provided for @gotIt.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get gotIt;
+
   /// No description provided for @otpTitle.
   ///
   /// In en, this message translates to:

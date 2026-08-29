@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/gestures.dart';
 import 'package:fitsho/config/router/routes.dart';
 import 'package:fitsho/config/theme/app_radius.dart';
 import 'package:fitsho/core/constants/app_assets.dart';
@@ -11,6 +12,7 @@ import 'package:fitsho/shared/presentation/utils/toast_utils.dart';
 import 'package:fitsho/shared/presentation/widgets/app_image_cover.dart';
 import 'package:fitsho/shared/presentation/widgets/app_primary_button.dart';
 import 'package:fitsho/shared/presentation/widgets/gap.dart';
+import 'package:fitsho/shared/presentation/widgets/legal_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -192,6 +194,10 @@ class LoginScreen extends HookConsumerWidget {
                               ),
                             ),
                             Gap.v16(),
+                            staggerEntrance(
+                              step: 5,
+                              child: const _LoginLegalFooter(),
+                            ),
                           ],
                         ),
                       ),
@@ -201,6 +207,89 @@ class LoginScreen extends HookConsumerWidget {
               },
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LoginLegalFooter extends StatefulWidget {
+  const _LoginLegalFooter();
+
+  @override
+  State<_LoginLegalFooter> createState() => _LoginLegalFooterState();
+}
+
+class _LoginLegalFooterState extends State<_LoginLegalFooter> {
+  late final TapGestureRecognizer _termsRecognizer;
+  late final TapGestureRecognizer _privacyRecognizer;
+
+  @override
+  void initState() {
+    super.initState();
+    _termsRecognizer = TapGestureRecognizer()..onTap = _showTerms;
+    _privacyRecognizer = TapGestureRecognizer()..onTap = _showPrivacy;
+  }
+
+  @override
+  void dispose() {
+    _termsRecognizer.dispose();
+    _privacyRecognizer.dispose();
+    super.dispose();
+  }
+
+  void _showTerms() {
+    LegalBottomSheet.show(
+      context,
+      title: context.tr.legalTermsTitle,
+      content: context.tr.legalTermsContent,
+    );
+  }
+
+  void _showPrivacy() {
+    LegalBottomSheet.show(
+      context,
+      title: context.tr.legalPrivacyTitle,
+      content: context.tr.legalPrivacyContent,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    const baseStyle = TextStyle(
+      fontSize: 11,
+      color: Colors.white54,
+      height: 1.7,
+      shadows: [
+        Shadow(blurRadius: 4, color: Colors.black87, offset: Offset(0, 1)),
+      ],
+    );
+    final linkStyle = baseStyle.copyWith(
+      color: cPrimaryLight,
+      fontWeight: FontWeight.w700,
+      decoration: TextDecoration.underline,
+      decorationColor: cPrimaryLight,
+    );
+
+    return RichText(
+      textAlign: TextAlign.center,
+      textDirection: TextDirection.rtl,
+      text: TextSpan(
+        style: baseStyle,
+        children: [
+          TextSpan(text: context.tr.legalAgreementPrefix),
+          TextSpan(
+            text: context.tr.legalTermsLink,
+            style: linkStyle,
+            recognizer: _termsRecognizer,
+          ),
+          TextSpan(text: context.tr.legalAgreementMiddle),
+          TextSpan(
+            text: context.tr.legalPrivacyLink,
+            style: linkStyle,
+            recognizer: _privacyRecognizer,
+          ),
+          TextSpan(text: context.tr.legalAgreementSuffix),
         ],
       ),
     );

@@ -37,6 +37,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sendOtp => 'Send verification code';
 
   @override
+  String get legalAgreementPrefix =>
+      'By logging in or signing up for FitSho, you agree to our ';
+
+  @override
+  String get legalTermsLink => 'Terms & Conditions';
+
+  @override
+  String get legalAgreementMiddle => ' and ';
+
+  @override
+  String get legalPrivacyLink => 'Privacy Policy';
+
+  @override
+  String get legalAgreementSuffix => '.';
+
+  @override
+  String get legalTermsTitle => 'Terms & Conditions';
+
+  @override
+  String get legalTermsContent =>
+      'Welcome to FitSho. By using this app, you agree to the following:\n\n1. Medical Disclaimer: FitSho is an AI-based smart assistant. All provided plans are suggestions. If you have a specific illness, pregnancy, or special medical conditions, be sure to consult a doctor before starting a diet.\n\n2. Accuracy of Information: Responsibility for the accuracy of entered information (weight, height, age) lies with the user.\n\n3. Fair Use: Any attempt at unauthorized data extraction or abuse of the app\'s AI is prohibited.\n\n4. Changes: FitSho reserves the right to update its rules at any time to improve services.';
+
+  @override
+  String get legalPrivacyTitle => 'Privacy Policy';
+
+  @override
+  String get legalPrivacyContent =>
+      'Your privacy is a red line for FitSho:\n\n1. Data Collection: We receive your physical information solely to accurately calculate diets and calorie counting.\n\n2. Data Security: All your data is kept encrypted on our secure servers.\n\n3. No Sharing: FitSho will never share your personal or contact information with advertising companies or third parties.\n\n4. Right to Delete Data: You can permanently delete your account and all associated data at any time through profile settings.';
+
+  @override
+  String get gotIt => 'Got it';
+
+  @override
   String get otpTitle => 'Verification code';
 
   @override
