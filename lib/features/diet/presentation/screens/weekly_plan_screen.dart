@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:fitsho/shared/presentation/utils/failure_message.dart';
+import 'package:fitsho/core/constants/app_assets.dart';
 import 'package:fitsho/core/constants/colors.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
 import 'package:fitsho/features/diet/presentation/providers/diet_navigation_provider.dart';
@@ -8,6 +10,7 @@ import 'package:fitsho/features/diet/presentation/widgets/diet_plan_section.dart
 import 'package:fitsho/shared/presentation/utils/toast_utils.dart';
 import 'package:fitsho/shared/presentation/widgets/app_loading_indicator.dart';
 import 'package:fitsho/shared/presentation/widgets/app_primary_button.dart';
+import 'package:fitsho/shared/presentation/widgets/empty_state_view.dart';
 import 'package:fitsho/shared/presentation/widgets/error_retry_view.dart';
 import 'package:fitsho/shared/presentation/widgets/gap.dart';
 
@@ -57,17 +60,16 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
         child: profileAsync.when(
           loading: () => const AppLoadingIndicator(),
           error: (error, _) => ErrorRetryView(
-            message: error.toString(),
+            message: errorDisplayMessage(context, error),
             onRetry: () => ref.invalidate(dietProfileNotifierProvider),
           ),
           data: (profile) {
             if (profile == null) {
               return Center(
-                child: Text(
-                  context.tr.dietNoPlanYet,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyLarge?.copyWith(color: cTextSecondary),
+                child: EmptyStateView(
+                  imagePath: AppAssets.emptyState,
+                  message: context.tr.dietNoPlanYet,
+                  subtitle: context.tr.dietNoPlanYetSubtitle,
                 ),
               );
             }
@@ -91,15 +93,23 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
                               color: cTextPrimary,
                             ),
                       ),
+                      if (planAsync.value != null)
+                        IconButton(
+                          onPressed: isGenerating ? null : _generatePlan,
+                          tooltip: context.tr.dietGeneratePlan,
+                          icon: isGenerating
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : const Icon(Icons.refresh_rounded),
+                        ),
                     ],
                   ),
                   Gap.v16(),
-                  AppPrimaryButton(
-                    label: context.tr.dietGeneratePlan,
-                    isLoading: isGenerating,
-                    onPressed: isGenerating ? null : _generatePlan,
-                  ),
-                  Gap.v24(),
                   planAsync.when(
                     loading: () => const Center(
                       child: Padding(
@@ -108,15 +118,25 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
                       ),
                     ),
                     error: (error, _) => ErrorRetryView(
-                      message: error.toString(),
+                      message: errorDisplayMessage(context, error),
                       onRetry: () => ref.invalidate(dietPlanNotifierProvider),
                     ),
                     data: (plan) {
                       if (plan == null) {
-                        return Text(
-                          context.tr.dietNoPlanYet,
-                          style: Theme.of(context).textTheme.bodyLarge
-                              ?.copyWith(color: cTextSecondary),
+                        return Column(
+                          children: [
+                            EmptyStateView(
+                              imagePath: AppAssets.emptyState,
+                              message: context.tr.dietNoPlanYet,
+                              subtitle: context.tr.dietNoPlanYetSubtitle,
+                            ),
+                            Gap.v16(),
+                            AppPrimaryButton(
+                              label: context.tr.dietGeneratePlan,
+                              isLoading: isGenerating,
+                              onPressed: isGenerating ? null : _generatePlan,
+                            ),
+                          ],
                         );
                       }
 

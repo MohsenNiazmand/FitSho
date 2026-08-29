@@ -17,3 +17,10 @@ String failureMessage(BuildContext context, Failure failure) {
     UnknownFailure() => context.tr.genericError,
   };
 }
+
+/// Formats any caught error for display, resolving [Failure]s to their
+/// localized message instead of falling back to `error.toString()` (which
+/// just prints `Instance of 'XFailure'`).
+String errorDisplayMessage(BuildContext context, Object error) {
+  return error is Failure ? failureMessage(context, error) : error.toString();
+}

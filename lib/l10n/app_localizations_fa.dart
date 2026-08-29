@@ -252,6 +252,12 @@ class AppLocalizationsFa extends AppLocalizations {
   String get save => 'ذخیره';
 
   @override
+  String get next => 'بعدی';
+
+  @override
+  String get back => 'قبلی';
+
+  @override
   String get edit => 'ویرایش';
 
   @override
@@ -313,6 +319,25 @@ class AppLocalizationsFa extends AppLocalizations {
   String get dietSaveProfile => 'ذخیره پروفایل';
 
   @override
+  String get dietProfileEditTitle => 'ویرایش پروفایل رژیم';
+
+  @override
+  String get dietRegeneratePromptTitle => 'برنامه هفتگی به‌روزرسانی شود؟';
+
+  @override
+  String get dietRegeneratePromptBody =>
+      'مشخصات شما تغییر کرد. می‌خواهید برنامه غذایی هفتگی بر اساس اطلاعات جدید دوباره ساخته شود؟';
+
+  @override
+  String get dietRegenerateConfirm => 'بله، بازتولید کن';
+
+  @override
+  String get dietRegenerateDismiss => 'فعلاً نه';
+
+  @override
+  String get dietPlanRegenerated => 'برنامه هفتگی جدید با موفقیت ساخته شد';
+
+  @override
   String get dietFormValidationError => 'لطفاً فیلدهای الزامی را تکمیل کنید';
 
   @override
@@ -370,7 +395,15 @@ class AppLocalizationsFa extends AppLocalizations {
   String get dietSupplementsEmpty => 'هنوز مکملی ثبت نشده';
 
   @override
+  String get dietSupplementsEmptySubtitle =>
+      'مکمل‌ها و داروهای خود را اضافه کنید تا در زمان مناسب یادآوری بگیرید.';
+
+  @override
   String get dietNoPlanYet => 'هنوز برنامه‌ای ندارید. دکمه تولید را بزنید.';
+
+  @override
+  String get dietNoPlanYetSubtitle =>
+      'یک برنامه هفتگی هوشمند بر اساس پروفایل خودت تولید کن.';
 
   @override
   String get dietWeeklyPlanTitle => 'برنامه هفتگی';
@@ -443,8 +476,10 @@ class AppLocalizationsFa extends AppLocalizations {
   String get dietSupplementDosageLabel => 'دوز / نحوه مصرف';
 
   @override
-  String get dietSupplementTimesLabel =>
-      'ساعات (با کاما جدا کنید، مثلاً 08:00, 20:00)';
+  String get dietSupplementTimesLabel => 'ساعات یادآوری';
+
+  @override
+  String get dietAddTime => 'افزودن ساعت';
 
   @override
   String get dietSupplementLinkedMealLabel => 'وعده مرتبط (اختیاری)';

@@ -144,7 +144,8 @@ class OtpVerificationScreen extends HookConsumerWidget {
                                 onPressed: isLoading
                                     ? null
                                     : () => context.go(AppRoutes.login),
-                                icon: const Icon(Icons.arrow_back_rounded),
+                                // RTL layout: back points right.
+                                icon: const Icon(Icons.arrow_forward_rounded),
                               ),
                             ),
                             Gap.v8(),

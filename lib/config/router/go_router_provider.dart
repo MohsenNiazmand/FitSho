@@ -10,6 +10,7 @@ import 'package:fitsho/features/auth/presentation/screens/otp_verification_scree
 import 'package:fitsho/features/diet/presentation/screens/dashboard_screen.dart';
 import 'package:fitsho/features/diet/presentation/screens/diet_history_screen.dart';
 import 'package:fitsho/features/diet/presentation/screens/diet_meal_slots_screen.dart';
+import 'package:fitsho/features/diet/presentation/screens/diet_profile_edit_screen.dart';
 import 'package:fitsho/features/diet/presentation/screens/supplements_screen.dart';
 import 'package:fitsho/features/diet/presentation/screens/weekly_plan_screen.dart';
 import 'package:fitsho/features/main/presentation/screens/main_shell_screen.dart';
@@ -86,6 +87,10 @@ GoRouter goRouter(GoRouterRef ref) {
       GoRoute(
         path: AppRoutes.dietHistory,
         builder: (context, state) => const DietHistoryScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.dietProfileEdit,
+        builder: (context, state) => const DietProfileEditScreen(),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {

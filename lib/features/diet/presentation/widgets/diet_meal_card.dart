@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fitsho/config/theme/app_radius.dart';
 import 'package:fitsho/core/constants/colors.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
@@ -46,8 +47,11 @@ class DietMealCard extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 18,
+            color: isLogged
+                ? cSuccess.withValues(alpha: 0.25)
+                : Colors.black.withValues(alpha: 0.05),
+            blurRadius: isLogged ? 24 : 18,
+            spreadRadius: isLogged ? 1 : 0,
             offset: const Offset(0, 6),
           ),
         ],
@@ -124,7 +128,12 @@ class DietMealCard extends StatelessWidget {
             ),
             Gap.v12(),
             FilledButton(
-              onPressed: (isLogging || isLogged) ? null : onLogMeal,
+              onPressed: (isLogging || isLogged)
+                  ? null
+                  : () {
+                      HapticFeedback.mediumImpact();
+                      onLogMeal?.call();
+                    },
               style: isLogged
                   ? FilledButton.styleFrom(
                       backgroundColor: cSuccess.withValues(alpha: 0.1),

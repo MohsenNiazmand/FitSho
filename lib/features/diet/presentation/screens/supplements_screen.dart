@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:fitsho/shared/presentation/utils/failure_message.dart';
+import 'package:fitsho/core/constants/app_assets.dart';
+import 'package:fitsho/core/constants/colors.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
+import 'package:fitsho/core/utils/persian_digits.dart';
 import 'package:fitsho/core/utils/persian_input.dart';
 import 'package:fitsho/features/diet/domain/entities/diet_entities.dart';
 import 'package:fitsho/features/diet/presentation/providers/diet_providers.dart';
@@ -9,8 +10,12 @@ import 'package:fitsho/features/diet/presentation/utils/diet_labels.dart';
 import 'package:fitsho/shared/presentation/utils/toast_utils.dart';
 import 'package:fitsho/shared/presentation/widgets/app_loading_indicator.dart';
 import 'package:fitsho/shared/presentation/widgets/app_text_field.dart';
+import 'package:fitsho/shared/presentation/widgets/empty_state_view.dart';
 import 'package:fitsho/shared/presentation/widgets/error_retry_view.dart';
 import 'package:fitsho/shared/presentation/widgets/gap.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class SupplementsScreen extends ConsumerWidget {
   const SupplementsScreen({super.key});
@@ -28,12 +33,26 @@ class SupplementsScreen extends ConsumerWidget {
       body: supplementsAsync.when(
         loading: () => const AppLoadingIndicator(),
         error: (error, _) => ErrorRetryView(
-          message: error.toString(),
+          message: errorDisplayMessage(context, error),
           onRetry: () => ref.invalidate(supplementsNotifierProvider),
         ),
         data: (items) {
           if (items.isEmpty) {
-            return Center(child: Text(context.tr.dietSupplementsEmpty));
+            return Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    EmptyStateView(
+                      imagePath: AppAssets.emptyState,
+                      message: context.tr.dietSupplementsEmpty,
+                      subtitle: context.tr.dietSupplementsEmptySubtitle,
+                    ),
+                  ],
+                ),
+              ),
+            );
           }
 
           return ListView.separated(
@@ -150,27 +169,35 @@ class _SupplementFormSheet extends HookWidget {
     final nameController = useTextEditingController(text: supplement?.name);
     final dosageController =
         useTextEditingController(text: supplement?.dosageNote);
-    final timesController = useTextEditingController(
-      text: supplement?.times.join(', ') ?? '',
+    final times = useState<List<String>>(
+      List<String>.from(supplement?.times ?? const []),
     );
     final linkedSlot = useState<String?>(supplement?.linkedMealSlot);
     final isSaving = useState(false);
+
+    Future<void> addTime() async {
+      final picked = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+      );
+      if (picked == null) return;
+      final formatted =
+          '${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}';
+      if (!times.value.contains(formatted)) {
+        times.value = [...times.value, formatted]..sort();
+      }
+    }
 
     Future<void> submit() async {
       final name = nameController.text.trim();
       if (name.isEmpty) return;
       isSaving.value = true;
-      final times = timesController.text
-          .split(',')
-          .map((item) => item.trim())
-          .where((item) => item.isNotEmpty)
-          .toList();
       final success = await onSubmit(
         name,
         dosageController.text.trim().isEmpty
             ? null
             : dosageController.text.trim(),
-        times,
+        times.value,
         linkedSlot.value,
       );
       isSaving.value = false;
@@ -205,9 +232,30 @@ class _SupplementFormSheet extends HookWidget {
             inputFormatters: [createPersianTextFormatter()],
           ),
           Gap.v12(),
-          AppTextField(
-            controller: timesController,
-            labelText: context.tr.dietSupplementTimesLabel,
+          Text(
+            context.tr.dietSupplementTimesLabel,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: cTextSecondary,
+            ),
+          ),
+          Gap.v8(),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final time in times.value)
+                Chip(
+                  label: Text(PersianDigits.toPersian(time)),
+                  onDeleted: () => times.value = times.value
+                      .where((item) => item != time)
+                      .toList(),
+                ),
+              ActionChip(
+                avatar: const Icon(Icons.add_rounded, size: 18),
+                label: Text(context.tr.dietAddTime),
+                onPressed: addTime,
+              ),
+            ],
           ),
           Gap.v12(),
           DropdownButtonFormField<String?>(

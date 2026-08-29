@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:fitsho/shared/presentation/utils/failure_message.dart';
 import 'package:fitsho/config/router/routes.dart';
 import 'package:fitsho/core/constants/colors.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
@@ -65,13 +66,15 @@ class DashboardScreen extends HookConsumerWidget {
         child: profileAsync.when(
           loading: () => const AppLoadingIndicator(),
           error: (error, _) => ErrorRetryView(
-            message: error.toString(),
+            message: errorDisplayMessage(context, error),
             onRetry: () => ref.invalidate(dietProfileNotifierProvider),
           ),
           data: (profile) {
             if (profile == null) {
               return const DietOnboardingForm();
             }
+
+            final waterGoalLiters = (profile.weightKg * 0.033).clamp(1.5, 4.5);
 
             return RefreshIndicator(
               onRefresh: () async {
@@ -97,32 +100,43 @@ class DashboardScreen extends HookConsumerWidget {
                               color: cTextPrimary,
                             ),
                       ),
-                      if (profile.dailyCalorieTarget != null)
-                        Text(
-                          'TDEE: ${PersianDigits.toPersian(profile.dailyCalorieTarget.toString())}',
-                          style: Theme.of(context).textTheme.labelLarge
-                              ?.copyWith(
-                                color: cPrimary,
-                                fontWeight: FontWeight.bold,
-                              ),
-                        ),
+                      Row(
+                        children: [
+                          if (profile.dailyCalorieTarget != null)
+                            Text(
+                              'TDEE: ${PersianDigits.toPersian(profile.dailyCalorieTarget.toString())}',
+                              style: Theme.of(context).textTheme.labelLarge
+                                  ?.copyWith(
+                                    color: cPrimary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                            ),
+                          IconButton(
+                            onPressed: () =>
+                                context.push(AppRoutes.dietProfileEdit),
+                            tooltip: context.tr.dietProfileEditTitle,
+                            icon: const Icon(Icons.edit_outlined, size: 20),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
-                  Gap.v16(),
-                  if (planAsync.value?.shouldRegeneratePlan == true)
+                  Gap.v24(),
+                  if (planAsync.value?.shouldRegeneratePlan == true) ...[
                     RegenerationBanner(
                       onGenerate: () => _generatePlan(context, ref),
                       isLoading: isGenerating,
                     ),
-                  if (statsAsync.value != null) ...[
-                    ComplianceRing(rate: statsAsync.value!.complianceRate),
-                    Gap.v16(),
                   ],
-                  if (profile.bmi != null) ...[
-                    BmiStatusCard(bmi: profile.bmi!),
-                    Gap.v16(),
-                  ],
-                  if (planAsync.value != null) ...[
+                  Text(
+                    'پیشرفت روزانه',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: cTextPrimary,
+                    ),
+                  ),
+                  Gap.v12(),
+                  if (planAsync.value != null)
                     Builder(
                       builder: (context) {
                         final plan = planAsync.value!;
@@ -148,7 +162,51 @@ class DashboardScreen extends HookConsumerWidget {
                           consumed: consumed,
                         );
                       },
+                    )
+                  else
+                    Text(
+                      context.tr.dietNoPlanYet,
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.copyWith(color: cTextSecondary),
                     ),
+                  Gap.v24(),
+                  Text(
+                    'آمار سلامت',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: cTextPrimary,
+                    ),
+                  ),
+                  Gap.v12(),
+                  Row(
+                    children: [
+                      if (profile.bmi != null)
+                        Expanded(
+                          child: HealthStatCard(
+                            icon: Icons.monitor_weight_outlined,
+                            label: 'BMI (${bmiStatusLabel(profile.bmi!)})',
+                            value: PersianDigits.toPersian(
+                              profile.bmi!.toStringAsFixed(1),
+                            ),
+                            accentColor: bmiStatusColor(profile.bmi!),
+                          ),
+                        ),
+                      if (profile.bmi != null) Gap.h12(),
+                      Expanded(
+                        child: HealthStatCard(
+                          icon: Icons.water_drop_outlined,
+                          label: 'هدف آب روزانه',
+                          value:
+                              '${PersianDigits.toPersian(waterGoalLiters.toStringAsFixed(1))} لیتر',
+                          accentColor: cPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Gap.v24(),
+                  if (statsAsync.value != null) ...[
+                    ComplianceRing(rate: statsAsync.value!.complianceRate),
                     Gap.v16(),
                   ],
                   lastMealAsync.when(

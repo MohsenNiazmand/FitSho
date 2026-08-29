@@ -35,6 +35,7 @@ DietProfileModel _$DietProfileModelFromJson(Map<String, dynamic> json) =>
             ),
           ) ??
           const {},
+      shouldRegeneratePlan: json['shouldRegeneratePlan'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$DietProfileModelToJson(DietProfileModel instance) =>
@@ -55,6 +56,7 @@ Map<String, dynamic> _$DietProfileModelToJson(DietProfileModel instance) =>
       'bmi': instance.bmi,
       'dailyCalorieTarget': instance.dailyCalorieTarget,
       'mealSlots': instance.mealSlots,
+      'shouldRegeneratePlan': instance.shouldRegeneratePlan,
     };
 
 UpsertDietProfileRequest _$UpsertDietProfileRequestFromJson(

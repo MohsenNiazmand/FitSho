@@ -23,6 +23,7 @@ extension DietProfileModelX on DietProfileModel {
       mealSlots: mealSlots.map(
         (key, value) => MapEntry(key, value.toEntity()),
       ),
+      shouldRegeneratePlan: shouldRegeneratePlan,
     );
   }
 }

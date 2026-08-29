@@ -18,6 +18,7 @@ class DietProfile {
     this.bmi,
     this.dailyCalorieTarget,
     this.mealSlots = const {},
+    this.shouldRegeneratePlan = false,
   });
 
   final int age;
@@ -36,6 +37,7 @@ class DietProfile {
   final double? bmi;
   final int? dailyCalorieTarget;
   final Map<String, MealSlotConfig> mealSlots;
+  final bool shouldRegeneratePlan;
 }
 
 class DietOptionItem {

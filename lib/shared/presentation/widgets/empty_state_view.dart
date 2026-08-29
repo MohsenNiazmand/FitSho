@@ -4,13 +4,18 @@ import 'package:fitsho/shared/presentation/widgets/gap.dart';
 
 class EmptyStateView extends StatelessWidget {
   const EmptyStateView({
-    required this.icon,
     required this.message,
+    this.icon,
+    this.imagePath,
     this.subtitle,
     super.key,
-  });
+  }) : assert(
+         icon != null || imagePath != null,
+         'Provide either icon or imagePath',
+       );
 
-  final IconData icon;
+  final IconData? icon;
+  final String? imagePath;
   final String message;
   final String? subtitle;
 
@@ -24,7 +29,10 @@ class EmptyStateView extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AppIconBadge(icon: icon, size: 80),
+            if (imagePath != null)
+              Image.asset(imagePath!, width: 160, height: 160)
+            else
+              AppIconBadge(icon: icon!, size: 80),
             Gap.v16(),
             Text(
               message,

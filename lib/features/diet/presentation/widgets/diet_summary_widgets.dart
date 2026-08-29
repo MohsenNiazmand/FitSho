@@ -1,98 +1,80 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fitsho/config/theme/app_radius.dart';
+import 'package:fitsho/config/theme/app_shadows.dart';
 import 'package:fitsho/core/constants/colors.dart';
 import 'package:fitsho/core/utils/persian_digits.dart';
 import 'package:fitsho/shared/presentation/widgets/gap.dart';
 
-class BmiStatusCard extends StatelessWidget {
-  const BmiStatusCard({
-    required this.bmi,
+class HealthStatCard extends StatelessWidget {
+  const HealthStatCard({
+    required this.icon,
+    required this.label,
+    required this.value,
+    this.accentColor,
     super.key,
   });
 
-  final double bmi;
-
-  String get _statusLabel {
-    if (bmi < 18.5) return 'کمبود وزن';
-    if (bmi < 25) return 'وزن نرمال';
-    if (bmi < 30) return 'اضافه وزن';
-    return 'چاقی';
-  }
-
-  Color get _statusColor {
-    if (bmi < 18.5) return Colors.blue;
-    if (bmi < 25) return cSuccess;
-    if (bmi < 30) return cWarning;
-    return cError;
-  }
+  final IconData icon;
+  final String label;
+  final String value;
+  final Color? accentColor;
 
   @override
   Widget build(BuildContext context) {
+    final color = accentColor ?? cPrimary;
+    final theme = Theme.of(context);
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: cSurface,
         borderRadius: BorderRadius.circular(AppRadius.xl),
-        border: Border.all(color: cBorder.withValues(alpha: 0.8)),
+        boxShadow: AppShadows.card,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'وضعیت سلامت (BMI)',
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: cTextSecondary,
-                      fontWeight: FontWeight.w600,
-                    ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
-                  color: _statusColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  _statusLabel,
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: _statusColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-              ),
-            ],
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, size: 18, color: color),
           ),
           Gap.v12(),
-          Row(
-            children: [
-              Text(
-                PersianDigits.toPersian(bmi.toStringAsFixed(1)),
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w900,
-                      color: cTextPrimary,
-                    ),
-              ),
-              Gap.h12(),
-              Expanded(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  child: LinearProgressIndicator(
-                    value: (bmi - 15) / 25, // Assuming range 15-40
-                    backgroundColor: cBorder.withValues(alpha: 0.3),
-                    valueColor: AlwaysStoppedAnimation(_statusColor),
-                    minHeight: 8,
-                  ),
-                ),
-              ),
-            ],
+          Text(
+            value,
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w800,
+              color: cTextPrimary,
+            ),
+          ),
+          Gap.v4(),
+          Text(
+            label,
+            style: theme.textTheme.bodySmall?.copyWith(color: cTextSecondary),
           ),
         ],
       ),
     );
   }
+}
+
+String bmiStatusLabel(double bmi) {
+  if (bmi < 18.5) return 'کمبود وزن';
+  if (bmi < 25) return 'نرمال';
+  if (bmi < 30) return 'اضافه وزن';
+  return 'چاقی';
+}
+
+Color bmiStatusColor(double bmi) {
+  if (bmi < 18.5) return Colors.blue;
+  if (bmi < 25) return cSuccess;
+  if (bmi < 30) return cWarning;
+  return cError;
 }
 
 class CalorieProgressRing extends StatelessWidget {
@@ -114,9 +96,9 @@ class CalorieProgressRing extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: cPrimary.withValues(alpha: 0.05),
+        color: cSurface,
         borderRadius: BorderRadius.circular(AppRadius.xxl),
-        border: Border.all(color: cPrimary.withValues(alpha: 0.1)),
+        boxShadow: AppShadows.card,
       ),
       child: Row(
         children: [
@@ -124,14 +106,19 @@ class CalorieProgressRing extends StatelessWidget {
             alignment: Alignment.center,
             children: [
               SizedBox(
-                width: 80,
-                height: 80,
-                child: CircularProgressIndicator(
-                  value: progress,
-                  strokeWidth: 8,
-                  backgroundColor: cPrimary.withValues(alpha: 0.1),
-                  valueColor: const AlwaysStoppedAnimation(cPrimary),
-                  strokeCap: StrokeCap.round,
+                width: 92,
+                height: 92,
+                child: TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0, end: progress),
+                  duration: const Duration(milliseconds: 700),
+                  curve: Curves.easeOutCubic,
+                  builder: (context, value, _) => CircularProgressIndicator(
+                    value: value,
+                    strokeWidth: 9,
+                    backgroundColor: cPrimary.withValues(alpha: 0.1),
+                    valueColor: const AlwaysStoppedAnimation(cPrimary),
+                    strokeCap: StrokeCap.round,
+                  ),
                 ),
               ),
               Column(
@@ -200,16 +187,13 @@ class ComplianceRing extends StatelessWidget {
     final percentage = (rate * 100).toInt();
     final isHigh = rate >= 0.8;
     final mainColor = isHigh ? Colors.amber.shade700 : cWarning;
-    final bgColor = isHigh ? Colors.amber.shade50 : cSurfaceElevated;
 
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: bgColor,
+        color: cSurface,
         borderRadius: BorderRadius.circular(AppRadius.xl),
-        border: Border.all(
-          color: isHigh ? Colors.amber.shade200 : cBorder.withValues(alpha: 0.8),
-        ),
+        boxShadow: AppShadows.card,
       ),
       child: Row(
         children: [
@@ -282,9 +266,9 @@ class RegenerationBanner extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 20),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.amber.shade50,
+        color: cSurface,
         borderRadius: BorderRadius.circular(AppRadius.l),
-        border: Border.all(color: Colors.amber.shade200),
+        boxShadow: AppShadows.card,
       ),
       child: Row(
         children: [

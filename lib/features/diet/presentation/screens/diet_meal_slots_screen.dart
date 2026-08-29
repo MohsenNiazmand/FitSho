@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:fitsho/shared/presentation/utils/failure_message.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
 import 'package:fitsho/features/diet/domain/constants/diet_constants.dart';
 import 'package:fitsho/features/diet/domain/entities/diet_entities.dart';
@@ -81,7 +82,7 @@ class DietMealSlotsScreen extends HookConsumerWidget {
       body: slotsAsync.when(
         loading: () => const AppLoadingIndicator(),
         error: (error, _) => ErrorRetryView(
-          message: error.toString(),
+          message: errorDisplayMessage(context, error),
           onRetry: () => ref.invalidate(mealSlotsNotifierProvider),
         ),
         data: (_) {

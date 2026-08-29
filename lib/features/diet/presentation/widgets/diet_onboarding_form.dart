@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:fitsho/shared/presentation/utils/failure_message.dart';
+import 'package:fitsho/config/theme/app_radius.dart';
+import 'package:fitsho/core/constants/colors.dart';
+import 'package:fitsho/core/error/failures.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
 import 'package:fitsho/core/utils/persian_input.dart';
 import 'package:fitsho/features/diet/domain/entities/diet_entities.dart';
 import 'package:fitsho/features/diet/presentation/providers/diet_providers.dart';
 import 'package:fitsho/features/diet/presentation/utils/diet_labels.dart';
+import 'package:fitsho/shared/presentation/utils/toast_utils.dart';
 import 'package:fitsho/shared/presentation/widgets/app_primary_button.dart';
 import 'package:fitsho/shared/presentation/widgets/app_text_field.dart';
 import 'package:fitsho/shared/presentation/widgets/gap.dart';
+
+const _stepCount = 4;
 
 class DietOnboardingForm extends HookConsumerWidget {
   const DietOnboardingForm({super.key});
@@ -39,6 +46,8 @@ class DietOnboardingForm extends HookConsumerWidget {
     });
     final isSaving = useState(false);
     final isMounted = useIsMounted();
+    final pageController = usePageController();
+    final currentStep = useState(0);
 
     useEffect(
       () {
@@ -128,11 +137,20 @@ class DietOnboardingForm extends HookConsumerWidget {
       if (isMounted()) {
         isSaving.value = false;
 
-        if (profileResult != null && context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(profileResult.message)),
-          );
+        if (profileResult != null) {
+          if (context.mounted) {
+            showFailureToast(context, profileResult);
+          }
+          return;
         }
+      }
+
+      if (context.mounted) {
+        await _maybePromptRegenerate(context, ref);
+      }
+
+      if (context.mounted && Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
       }
     }
 
@@ -159,181 +177,412 @@ class DietOnboardingForm extends HookConsumerWidget {
       };
     }
 
+    bool canAdvanceFrom(int step) {
+      switch (step) {
+        case 0:
+          return int.tryParse(ageController.text.trim()) != null &&
+              int.tryParse(heightController.text.trim()) != null &&
+              double.tryParse(weightController.text.trim()) != null &&
+              gender.value != null;
+        case 1:
+          return goal.value != null && activityLevel.value != null;
+        default:
+          return true;
+      }
+    }
+
+    void goToStep(int step) {
+      currentStep.value = step;
+      pageController.animateToPage(
+        step,
+        duration: const Duration(milliseconds: 320),
+        curve: Curves.easeOutCubic,
+      );
+    }
+
+    void handleNext(DietProfileOptions options) {
+      if (!canAdvanceFrom(currentStep.value)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.tr.dietFormValidationError)),
+        );
+        return;
+      }
+      if (currentStep.value == _stepCount - 1) {
+        submit(options);
+        return;
+      }
+      goToStep(currentStep.value + 1);
+    }
+
     return optionsAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, _) => Center(child: Text(error.toString())),
+      error: (error, _) => Center(child: Text(errorDisplayMessage(context, error))),
       data: (options) {
-        return SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                context.tr.dietOnboardingTitle,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-              ),
-              Gap.v8(),
-              Text(
-                context.tr.dietOnboardingSubtitle,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              Gap.v24(),
-              AppTextField(
-                controller: ageController,
-                labelText: context.tr.dietAgeLabel,
-                keyboardType: TextInputType.number,
-              ),
-              Gap.v12(),
-              AppTextField(
-                controller: heightController,
-                labelText: context.tr.dietHeightLabel,
-                keyboardType: TextInputType.number,
-              ),
-              Gap.v12(),
-              AppTextField(
-                controller: weightController,
-                labelText: context.tr.dietWeightLabel,
-                keyboardType: TextInputType.number,
-              ),
-              Gap.v12(),
-              _DropdownField(
-                label: context.tr.dietGenderLabel,
-                value: gender.value,
-                items: options.genders,
-                onChanged: (value) => gender.value = value,
-              ),
-              Gap.v12(),
-              AppTextField(
-                controller: jobController,
-                labelText: context.tr.dietJobLabel,
-                inputFormatters: [createPersianTextFormatter()],
-              ),
-              Gap.v12(),
-              _DropdownField(
-                label: context.tr.dietGoalLabel,
-                value: goal.value,
-                items: options.goals,
-                onChanged: (value) => goal.value = value,
-              ),
-              Gap.v12(),
-              AppTextField(
-                controller: goalNotesController,
-                labelText: context.tr.dietGoalNotesLabel,
-                maxLines: 2,
-                inputFormatters: [createPersianTextFormatter()],
-              ),
-              Gap.v12(),
-              _DropdownField(
-                label: context.tr.dietActivityLevelLabel,
-                value: activityLevel.value,
-                items: options.activityLevels,
-                onChanged: (value) => activityLevel.value = value,
-              ),
-              Gap.v12(),
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(context.tr.dietDoesExerciseLabel),
-                value: doesExercise.value,
-                onChanged: (value) => doesExercise.value = value,
-              ),
-              if (doesExercise.value) ...[
-                Gap.v8(),
-                AppTextField(
-                  controller: exerciseTypeController,
-                  labelText: context.tr.dietExerciseTypeLabel,
-                  inputFormatters: [createPersianTextFormatter()],
-                ),
-                Gap.v12(),
-                AppTextField(
-                  controller: exerciseDaysController,
-                  labelText: context.tr.dietExerciseDaysLabel,
-                  keyboardType: TextInputType.number,
-                ),
-              ],
-              Gap.v16(),
-              Text(
-                context.tr.dietDietaryPreferencesLabel,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              Gap.v12(),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  for (final option in options.dietaryPreferences)
-                    if (option.isAvailable)
-                      FilterChip(
-                        label: Text(option.label),
-                        selected: dietaryPreferences.value.contains(option.id),
-                        onSelected: (selected) {
-                          final updated =
-                              Set<String>.from(dietaryPreferences.value);
-                          if (selected) {
-                            updated.add(option.id);
-                          } else {
-                            updated.remove(option.id);
-                          }
-                          dietaryPreferences.value = updated;
-                        },
-                      ),
+                  Text(
+                    context.tr.dietOnboardingTitle,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                  ),
+                  Gap.v8(),
+                  Text(
+                    context.tr.dietOnboardingSubtitle,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  Gap.v16(),
+                  _ProgressLine(
+                    currentStep: currentStep.value,
+                    stepCount: _stepCount,
+                  ),
                 ],
               ),
-              Gap.v12(),
-              AppTextField(
-                controller: allergiesController,
-                labelText: context.tr.dietAllergiesLabel,
-                maxLines: 2,
-                inputFormatters: [createPersianTextFormatter()],
-              ),
-              Gap.v24(),
-              Text(
-                'وعده‌های روزانه',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-              Gap.v12(),
-              ...mealSlots.value.entries.map((entry) {
-                final slotKey = entry.key;
-                final config = entry.value;
-                final icon = switch (slotKey) {
-                  'breakfast' => Icons.coffee_rounded,
-                  'lunch' => Icons.wb_sunny_rounded,
-                  'dinner' => Icons.nightlight_round,
-                  'morning_snack' => Icons.apple_rounded,
-                  'afternoon_snack' => Icons.cookie_rounded,
-                  _ => Icons.restaurant_rounded,
-                };
-
-                return _MealSlotInput(
-                  title: dietMealSlotLabel(context, slotKey),
-                  icon: icon,
-                  config: config,
-                  onToggle: (enabled) {
-                    mealSlots.value = {
-                      ...mealSlots.value,
-                      slotKey: MealSlotConfig(
-                        enabled: enabled,
-                        time: config.time,
-                        notificationsEnabled: config.notificationsEnabled,
+            ),
+            Expanded(
+              child: PageView(
+                controller: pageController,
+                physics: const NeverScrollableScrollPhysics(),
+                onPageChanged: (index) => currentStep.value = index,
+                children: [
+                  _StepScaffold(
+                    children: [
+                      AppTextField(
+                        controller: ageController,
+                        labelText: context.tr.dietAgeLabel,
+                        keyboardType: TextInputType.number,
                       ),
-                    };
-                  },
-                  onPickTime: () => pickTime(slotKey),
-                );
-              }),
-              Gap.v24(),
-              AppPrimaryButton(
-                label: context.tr.dietSaveProfile,
-                isLoading: isSaving.value,
-                onPressed: isSaving.value ? null : () => submit(options),
+                      Gap.v12(),
+                      AppTextField(
+                        controller: heightController,
+                        labelText: context.tr.dietHeightLabel,
+                        keyboardType: TextInputType.number,
+                      ),
+                      Gap.v12(),
+                      AppTextField(
+                        controller: weightController,
+                        labelText: context.tr.dietWeightLabel,
+                        keyboardType: TextInputType.number,
+                      ),
+                      Gap.v12(),
+                      _DropdownField(
+                        label: context.tr.dietGenderLabel,
+                        value: gender.value,
+                        items: options.genders,
+                        onChanged: (value) => gender.value = value,
+                      ),
+                    ],
+                  ),
+                  _StepScaffold(
+                    children: [
+                      AppTextField(
+                        controller: jobController,
+                        labelText: context.tr.dietJobLabel,
+                        inputFormatters: [createPersianTextFormatter()],
+                      ),
+                      Gap.v12(),
+                      _DropdownField(
+                        label: context.tr.dietGoalLabel,
+                        value: goal.value,
+                        items: options.goals,
+                        onChanged: (value) => goal.value = value,
+                      ),
+                      Gap.v12(),
+                      AppTextField(
+                        controller: goalNotesController,
+                        labelText: context.tr.dietGoalNotesLabel,
+                        maxLines: 2,
+                        inputFormatters: [createPersianTextFormatter()],
+                      ),
+                      Gap.v12(),
+                      _DropdownField(
+                        label: context.tr.dietActivityLevelLabel,
+                        value: activityLevel.value,
+                        items: options.activityLevels,
+                        onChanged: (value) => activityLevel.value = value,
+                      ),
+                    ],
+                  ),
+                  _StepScaffold(
+                    children: [
+                      SwitchListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(context.tr.dietDoesExerciseLabel),
+                        value: doesExercise.value,
+                        onChanged: (value) => doesExercise.value = value,
+                      ),
+                      if (doesExercise.value) ...[
+                        Gap.v8(),
+                        AppTextField(
+                          controller: exerciseTypeController,
+                          labelText: context.tr.dietExerciseTypeLabel,
+                          inputFormatters: [createPersianTextFormatter()],
+                        ),
+                        Gap.v12(),
+                        AppTextField(
+                          controller: exerciseDaysController,
+                          labelText: context.tr.dietExerciseDaysLabel,
+                          keyboardType: TextInputType.number,
+                        ),
+                      ],
+                      Gap.v16(),
+                      Text(
+                        context.tr.dietDietaryPreferencesLabel,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      Gap.v12(),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          for (final option in options.dietaryPreferences)
+                            if (option.isAvailable)
+                              FilterChip(
+                                label: Text(option.label),
+                                selected: dietaryPreferences.value
+                                    .contains(option.id),
+                                onSelected: (selected) {
+                                  final updated = Set<String>.from(
+                                    dietaryPreferences.value,
+                                  );
+                                  if (selected) {
+                                    updated.add(option.id);
+                                  } else {
+                                    updated.remove(option.id);
+                                  }
+                                  dietaryPreferences.value = updated;
+                                },
+                              ),
+                        ],
+                      ),
+                      Gap.v12(),
+                      AppTextField(
+                        controller: allergiesController,
+                        labelText: context.tr.dietAllergiesLabel,
+                        maxLines: 2,
+                        inputFormatters: [createPersianTextFormatter()],
+                      ),
+                    ],
+                  ),
+                  _StepScaffold(
+                    children: [
+                      Text(
+                        'وعده‌های روزانه',
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      Gap.v12(),
+                      ...mealSlots.value.entries.map((entry) {
+                        final slotKey = entry.key;
+                        final config = entry.value;
+                        final icon = switch (slotKey) {
+                          'breakfast' => Icons.coffee_rounded,
+                          'lunch' => Icons.wb_sunny_rounded,
+                          'dinner' => Icons.nightlight_round,
+                          'morning_snack' => Icons.apple_rounded,
+                          'afternoon_snack' => Icons.cookie_rounded,
+                          _ => Icons.restaurant_rounded,
+                        };
+
+                        return _MealSlotInput(
+                          title: dietMealSlotLabel(context, slotKey),
+                          icon: icon,
+                          config: config,
+                          onToggle: (enabled) {
+                            mealSlots.value = {
+                              ...mealSlots.value,
+                              slotKey: MealSlotConfig(
+                                enabled: enabled,
+                                time: config.time,
+                                notificationsEnabled:
+                                    config.notificationsEnabled,
+                              ),
+                            };
+                          },
+                          onPickTime: () => pickTime(slotKey),
+                        );
+                      }),
+                    ],
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  AppPrimaryButton(
+                    label: currentStep.value == _stepCount - 1
+                        ? context.tr.dietSaveProfile
+                        : context.tr.next,
+                    isLoading: isSaving.value,
+                    // RTL layout: forward points left.
+                    icon: currentStep.value == _stepCount - 1
+                        ? null
+                        : Icons.arrow_back_rounded,
+                    onPressed: isSaving.value
+                        ? null
+                        : () => handleNext(options),
+                  ),
+                  if (currentStep.value > 0) ...[
+                    Gap.v8(),
+                    OutlinedButton.icon(
+                      onPressed: isSaving.value
+                          ? null
+                          : () => goToStep(currentStep.value - 1),
+                      // RTL layout: back points right.
+                      icon: const Icon(Icons.arrow_forward_rounded),
+                      label: Text(context.tr.back),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
         );
       },
+    );
+  }
+}
+
+Future<void> _maybePromptRegenerate(BuildContext context, WidgetRef ref) async {
+  final profile = ref.read(dietProfileNotifierProvider).valueOrNull;
+  if (profile == null || !profile.shouldRegeneratePlan) return;
+
+  final confirmed = await showModalBottomSheet<bool>(
+    context: context,
+    isScrollControlled: true,
+    builder: (sheetContext) => const _RegeneratePlanSheet(),
+  );
+
+  if (confirmed != true || !context.mounted) return;
+  await _generatePlanAfterProfileSave(context, ref);
+}
+
+Future<void> _generatePlanAfterProfileSave(
+  BuildContext context,
+  WidgetRef ref,
+) async {
+  final failure = await ref.read(dietPlanNotifierProvider.notifier).generate();
+  if (!context.mounted) return;
+
+  if (failure != null) {
+    if (failure is AiProviderFailure) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(context.tr.aiProviderFailure),
+          action: SnackBarAction(
+            label: context.tr.retry,
+            onPressed: () => _generatePlanAfterProfileSave(context, ref),
+          ),
+        ),
+      );
+    } else {
+      showFailureToast(context, failure);
+    }
+    return;
+  }
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text(context.tr.dietPlanRegenerated)),
+  );
+}
+
+class _RegeneratePlanSheet extends StatelessWidget {
+  const _RegeneratePlanSheet();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            context.tr.dietRegeneratePromptTitle,
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+          ),
+          Gap.v8(),
+          Text(
+            context.tr.dietRegeneratePromptBody,
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: cTextSecondary),
+          ),
+          Gap.v24(),
+          AppPrimaryButton(
+            label: context.tr.dietRegenerateConfirm,
+            onPressed: () => Navigator.of(context).pop(true),
+          ),
+          Gap.v8(),
+          OutlinedButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(context.tr.dietRegenerateDismiss),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProgressLine extends StatelessWidget {
+  const _ProgressLine({
+    required this.currentStep,
+    required this.stepCount,
+  });
+
+  final int currentStep;
+  final int stepCount;
+
+  @override
+  Widget build(BuildContext context) {
+    final fraction = (currentStep + 1) / stepCount;
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(AppRadius.pill),
+      child: Container(
+        height: 6,
+        color: cBorder.withValues(alpha: 0.4),
+        child: TweenAnimationBuilder<double>(
+          tween: Tween(begin: 0, end: fraction),
+          duration: const Duration(milliseconds: 320),
+          curve: Curves.easeOutCubic,
+          builder: (context, value, child) => FractionallySizedBox(
+            alignment: AlignmentDirectional.centerStart,
+            widthFactor: value,
+            child: child,
+          ),
+          child: const DecoratedBox(
+            decoration: BoxDecoration(color: cPrimary),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _StepScaffold extends StatelessWidget {
+  const _StepScaffold({required this.children});
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: children,
+      ),
     );
   }
 }

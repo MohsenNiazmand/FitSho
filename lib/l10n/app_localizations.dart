@@ -554,6 +554,18 @@ abstract class AppLocalizations {
   /// **'Save'**
   String get save;
 
+  /// No description provided for @next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
+
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
   /// No description provided for @edit.
   ///
   /// In en, this message translates to:
@@ -674,6 +686,42 @@ abstract class AppLocalizations {
   /// **'Save profile'**
   String get dietSaveProfile;
 
+  /// No description provided for @dietProfileEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit diet profile'**
+  String get dietProfileEditTitle;
+
+  /// No description provided for @dietRegeneratePromptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update your weekly plan?'**
+  String get dietRegeneratePromptTitle;
+
+  /// No description provided for @dietRegeneratePromptBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your details have changed. Would you like to regenerate your weekly plan based on the new information?'**
+  String get dietRegeneratePromptBody;
+
+  /// No description provided for @dietRegenerateConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, regenerate'**
+  String get dietRegenerateConfirm;
+
+  /// No description provided for @dietRegenerateDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get dietRegenerateDismiss;
+
+  /// No description provided for @dietPlanRegenerated.
+  ///
+  /// In en, this message translates to:
+  /// **'A new weekly plan was generated successfully'**
+  String get dietPlanRegenerated;
+
   /// No description provided for @dietFormValidationError.
   ///
   /// In en, this message translates to:
@@ -788,11 +836,23 @@ abstract class AppLocalizations {
   /// **'No supplements yet'**
   String get dietSupplementsEmpty;
 
+  /// No description provided for @dietSupplementsEmptySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add supplements or medications to get reminded at the right time.'**
+  String get dietSupplementsEmptySubtitle;
+
   /// No description provided for @dietNoPlanYet.
   ///
   /// In en, this message translates to:
   /// **'No plan yet. Tap generate to create one.'**
   String get dietNoPlanYet;
+
+  /// No description provided for @dietNoPlanYetSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate an AI-powered weekly plan based on your profile.'**
+  String get dietNoPlanYetSubtitle;
 
   /// No description provided for @dietWeeklyPlanTitle.
   ///
@@ -917,8 +977,14 @@ abstract class AppLocalizations {
   /// No description provided for @dietSupplementTimesLabel.
   ///
   /// In en, this message translates to:
-  /// **'Times (comma-separated, e.g. 08:00, 20:00)'**
+  /// **'Reminder times'**
   String get dietSupplementTimesLabel;
+
+  /// No description provided for @dietAddTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Add time'**
+  String get dietAddTime;
 
   /// No description provided for @dietSupplementLinkedMealLabel.
   ///

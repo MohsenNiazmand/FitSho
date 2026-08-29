@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:fitsho/shared/presentation/utils/failure_message.dart';
 import 'package:fitsho/config/theme/app_radius.dart';
 import 'package:fitsho/core/constants/colors.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
@@ -22,7 +23,7 @@ class DietHistoryScreen extends ConsumerWidget {
       appBar: AppBar(title: Text(context.tr.dietHistoryTitle)),
       body: historyAsync.when(
         loading: () => const AppLoadingIndicator(),
-        error: (error, _) => Center(child: Text(error.toString())),
+        error: (error, _) => Center(child: Text(errorDisplayMessage(context, error))),
         data: (plans) {
           if (plans.isEmpty) {
             return Center(

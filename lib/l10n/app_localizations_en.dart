@@ -250,6 +250,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get save => 'Save';
 
   @override
+  String get next => 'Next';
+
+  @override
+  String get back => 'Back';
+
+  @override
   String get edit => 'Edit';
 
   @override
@@ -311,6 +317,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dietSaveProfile => 'Save profile';
 
   @override
+  String get dietProfileEditTitle => 'Edit diet profile';
+
+  @override
+  String get dietRegeneratePromptTitle => 'Update your weekly plan?';
+
+  @override
+  String get dietRegeneratePromptBody =>
+      'Your details have changed. Would you like to regenerate your weekly plan based on the new information?';
+
+  @override
+  String get dietRegenerateConfirm => 'Yes, regenerate';
+
+  @override
+  String get dietRegenerateDismiss => 'Not now';
+
+  @override
+  String get dietPlanRegenerated =>
+      'A new weekly plan was generated successfully';
+
+  @override
   String get dietFormValidationError => 'Please complete all required fields';
 
   @override
@@ -368,7 +394,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dietSupplementsEmpty => 'No supplements yet';
 
   @override
+  String get dietSupplementsEmptySubtitle =>
+      'Add supplements or medications to get reminded at the right time.';
+
+  @override
   String get dietNoPlanYet => 'No plan yet. Tap generate to create one.';
+
+  @override
+  String get dietNoPlanYetSubtitle =>
+      'Generate an AI-powered weekly plan based on your profile.';
 
   @override
   String get dietWeeklyPlanTitle => 'Weekly plan';
@@ -441,8 +475,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dietSupplementDosageLabel => 'Dosage / instructions';
 
   @override
-  String get dietSupplementTimesLabel =>
-      'Times (comma-separated, e.g. 08:00, 20:00)';
+  String get dietSupplementTimesLabel => 'Reminder times';
+
+  @override
+  String get dietAddTime => 'Add time';
 
   @override
   String get dietSupplementLinkedMealLabel => 'Linked meal (optional)';

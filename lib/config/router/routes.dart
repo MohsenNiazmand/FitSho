@@ -11,4 +11,5 @@ class AppRoutes {
   static const String preferences = '/preferences';
   static const String dietMealSlots = '/diet/meal-slots';
   static const String dietSupplements = '/diet/supplements';
+  static const String dietProfileEdit = '/diet/profile-edit';
 }

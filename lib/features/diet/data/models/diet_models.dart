@@ -22,6 +22,7 @@ class DietProfileModel {
     this.bmi,
     this.dailyCalorieTarget,
     this.mealSlots = const {},
+    @JsonKey(defaultValue: false) this.shouldRegeneratePlan = false,
   });
 
   factory DietProfileModel.fromJson(Map<String, dynamic> json) =>
@@ -43,6 +44,7 @@ class DietProfileModel {
   final num? bmi;
   final int? dailyCalorieTarget;
   final Map<String, MealSlotConfigModel> mealSlots;
+  final bool shouldRegeneratePlan;
 
   Map<String, dynamic> toJson() => _$DietProfileModelToJson(this);
 }
