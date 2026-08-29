@@ -50,19 +50,18 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDP4ixrflt2MdsKI1xFoynVlYb1dsve88Q',
-    appId: '1:193201879962:android:62067a963a2d49548e9823',
-    messagingSenderId: '193201879962',
-    projectId: 'fitsho-6a30d',
-    storageBucket: 'fitsho-6a30d.firebasestorage.app',
+    apiKey: 'AIzaSyDt8fRjw6kJs1FNlTLQswb4Y0nDU0xM_J8',
+    appId: '1:734305501797:android:0e7ac9883331649e3fbc8c',
+    messagingSenderId: '734305501797',
+    projectId: 'fitsho-94df7',
+    storageBucket: 'fitsho-94df7.firebasestorage.app',
   );
-
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCDi2bD7EC4XNXrjlfLQkKTnWvuQWVcTfU',
-    appId: '1:193201879962:ios:7d67c95084d7fc978e9823',
-    messagingSenderId: '193201879962',
-    projectId: 'fitsho-6a30d',
-    storageBucket: 'fitsho-6a30d.firebasestorage.app',
+    apiKey: 'AIzaSyAUiUXT9bhpLVH0vgiIMj0mDe7F4RZ5USc',
+    appId: '1:734305501797:ios:c98d8d9596181de33fbc8c',
+    messagingSenderId: '734305501797',
+    projectId: 'fitsho-94df7',
+    storageBucket: 'fitsho-94df7.firebasestorage.app',
     iosBundleId: 'com.mnz.fitsho',
   );
 }

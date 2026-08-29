@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "193201879962",
-    "project_id": "fitsho-6a30d",
-    "storage_bucket": "fitsho-6a30d.firebasestorage.app"
+    "project_number": "734305501797",
+    "project_id": "fitsho-94df7",
+    "storage_bucket": "fitsho-94df7.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:193201879962:android:62067a963a2d49548e9823",
+        "mobilesdk_app_id": "1:734305501797:android:0e7ac9883331649e3fbc8c",
         "android_client_info": {
           "package_name": "com.mnz.fitsho"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDP4ixrflt2MdsKI1xFoynVlYb1dsve88Q"
+          "current_key": "AIzaSyDt8fRjw6kJs1FNlTLQswb4Y0nDU0xM_J8"
         }
       ],
       "services": {

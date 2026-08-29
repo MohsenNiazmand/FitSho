@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:fitsho/core/injection_container.dart';
 import 'package:fitsho/core/storage/device_id_service.dart';
 import 'package:fitsho/features/diet/domain/entities/diet_entities.dart';
@@ -65,6 +66,8 @@ class PushNotificationService {
     if (token == null || token.isEmpty) {
       return;
     }
+
+    getIt<Logger>().i('FCM token: $token');
 
     final deviceId = await getIt<DeviceIdService>().getDeviceId();
     final platform = Platform.isIOS ? 'ios' : 'android';
