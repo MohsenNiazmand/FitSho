@@ -126,9 +126,6 @@ class AppLocalizationsFa extends AppLocalizations {
   String get contactUsSubtitle => 'سوال یا پیشنهادی داری؟ برامون ایمیل بزن.';
 
   @override
-  String get contactUsEmailCopied => 'ایمیل کپی شد';
-
-  @override
   String get contactUsNoMailApp => 'اپلیکیشن ایمیل پیدا نشد. آدرس کپی شد.';
 
   @override

@@ -320,12 +320,6 @@ abstract class AppLocalizations {
   /// **'Questions or feedback? Send us an email.'**
   String get contactUsSubtitle;
 
-  /// No description provided for @contactUsEmailCopied.
-  ///
-  /// In en, this message translates to:
-  /// **'Email address copied'**
-  String get contactUsEmailCopied;
-
   /// No description provided for @contactUsNoMailApp.
   ///
   /// In en, this message translates to:

@@ -125,9 +125,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get contactUsSubtitle => 'Questions or feedback? Send us an email.';
 
   @override
-  String get contactUsEmailCopied => 'Email address copied';
-
-  @override
   String get contactUsNoMailApp =>
       'No email app found. The address was copied instead.';
 

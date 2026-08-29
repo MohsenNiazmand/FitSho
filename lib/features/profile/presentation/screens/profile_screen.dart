@@ -158,13 +158,15 @@ class ProfileScreen extends HookConsumerWidget {
     }
 
     Future<void> contactSupport() async {
-      final mailUri = Uri(
-        scheme: 'mailto',
-        path: Constants.supportEmail,
-        query: 'subject=${Uri.encodeComponent('FitSho Support')}',
-      );
+      final mailUri = Uri(scheme: 'mailto', path: Constants.supportEmail);
 
-      final launched = await launchUrl(mailUri);
+      var launched = false;
+      try {
+        launched = await launchUrl(mailUri);
+      } on Object {
+        launched = false;
+      }
+
       if (launched || !context.mounted) return;
 
       await Clipboard.setData(
@@ -299,12 +301,12 @@ class ProfileScreen extends HookConsumerWidget {
                           ),
                           title: Text(context.tr.contactUsTitle),
                           subtitle: Text(context.tr.contactUsSubtitle),
-                          trailing: const Icon(Icons.chevron_left_rounded),
+                          trailing: const Icon(Icons.chevron_right_rounded),
                         ),
                       ),
                     ),
                     Gap.v32(),
-                    Divider(
+                    const Divider(
                       height: 1,
                       thickness: 1,
                       color: cDivider,
