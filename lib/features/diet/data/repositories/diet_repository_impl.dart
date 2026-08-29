@@ -218,4 +218,11 @@ class DietRepositoryImpl implements DietRepository {
       await _dietApi.registerFcmToken(body.toRequest());
     });
   }
+
+  @override
+  Future<Either<Failure, void>> unregisterFcmToken(String token) {
+    return guard(() async {
+      await _dietApi.unregisterFcmToken(token);
+    });
+  }
 }

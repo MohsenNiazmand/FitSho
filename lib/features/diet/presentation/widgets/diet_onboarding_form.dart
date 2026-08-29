@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
+import 'package:fitsho/core/utils/persian_input.dart';
 import 'package:fitsho/features/diet/domain/entities/diet_entities.dart';
 import 'package:fitsho/features/diet/presentation/providers/diet_providers.dart';
 import 'package:fitsho/features/diet/presentation/utils/diet_labels.dart';
@@ -207,6 +208,7 @@ class DietOnboardingForm extends HookConsumerWidget {
               AppTextField(
                 controller: jobController,
                 labelText: context.tr.dietJobLabel,
+                inputFormatters: [createPersianTextFormatter()],
               ),
               Gap.v12(),
               _DropdownField(
@@ -220,6 +222,7 @@ class DietOnboardingForm extends HookConsumerWidget {
                 controller: goalNotesController,
                 labelText: context.tr.dietGoalNotesLabel,
                 maxLines: 2,
+                inputFormatters: [createPersianTextFormatter()],
               ),
               Gap.v12(),
               _DropdownField(
@@ -240,6 +243,7 @@ class DietOnboardingForm extends HookConsumerWidget {
                 AppTextField(
                   controller: exerciseTypeController,
                   labelText: context.tr.dietExerciseTypeLabel,
+                  inputFormatters: [createPersianTextFormatter()],
                 ),
                 Gap.v12(),
                 AppTextField(
@@ -281,6 +285,7 @@ class DietOnboardingForm extends HookConsumerWidget {
                 controller: allergiesController,
                 labelText: context.tr.dietAllergiesLabel,
                 maxLines: 2,
+                inputFormatters: [createPersianTextFormatter()],
               ),
               Gap.v24(),
               Text(

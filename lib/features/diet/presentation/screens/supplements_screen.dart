@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
+import 'package:fitsho/core/utils/persian_input.dart';
 import 'package:fitsho/features/diet/domain/entities/diet_entities.dart';
 import 'package:fitsho/features/diet/presentation/providers/diet_providers.dart';
 import 'package:fitsho/features/diet/presentation/utils/diet_labels.dart';
@@ -194,12 +195,14 @@ class _SupplementFormSheet extends HookWidget {
           AppTextField(
             controller: nameController,
             labelText: context.tr.dietSupplementNameLabel,
+            inputFormatters: [createPersianTextFormatter()],
           ),
           Gap.v12(),
           AppTextField(
             controller: dosageController,
             labelText: context.tr.dietSupplementDosageLabel,
             maxLines: 2,
+            inputFormatters: [createPersianTextFormatter()],
           ),
           Gap.v12(),
           AppTextField(

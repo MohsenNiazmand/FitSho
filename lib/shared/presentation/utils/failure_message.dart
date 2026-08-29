@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:fitsho/core/error/failures.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
+import 'package:flutter/material.dart';
 
 String failureMessage(BuildContext context, Failure failure) {
   return switch (failure) {

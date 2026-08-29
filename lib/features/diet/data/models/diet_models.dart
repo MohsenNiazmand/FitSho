@@ -363,16 +363,16 @@ class FcmTokenRegistrationRequest {
 class ComplianceStatsModel {
   const ComplianceStatsModel({
     required this.complianceRate,
-    required this.totalPossibleMeals,
-    required this.totalLoggedMeals,
+    required this.totalPlanned,
+    required this.totalConsumed,
   });
 
   factory ComplianceStatsModel.fromJson(Map<String, dynamic> json) =>
       _$ComplianceStatsModelFromJson(json);
 
   final num complianceRate;
-  final int totalPossibleMeals;
-  final int totalLoggedMeals;
+  final int totalPlanned;
+  final int totalConsumed;
 
   Map<String, dynamic> toJson() => _$ComplianceStatsModelToJson(this);
 }

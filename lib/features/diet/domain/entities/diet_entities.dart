@@ -171,11 +171,11 @@ class FcmTokenRegistration {
 class ComplianceStats {
   const ComplianceStats({
     required this.complianceRate,
-    required this.totalPossibleMeals,
-    required this.totalLoggedMeals,
+    required this.totalPlanned,
+    required this.totalConsumed,
   });
 
   final double complianceRate;
-  final int totalPossibleMeals;
-  final int totalLoggedMeals;
+  final int totalPlanned;
+  final int totalConsumed;
 }

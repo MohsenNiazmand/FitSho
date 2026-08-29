@@ -331,16 +331,16 @@ ComplianceStatsModel _$ComplianceStatsModelFromJson(
   Map<String, dynamic> json,
 ) => ComplianceStatsModel(
   complianceRate: json['complianceRate'] as num,
-  totalPossibleMeals: (json['totalPossibleMeals'] as num).toInt(),
-  totalLoggedMeals: (json['totalLoggedMeals'] as num).toInt(),
+  totalPlanned: (json['totalPlanned'] as num).toInt(),
+  totalConsumed: (json['totalConsumed'] as num).toInt(),
 );
 
 Map<String, dynamic> _$ComplianceStatsModelToJson(
   ComplianceStatsModel instance,
 ) => <String, dynamic>{
   'complianceRate': instance.complianceRate,
-  'totalPossibleMeals': instance.totalPossibleMeals,
-  'totalLoggedMeals': instance.totalLoggedMeals,
+  'totalPlanned': instance.totalPlanned,
+  'totalConsumed': instance.totalConsumed,
 };
 
 DietProfileEnvelope _$DietProfileEnvelopeFromJson(Map<String, dynamic> json) =>

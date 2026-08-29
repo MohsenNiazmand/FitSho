@@ -73,4 +73,7 @@ abstract class DietApi {
   Future<MessageResponse> registerFcmToken(
     @Body() FcmTokenRegistrationRequest body,
   );
+
+  @DELETE('/api/notifications/tokens/{token}')
+  Future<MessageResponse> unregisterFcmToken(@Path('token') String token);
 }

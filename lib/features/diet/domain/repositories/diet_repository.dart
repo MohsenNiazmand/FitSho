@@ -54,4 +54,6 @@ abstract class DietRepository {
   Future<Either<Failure, void>> deleteSupplement(String id);
 
   Future<Either<Failure, void>> registerFcmToken(FcmTokenRegistration body);
+
+  Future<Either<Failure, void>> unregisterFcmToken(String token);
 }

@@ -125,8 +125,8 @@ extension ComplianceStatsModelX on ComplianceStatsModel {
   ComplianceStats toEntity() {
     return ComplianceStats(
       complianceRate: complianceRate.toDouble(),
-      totalPossibleMeals: totalPossibleMeals,
-      totalLoggedMeals: totalLoggedMeals,
+      totalPlanned: totalPlanned,
+      totalConsumed: totalConsumed,
     );
   }
 }

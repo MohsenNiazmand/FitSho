@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:fitsho/core/error/failures.dart';
 import 'package:fitsho/core/injection_container.dart';
+import 'package:fitsho/core/notifications/push_notification_service.dart';
 import 'package:fitsho/core/usecase/usecase.dart';
 import 'package:fitsho/features/auth/domain/usecases/delete_account_usecase.dart';
 import 'package:fitsho/features/auth/presentation/providers/auth_state_provider.dart';
@@ -18,6 +19,7 @@ class DeleteAccountNotifier extends _$DeleteAccountNotifier {
     state = const AsyncValue.loading();
 
     try {
+      await ref.read(pushNotificationServiceProvider).unregisterToken();
       final result = await getIt<DeleteAccountUseCase>()(const NoParams());
 
       return await result.fold(

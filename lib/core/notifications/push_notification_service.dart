@@ -78,6 +78,20 @@ class PushNotificationService {
     );
   }
 
+  Future<void> unregisterToken() async {
+    if (kIsWeb) {
+      return;
+    }
+
+    final token = await FirebaseMessaging.instance.getToken();
+    if (token == null || token.isEmpty) {
+      return;
+    }
+
+    await getIt<DietRepository>().unregisterFcmToken(token);
+    _tokenRegisteredThisSession = false;
+  }
+
   void _handleMessage(RemoteMessage message) {
     final type = message.data['type'];
     if (type == 'meal_reminder') {
