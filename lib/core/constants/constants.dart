@@ -12,4 +12,6 @@ class Constants {
 
   /// Cooldown before the user can request another OTP (seconds).
   static const int otpResendCooldownSeconds = 120;
+
+  static const String supportEmail = 'fitsho.support@gmail.com';
 }

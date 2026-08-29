@@ -308,6 +308,30 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to log out?'**
   String get logoutConfirmation;
 
+  /// No description provided for @contactUsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact us'**
+  String get contactUsTitle;
+
+  /// No description provided for @contactUsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Questions or feedback? Send us an email.'**
+  String get contactUsSubtitle;
+
+  /// No description provided for @contactUsEmailCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Email address copied'**
+  String get contactUsEmailCopied;
+
+  /// No description provided for @contactUsNoMailApp.
+  ///
+  /// In en, this message translates to:
+  /// **'No email app found. The address was copied instead.'**
+  String get contactUsNoMailApp;
+
   /// No description provided for @deleteAccount.
   ///
   /// In en, this message translates to:

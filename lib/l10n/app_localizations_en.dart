@@ -119,6 +119,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logoutConfirmation => 'Are you sure you want to log out?';
 
   @override
+  String get contactUsTitle => 'Contact us';
+
+  @override
+  String get contactUsSubtitle => 'Questions or feedback? Send us an email.';
+
+  @override
+  String get contactUsEmailCopied => 'Email address copied';
+
+  @override
+  String get contactUsNoMailApp =>
+      'No email app found. The address was copied instead.';
+
+  @override
   String get deleteAccount => 'Delete account';
 
   @override

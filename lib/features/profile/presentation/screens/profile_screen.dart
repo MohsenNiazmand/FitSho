@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:fitsho/config/router/routes.dart';
 import 'package:fitsho/config/theme/app_radius.dart';
 import 'package:fitsho/core/constants/app_assets.dart';
 import 'package:fitsho/core/constants/colors.dart';
+import 'package:fitsho/core/constants/constants.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
 import 'package:fitsho/core/utils/persian_digits.dart';
 import 'package:fitsho/features/auth/presentation/providers/current_user_provider.dart';
@@ -154,6 +157,24 @@ class ProfileScreen extends HookConsumerWidget {
       context.go(AppRoutes.login);
     }
 
+    Future<void> contactSupport() async {
+      final mailUri = Uri(
+        scheme: 'mailto',
+        path: Constants.supportEmail,
+        query: 'subject=${Uri.encodeComponent('FitSho Support')}',
+      );
+
+      final launched = await launchUrl(mailUri);
+      if (launched || !context.mounted) return;
+
+      await Clipboard.setData(
+        const ClipboardData(text: Constants.supportEmail),
+      );
+      if (context.mounted) {
+        showMessageToast(context.tr.contactUsNoMailApp);
+      }
+    }
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SafeArea(
@@ -255,6 +276,30 @@ class ProfileScreen extends HookConsumerWidget {
                           label: context.tr.saveProfile,
                           isLoading: updateState.isLoading,
                           onPressed: isBusy ? null : saveProfile,
+                        ),
+                      ),
+                    ),
+                    Gap.v32(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: cSurfaceElevated,
+                          borderRadius: AppRadius.card,
+                          border: Border.all(color: cBorder),
+                        ),
+                        child: ListTile(
+                          onTap: contactSupport,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: AppRadius.card,
+                          ),
+                          leading: Icon(
+                            Icons.mail_outline_rounded,
+                            color: colorScheme.primary,
+                          ),
+                          title: Text(context.tr.contactUsTitle),
+                          subtitle: Text(context.tr.contactUsSubtitle),
+                          trailing: const Icon(Icons.chevron_left_rounded),
                         ),
                       ),
                     ),

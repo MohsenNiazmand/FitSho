@@ -120,6 +120,18 @@ class AppLocalizationsFa extends AppLocalizations {
   String get logoutConfirmation => 'آیا مطمئن هستید که می‌خواهید خارج شوید؟';
 
   @override
+  String get contactUsTitle => 'تماس با ما';
+
+  @override
+  String get contactUsSubtitle => 'سوال یا پیشنهادی داری؟ برامون ایمیل بزن.';
+
+  @override
+  String get contactUsEmailCopied => 'ایمیل کپی شد';
+
+  @override
+  String get contactUsNoMailApp => 'اپلیکیشن ایمیل پیدا نشد. آدرس کپی شد.';
+
+  @override
   String get deleteAccount => 'حذف حساب کاربری';
 
   @override
