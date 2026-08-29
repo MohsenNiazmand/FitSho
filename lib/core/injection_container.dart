@@ -2,8 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fitsho/core/network/dio_client.dart';
 import 'package:fitsho/core/storage/device_id_service.dart';
+import 'package:fitsho/core/storage/hive_initializer.dart';
 import 'package:fitsho/core/storage/secure_token_storage.dart';
 import 'package:fitsho/core/storage/token_storage.dart';
 import 'package:fitsho/features/auth/data/repositories/auth_repository_impl.dart';
@@ -17,6 +19,7 @@ import 'package:fitsho/features/auth/domain/usecases/refresh_token_usecase.dart'
 import 'package:fitsho/features/auth/domain/usecases/request_otp_usecase.dart';
 import 'package:fitsho/features/auth/domain/usecases/update_profile_usecase.dart';
 import 'package:fitsho/features/auth/domain/usecases/verify_otp_usecase.dart';
+import 'package:fitsho/features/diet/data/datasources/diet_local_data_source.dart';
 import 'package:fitsho/features/diet/data/repositories/diet_repository_impl.dart';
 import 'package:fitsho/features/diet/data/services/diet_api.dart';
 import 'package:fitsho/features/diet/domain/repositories/diet_repository.dart';
@@ -30,7 +33,26 @@ import 'package:fitsho/features/preferences/domain/usecases/save_preferences_use
 final GetIt getIt = GetIt.instance;
 
 Future<void> initializeDependencies() async {
+  await HiveInitializer.init();
+  final dietProfileBox = await HiveInitializer.openDietProfileBox();
+  final dietPlanBox = await HiveInitializer.openDietPlanBox();
+  final supplementsBox = await HiveInitializer.openSupplementsBox();
+  final todayMealLogsBox = await HiveInitializer.openTodayMealLogsBox();
+  final lastMealLogBox = await HiveInitializer.openLastMealLogBox();
+  final sharedPreferences = await SharedPreferences.getInstance();
+
   getIt
+    ..registerLazySingleton<SharedPreferences>(() => sharedPreferences)
+    ..registerLazySingleton<DietLocalDataSource>(
+      () => DietLocalDataSourceImpl(
+        profileBox: dietProfileBox,
+        planBox: dietPlanBox,
+        supplementsBox: supplementsBox,
+        todayMealLogsBox: todayMealLogsBox,
+        lastMealLogBox: lastMealLogBox,
+        prefs: sharedPreferences,
+      ),
+    )
     ..registerLazySingleton<Logger>(
       () => Logger(
         printer: PrettyPrinter(methodCount: 0, errorMethodCount: 5),
@@ -56,7 +78,7 @@ Future<void> initializeDependencies() async {
     ..registerLazySingleton<PreferenceApi>(() => PreferenceApi(getIt()))
     ..registerLazySingleton<DietApi>(() => DietApi(getIt()))
     ..registerLazySingleton<DietRepository>(
-      () => DietRepositoryImpl(getIt()),
+      () => DietRepositoryImpl(getIt(), getIt()),
     )
     ..registerLazySingleton<AuthRepository>(
       () => AuthRepositoryImpl(

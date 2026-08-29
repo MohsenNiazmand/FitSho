@@ -8,20 +8,51 @@ part 'diet_providers.g.dart';
 
 @riverpod
 class DietOptionsNotifier extends _$DietOptionsNotifier {
+  bool _disposed = false;
+
   @override
   Future<DietProfileOptions> build() async {
+    ref.onDispose(() => _disposed = true);
+    final cached = await getIt<DietRepository>().peekCachedProfileOptions();
+    if (cached != null) {
+      _revalidate();
+      return cached;
+    }
+    return _fetch();
+  }
+
+  Future<DietProfileOptions> _fetch() async {
     final result = await getIt<DietRepository>().getProfileOptions();
     return result.fold(
       (failure) => throw StateError(failure.message),
       (options) => options,
     );
   }
+
+  void _revalidate() {
+    getIt<DietRepository>().getProfileOptions().then((result) {
+      if (_disposed) return;
+      result.fold((_) {}, (options) => state = AsyncValue.data(options));
+    });
+  }
 }
 
 @riverpod
 class DietProfileNotifier extends _$DietProfileNotifier {
+  bool _disposed = false;
+
   @override
   Future<DietProfile?> build() async {
+    ref.onDispose(() => _disposed = true);
+    final cached = getIt<DietRepository>().peekCachedProfile();
+    if (cached != null) {
+      _revalidate();
+      return cached;
+    }
+    return _fetch();
+  }
+
+  Future<DietProfile?> _fetch() async {
     final result = await getIt<DietRepository>().getProfile();
     return result.fold(
       (failure) {
@@ -32,6 +63,20 @@ class DietProfileNotifier extends _$DietProfileNotifier {
       },
       (profile) => profile,
     );
+  }
+
+  void _revalidate() {
+    getIt<DietRepository>().getProfile().then((result) {
+      if (_disposed) return;
+      result.fold(
+        (failure) {
+          if (failure is NotFoundFailure) {
+            state = const AsyncValue.data(null);
+          }
+        },
+        (profile) => state = AsyncValue.data(profile),
+      );
+    });
   }
 
   Future<Failure?> save(DietProfile profile) async {
@@ -49,8 +94,20 @@ class DietProfileNotifier extends _$DietProfileNotifier {
 
 @riverpod
 class DietPlanNotifier extends _$DietPlanNotifier {
+  bool _disposed = false;
+
   @override
   Future<DietPlan?> build() async {
+    ref.onDispose(() => _disposed = true);
+    final cached = getIt<DietRepository>().peekCachedPlan();
+    if (cached != null) {
+      _revalidate();
+      return cached;
+    }
+    return _fetch();
+  }
+
+  Future<DietPlan?> _fetch() async {
     final result = await getIt<DietRepository>().getActivePlan();
     return result.fold(
       (failure) {
@@ -61,6 +118,20 @@ class DietPlanNotifier extends _$DietPlanNotifier {
       },
       (plan) => plan,
     );
+  }
+
+  void _revalidate() {
+    getIt<DietRepository>().getActivePlan().then((result) {
+      if (_disposed) return;
+      result.fold(
+        (failure) {
+          if (failure is NotFoundFailure) {
+            state = const AsyncValue.data(null);
+          }
+        },
+        (plan) => state = AsyncValue.data(plan),
+      );
+    });
   }
 
   Future<Failure?> generate() async {
@@ -115,8 +186,20 @@ class DietPlanHistoryNotifier extends _$DietPlanHistoryNotifier {
 
 @riverpod
 class LastMealLogNotifier extends _$LastMealLogNotifier {
+  bool _disposed = false;
+
   @override
   Future<MealLog?> build() async {
+    ref.onDispose(() => _disposed = true);
+    final cached = getIt<DietRepository>().peekCachedLastMealLog();
+    if (cached != null) {
+      _revalidate();
+      return cached;
+    }
+    return _fetch();
+  }
+
+  Future<MealLog?> _fetch() async {
     final result = await getIt<DietRepository>().getLastMealLog();
     return result.fold(
       (failure) {
@@ -129,6 +212,20 @@ class LastMealLogNotifier extends _$LastMealLogNotifier {
     );
   }
 
+  void _revalidate() {
+    getIt<DietRepository>().getLastMealLog().then((result) {
+      if (_disposed) return;
+      result.fold(
+        (failure) {
+          if (failure is NotFoundFailure) {
+            state = const AsyncValue.data(null);
+          }
+        },
+        (log) => state = AsyncValue.data(log),
+      );
+    });
+  }
+
   Future<void> refreshLog() async {
     ref.invalidateSelf();
     await future;
@@ -137,13 +234,29 @@ class LastMealLogNotifier extends _$LastMealLogNotifier {
 
 @riverpod
 class TodayMealLogsNotifier extends _$TodayMealLogsNotifier {
+  bool _disposed = false;
+
   @override
   Future<List<MealLog>> build() async {
+    ref.onDispose(() => _disposed = true);
+    final cached = getIt<DietRepository>().peekCachedTodayMealLogs();
+    if (cached != null) {
+      _revalidate();
+      return cached;
+    }
+    return _fetch();
+  }
+
+  Future<List<MealLog>> _fetch() async {
     final result = await getIt<DietRepository>().getTodayMealLogs();
-    return result.fold(
-      (failure) => [],
-      (logs) => logs,
-    );
+    return result.fold((failure) => [], (logs) => logs);
+  }
+
+  void _revalidate() {
+    getIt<DietRepository>().getTodayMealLogs().then((result) {
+      if (_disposed) return;
+      result.fold((_) {}, (logs) => state = AsyncValue.data(logs));
+    });
   }
 
   Future<void> refreshLogs() async {
@@ -154,13 +267,29 @@ class TodayMealLogsNotifier extends _$TodayMealLogsNotifier {
 
 @riverpod
 class ComplianceStatsNotifier extends _$ComplianceStatsNotifier {
+  bool _disposed = false;
+
   @override
   Future<ComplianceStats?> build() async {
+    ref.onDispose(() => _disposed = true);
+    final cached = await getIt<DietRepository>().peekCachedComplianceStats();
+    if (cached != null) {
+      _revalidate();
+      return cached;
+    }
+    return _fetch();
+  }
+
+  Future<ComplianceStats?> _fetch() async {
     final result = await getIt<DietRepository>().getComplianceStats();
-    return result.fold(
-      (failure) => null,
-      (stats) => stats,
-    );
+    return result.fold((failure) => null, (stats) => stats);
+  }
+
+  void _revalidate() {
+    getIt<DietRepository>().getComplianceStats().then((result) {
+      if (_disposed) return;
+      result.fold((_) {}, (stats) => state = AsyncValue.data(stats));
+    });
   }
 
   Future<void> refreshStats() async {
@@ -225,13 +354,32 @@ class MealSlotsNotifier extends _$MealSlotsNotifier {
 
 @riverpod
 class SupplementsNotifier extends _$SupplementsNotifier {
+  bool _disposed = false;
+
   @override
   Future<List<Supplement>> build() async {
+    ref.onDispose(() => _disposed = true);
+    final cached = getIt<DietRepository>().peekCachedSupplements();
+    if (cached != null) {
+      _revalidate();
+      return cached;
+    }
+    return _fetch();
+  }
+
+  Future<List<Supplement>> _fetch() async {
     final result = await getIt<DietRepository>().listSupplements();
     return result.fold(
       (failure) => throw StateError(failure.message),
       (items) => items,
     );
+  }
+
+  void _revalidate() {
+    getIt<DietRepository>().listSupplements().then((result) {
+      if (_disposed) return;
+      result.fold((_) {}, (items) => state = AsyncValue.data(items));
+    });
   }
 
   Future<void> refreshList() async {

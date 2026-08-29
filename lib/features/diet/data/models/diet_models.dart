@@ -105,7 +105,7 @@ class DietOptionItemModel {
   Map<String, dynamic> toJson() => _$DietOptionItemModelToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class DietProfileOptionsModel {
   const DietProfileOptionsModel({
     required this.genders,

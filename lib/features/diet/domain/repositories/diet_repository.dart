@@ -3,6 +3,23 @@ import 'package:fitsho/core/error/failures.dart';
 import 'package:fitsho/features/diet/domain/entities/diet_entities.dart';
 
 abstract class DietRepository {
+  /// Synchronously returns whatever is currently cached, without touching
+  /// the network. Used to paint the UI instantly before a background
+  /// revalidation (stale-while-revalidate).
+  DietProfile? peekCachedProfile();
+
+  DietPlan? peekCachedPlan();
+
+  List<Supplement>? peekCachedSupplements();
+
+  List<MealLog>? peekCachedTodayMealLogs();
+
+  MealLog? peekCachedLastMealLog();
+
+  Future<DietProfileOptions?> peekCachedProfileOptions();
+
+  Future<ComplianceStats?> peekCachedComplianceStats();
+
   Future<Either<Failure, DietProfileOptions>> getProfileOptions();
 
   Future<Either<Failure, DietProfile>> getProfile();

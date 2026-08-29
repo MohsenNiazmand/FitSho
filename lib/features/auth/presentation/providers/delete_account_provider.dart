@@ -5,6 +5,7 @@ import 'package:fitsho/core/notifications/push_notification_service.dart';
 import 'package:fitsho/core/usecase/usecase.dart';
 import 'package:fitsho/features/auth/domain/usecases/delete_account_usecase.dart';
 import 'package:fitsho/features/auth/presentation/providers/auth_state_provider.dart';
+import 'package:fitsho/features/diet/data/datasources/diet_local_data_source.dart';
 import 'package:fitsho/features/diet/presentation/providers/diet_providers.dart';
 
 part 'delete_account_provider.g.dart';
@@ -28,6 +29,7 @@ class DeleteAccountNotifier extends _$DeleteAccountNotifier {
           return failure;
         },
         (_) async {
+          await getIt<DietLocalDataSource>().clearCache();
           _resetCachedProviders();
           ref.read(authStateProvider.notifier).setUnauthenticated();
           state = const AsyncValue.data(null);

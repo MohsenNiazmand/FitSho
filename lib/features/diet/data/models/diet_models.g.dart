@@ -134,10 +134,12 @@ DietProfileOptionsModel _$DietProfileOptionsModelFromJson(
 Map<String, dynamic> _$DietProfileOptionsModelToJson(
   DietProfileOptionsModel instance,
 ) => <String, dynamic>{
-  'genders': instance.genders,
-  'goals': instance.goals,
-  'activityLevels': instance.activityLevels,
-  'dietaryPreferences': instance.dietaryPreferences,
+  'genders': instance.genders.map((e) => e.toJson()).toList(),
+  'goals': instance.goals.map((e) => e.toJson()).toList(),
+  'activityLevels': instance.activityLevels.map((e) => e.toJson()).toList(),
+  'dietaryPreferences': instance.dietaryPreferences
+      .map((e) => e.toJson())
+      .toList(),
 };
 
 MealSlotConfigModel _$MealSlotConfigModelFromJson(Map<String, dynamic> json) =>

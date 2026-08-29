@@ -7,7 +7,7 @@ part of 'diet_providers.dart';
 // **************************************************************************
 
 String _$dietOptionsNotifierHash() =>
-    r'8b8606fb1eae7ac7c1c82df6829cc92820edf8ab';
+    r'96b2413a38e9ce1a67235f488419786065c0477a';
 
 /// See also [DietOptionsNotifier].
 @ProviderFor(DietOptionsNotifier)
@@ -27,7 +27,7 @@ final dietOptionsNotifierProvider =
 
 typedef _$DietOptionsNotifier = AutoDisposeAsyncNotifier<DietProfileOptions>;
 String _$dietProfileNotifierHash() =>
-    r'b1453ae8d3990a17753de821d62ed39e35dcd338';
+    r'616094e469c70d71bc1011d752c21851f98c56bf';
 
 /// See also [DietProfileNotifier].
 @ProviderFor(DietProfileNotifier)
@@ -46,7 +46,7 @@ final dietProfileNotifierProvider =
     );
 
 typedef _$DietProfileNotifier = AutoDisposeAsyncNotifier<DietProfile?>;
-String _$dietPlanNotifierHash() => r'1f232b7670cdd34089f242316f66b4d7b3c57fc9';
+String _$dietPlanNotifierHash() => r'04d4c08d9bf0fab834a134610a25b66be66b59ec';
 
 /// See also [DietPlanNotifier].
 @ProviderFor(DietPlanNotifier)
@@ -83,7 +83,7 @@ final dietPlanHistoryNotifierProvider =
 
 typedef _$DietPlanHistoryNotifier = AutoDisposeAsyncNotifier<List<DietPlan>>;
 String _$lastMealLogNotifierHash() =>
-    r'a455ef1a99330c7d69e911149be788474b5de884';
+    r'f8e49fd3c21636696b0c54e3fc1edb6647670c61';
 
 /// See also [LastMealLogNotifier].
 @ProviderFor(LastMealLogNotifier)
@@ -100,7 +100,7 @@ final lastMealLogNotifierProvider =
 
 typedef _$LastMealLogNotifier = AutoDisposeAsyncNotifier<MealLog?>;
 String _$todayMealLogsNotifierHash() =>
-    r'a719c4e85b3f9f8bf119143afff06d9c6c2c4889';
+    r'd09093e6fd8f0374013f9e0249f3ed54c4ee9cf4';
 
 /// See also [TodayMealLogsNotifier].
 @ProviderFor(TodayMealLogsNotifier)
@@ -120,7 +120,7 @@ final todayMealLogsNotifierProvider =
 
 typedef _$TodayMealLogsNotifier = AutoDisposeAsyncNotifier<List<MealLog>>;
 String _$complianceStatsNotifierHash() =>
-    r'dc907fa4f04e65bcab112fa62451b9891ccd0ed3';
+    r'47f98f23f0f7d6c6be62af05e1d66e8419ca71d5';
 
 /// See also [ComplianceStatsNotifier].
 @ProviderFor(ComplianceStatsNotifier)
@@ -176,7 +176,7 @@ final mealSlotsNotifierProvider =
 typedef _$MealSlotsNotifier =
     AutoDisposeAsyncNotifier<Map<String, MealSlotConfig>>;
 String _$supplementsNotifierHash() =>
-    r'75c25afe12927a3b47037d89c49e41764cdbcbc2';
+    r'4517cba607423ae5c9f54e85ce174075b2f9bf7b';
 
 /// See also [SupplementsNotifier].
 @ProviderFor(SupplementsNotifier)
