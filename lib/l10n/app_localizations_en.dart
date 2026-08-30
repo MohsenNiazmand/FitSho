@@ -573,4 +573,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get later => 'Later';
+
+  @override
+  String get skip => 'Skip';
+
+  @override
+  String get start => 'Start';
+
+  @override
+  String get onboardingTitle1 => 'Smart Meal Planning';
+
+  @override
+  String get onboardingSubtitle1 =>
+      'Get personalized meal plans with FitSho\'s artificial intelligence.';
+
+  @override
+  String get onboardingTitle2 => 'Track Daily Progress';
+
+  @override
+  String get onboardingSubtitle2 =>
+      'Easily record and manage your calorie intake and workout activities.';
+
+  @override
+  String get onboardingTitle3 => 'Achieve Ideal Body';
+
+  @override
+  String get onboardingSubtitle3 =>
+      'We are with you every step of the way to achieve your health goals.';
 }

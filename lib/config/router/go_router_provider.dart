@@ -11,7 +11,9 @@ import 'package:fitsho/features/diet/presentation/screens/dashboard_screen.dart'
 import 'package:fitsho/features/diet/presentation/screens/diet_history_screen.dart';
 import 'package:fitsho/features/diet/presentation/screens/diet_meal_slots_screen.dart';
 import 'package:fitsho/features/diet/presentation/screens/diet_profile_edit_screen.dart';
-import 'package:fitsho/features/diet/presentation/screens/onboarding_screen.dart';
+import 'package:fitsho/features/diet/presentation/screens/onboarding_screen.dart' as diet;
+import 'package:fitsho/features/intro/presentation/providers/intro_provider.dart';
+import 'package:fitsho/features/intro/presentation/screens/intro_screen.dart';
 import 'package:fitsho/features/diet/presentation/screens/supplements_screen.dart';
 import 'package:fitsho/features/diet/presentation/screens/weekly_plan_screen.dart';
 import 'package:fitsho/features/main/presentation/screens/main_shell_screen.dart';
@@ -26,6 +28,7 @@ final GlobalKey<NavigatorState> rootNavigatorKey =
 @Riverpod(keepAlive: true)
 GoRouter goRouter(GoRouterRef ref) {
   final authListenable = ValueNotifier(ref.read(authStateProvider));
+  final introCompleted = ref.read(introStateProvider);
 
   ref
     ..listen(authStateProvider, (_, next) {
@@ -47,6 +50,10 @@ GoRouter goRouter(GoRouterRef ref) {
       }
 
       if (path == AppRoutes.splash) {
+        if (!introCompleted && !ref.read(introStateProvider)) {
+          return AppRoutes.intro;
+        }
+
         return status == AuthStatus.authenticated
             ? AppRoutes.home
             : AppRoutes.login;
@@ -55,7 +62,9 @@ GoRouter goRouter(GoRouterRef ref) {
       final isAuthRoute =
           path == AppRoutes.login || path == AppRoutes.otpVerification;
 
-      if (status == AuthStatus.unauthenticated && !isAuthRoute) {
+      if (status == AuthStatus.unauthenticated &&
+          !isAuthRoute &&
+          path != AppRoutes.intro) {
         return AppRoutes.login;
       }
 
@@ -96,7 +105,11 @@ GoRouter goRouter(GoRouterRef ref) {
       GoRoute(
         path: AppRoutes.dietOnboarding,
         parentNavigatorKey: rootNavigatorKey,
-        builder: (context, state) => const OnboardingScreen(),
+        builder: (context, state) => const diet.OnboardingScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.intro,
+        builder: (context, state) => const IntroScreen(),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {

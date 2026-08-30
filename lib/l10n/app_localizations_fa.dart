@@ -572,4 +572,31 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get later => 'بعداً';
+
+  @override
+  String get skip => 'رد کردن';
+
+  @override
+  String get start => 'شروع';
+
+  @override
+  String get onboardingTitle1 => 'برنامه‌ریزی هوشمند غذا';
+
+  @override
+  String get onboardingSubtitle1 =>
+      'با هوش مصنوعی فیت‌شو، برنامه غذایی شخصی‌سازی شده دریافت کنید.';
+
+  @override
+  String get onboardingTitle2 => 'پیگیری پیشرفت روزانه';
+
+  @override
+  String get onboardingSubtitle2 =>
+      'کالری‌های دریافتی و فعالیت‌های ورزمی خود را به سادگی ثبت و مدیریت کنید.';
+
+  @override
+  String get onboardingTitle3 => 'رسیدن به اندام ایده‌آل';
+
+  @override
+  String get onboardingSubtitle3 =>
+      'ما در هر قدم همراه شما هستیم تا به اهداف سلامتی خود برسید.';
 }

@@ -232,5 +232,13 @@
   "optionalUpdateTitle": "New version available",
   "optionalUpdateMessage": "A new version of FitSho is available. Would you like to update?",
   "updateNow": "Update now",
-  "later": "Later"
+  "later": "Later",
+  "skip": "Skip",
+  "start": "Start",
+  "onboardingTitle1": "Smart Meal Planning",
+  "onboardingSubtitle1": "Get personalized meal plans with FitSho's artificial intelligence.",
+  "onboardingTitle2": "Track Daily Progress",
+  "onboardingSubtitle2": "Easily record and manage your calorie intake and workout activities.",
+  "onboardingTitle3": "Achieve Ideal Body",
+  "onboardingSubtitle3": "We are with you every step of the way to achieve your health goals."
 }
