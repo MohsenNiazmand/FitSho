@@ -37,6 +37,8 @@ class ProfileScreen extends HookConsumerWidget {
     final deleteAccountState = ref.watch(deleteAccountNotifierProvider);
     final formKey = useMemoized(GlobalKey<FormState>.new);
     final nameController = useTextEditingController(text: user?.name ?? '');
+    final isEditingName = useState(false);
+    final nameFocusNode = useFocusNode();
     final isBusy = updateState.isLoading ||
         logoutState.isLoading ||
         deleteAccountState.isLoading;
@@ -64,17 +66,34 @@ class ProfileScreen extends HookConsumerWidget {
       [user?.name],
     );
 
+    useEffect(() {
+      void listener() {
+        if (!nameFocusNode.hasFocus && isEditingName.value) {
+          // Revert and exit edit mode if focus is lost without saving
+          isEditingName.value = false;
+          nameController.text = user?.name ?? '';
+        }
+      }
+
+      nameFocusNode.addListener(listener);
+      return () => nameFocusNode.removeListener(listener);
+    }, [user?.name]);
+
     Future<void> saveProfile() async {
       if (formKey.currentState?.validate() != true) return;
 
+      isEditingName.value = false;
+      final newName = nameController.text.trim();
+
       final failure = await ref
           .read(updateProfileNotifierProvider.notifier)
-          .updateProfile(nameController.text.trim());
+          .updateProfile(newName);
 
       if (!context.mounted) return;
 
       if (failure != null) {
         showFailureToast(context, failure);
+        nameController.text = user?.name ?? '';
         return;
       }
 
@@ -195,14 +214,63 @@ class ProfileScreen extends HookConsumerWidget {
                     children: [
                       _ProfileCoverHeader(colorScheme: colorScheme),
                       Gap.custom(height: _avatarSize / 2 + 16),
-                      Text(
-                        displayName,
-                        textAlign: TextAlign.center,
-                        style: theme.textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.w800,
-                          color: colorScheme.onSurface,
+                      if (isEditingName.value)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 48),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: TextFormField(
+                                  controller: nameController,
+                                  focusNode: nameFocusNode,
+                                  textAlign: TextAlign.center,
+                                  autofocus: true,
+                                  style: theme.textTheme.headlineSmall?.copyWith(
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                  decoration: const InputDecoration(
+                                    border: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    isDense: true,
+                                    contentPadding: EdgeInsets.zero,
+                                  ),
+                                  onFieldSubmitted: (_) => saveProfile(),
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.check_circle,
+                                    color: Colors.blue),
+                                onPressed: saveProfile,
+                              ),
+                            ],
+                          ),
+                        )
+                      else
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const SizedBox(width: 48), // Balance for edit icon
+                            Text(
+                              displayName,
+                              textAlign: TextAlign.center,
+                              style: theme.textTheme.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.w800,
+                                color: colorScheme.onSurface,
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.edit_outlined, size: 20),
+                              onPressed: () {
+                                isEditingName.value = true;
+                                nameFocusNode.requestFocus();
+                              },
+                            ),
+                          ],
                         ),
-                      ),
                       Gap.v8(),
                       Text(
                         PersianDigits.toPersian(user.mobileNumber),
@@ -214,16 +282,6 @@ class ProfileScreen extends HookConsumerWidget {
                         ),
                       ),
                       Gap.v32(),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: _ProfileInfoCard(
-                          nameController: nameController,
-                          isBusy: isBusy,
-                          updateState: updateState,
-                          onSave: saveProfile,
-                        ),
-                      ),
-                      Gap.v16(),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: _SettingsActionsCard(
@@ -240,84 +298,6 @@ class ProfileScreen extends HookConsumerWidget {
                   ),
                 ),
               ),
-      ),
-    );
-  }
-}
-
-class _ProfileInfoCard extends StatelessWidget {
-  const _ProfileInfoCard({
-    required this.nameController,
-    required this.isBusy,
-    required this.updateState,
-    required this.onSave,
-  });
-
-  final TextEditingController nameController;
-  final bool isBusy;
-  final AsyncValue updateState;
-  final VoidCallback onSave;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-        side: BorderSide(color: Colors.grey.shade200),
-      ),
-      color: Colors.white,
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              'اطلاعات حساب',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            Gap.v16(),
-            TextFormField(
-              controller: nameController,
-              enabled: !isBusy,
-              textInputAction: TextInputAction.done,
-              textAlign: TextAlign.right,
-              decoration: InputDecoration(
-                labelText: context.tr.displayNameLabel,
-                hintText: context.tr.displayNameHint,
-                filled: true,
-                fillColor: Colors.grey.shade50,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide(color: Colors.grey.shade200),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide(color: Colors.grey.shade200),
-                ),
-                prefixIcon: const Icon(Icons.person_outline_rounded),
-              ),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return context.tr.displayNameRequired;
-                }
-                return null;
-              },
-              onFieldSubmitted: (_) => onSave(),
-            ),
-            Gap.v24(),
-            AppPrimaryButton(
-              label: context.tr.saveProfile,
-              isLoading: updateState.isLoading,
-              onPressed: isBusy ? null : onSave,
-            ),
-          ],
-        ),
       ),
     );
   }
