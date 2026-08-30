@@ -12,4 +12,5 @@ class AppRoutes {
   static const String dietMealSlots = '/diet/meal-slots';
   static const String dietSupplements = '/diet/supplements';
   static const String dietProfileEdit = '/diet/profile-edit';
+  static const String dietOnboarding = '/diet/onboarding';
 }

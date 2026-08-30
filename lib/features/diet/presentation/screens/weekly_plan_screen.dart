@@ -22,8 +22,6 @@ class WeeklyPlanScreen extends ConsumerStatefulWidget {
 }
 
 class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
-  String? _loggingSlotKey;
-
   Future<void> _generatePlan() async {
     final failure = await ref
         .read(dietPlanNotifierProvider.notifier)
@@ -34,15 +32,11 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
   }
 
   Future<void> _logMeal(String day, String slot) async {
-    setState(() => _loggingSlotKey = '$day|$slot');
     final failure = await ref
         .read(logMealNotifierProvider.notifier)
         .logMeal(slot: slot, day: day);
-    if (mounted) {
-      setState(() => _loggingSlotKey = null);
-      if (failure != null) {
-        showFailureToast(context, failure);
-      }
+    if (mounted && failure != null) {
+      showFailureToast(context, failure);
     }
   }
 
@@ -144,7 +138,6 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
                         plan: plan,
                         highlightDay: navigationTarget?.highlightDay,
                         highlightSlot: navigationTarget?.highlightSlot,
-                        loggingSlotKey: _loggingSlotKey,
                         onLogMeal: _logMeal,
                         onHighlightHandled: () {
                           ref

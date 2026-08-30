@@ -263,6 +263,10 @@ class TodayMealLogsNotifier extends _$TodayMealLogsNotifier {
     ref.invalidateSelf();
     await future;
   }
+
+  set state(AsyncValue<List<MealLog>> value) {
+    super.state = value;
+  }
 }
 
 @riverpod
@@ -307,7 +311,19 @@ class LogMealNotifier extends _$LogMealNotifier {
     required String slot,
     required String day,
   }) async {
-    state = const AsyncValue.loading();
+    final previousLogs = ref.read(todayMealLogsNotifierProvider).valueOrNull ?? [];
+    
+    // Optimistic Update
+    final tempLog = MealLog(
+      id: 'temp-${DateTime.now().millisecondsSinceEpoch}',
+      slot: slot,
+      day: day,
+      loggedAt: DateTime.now(),
+    );
+    
+    ref.read(todayMealLogsNotifierProvider.notifier).state =
+        AsyncValue.data([...previousLogs, tempLog]);
+
     final result = await getIt<DietRepository>().logMeal(
       slot: slot,
       day: day,
@@ -315,14 +331,15 @@ class LogMealNotifier extends _$LogMealNotifier {
 
     return result.fold(
       (failure) {
-        state = AsyncValue.error(failure, StackTrace.current);
+        // Rollback
+        ref.read(todayMealLogsNotifierProvider.notifier).state =
+            AsyncValue.data(previousLogs);
         return failure;
       },
       (_) {
         ref.invalidate(lastMealLogNotifierProvider);
         ref.invalidate(todayMealLogsNotifierProvider);
         ref.invalidate(complianceStatsNotifierProvider);
-        state = const AsyncValue.data(null);
         return null;
       },
     );

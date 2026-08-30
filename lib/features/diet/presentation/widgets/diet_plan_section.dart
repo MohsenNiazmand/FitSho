@@ -16,7 +16,6 @@ class DietPlanSection extends HookConsumerWidget {
     required this.plan,
     required this.highlightDay,
     required this.highlightSlot,
-    required this.loggingSlotKey,
     required this.onLogMeal,
     this.onHighlightHandled,
     super.key,
@@ -25,7 +24,6 @@ class DietPlanSection extends HookConsumerWidget {
   final DietPlan plan;
   final String? highlightDay;
   final String? highlightSlot;
-  final String? loggingSlotKey;
   final void Function(String day, String slot) onLogMeal;
   final VoidCallback? onHighlightHandled;
 
@@ -145,7 +143,7 @@ class DietPlanSection extends HookConsumerWidget {
               meal: currentDay.meals[slot]!,
               isHighlighted:
                   highlightDay == currentDay.day && highlightSlot == slot,
-              isLogging: loggingSlotKey == '${currentDay.day}|$slot',
+              isLogging: false,
               isLogged: todayLogs.any(
                 (log) => log.day == currentDay.day && log.slot == slot,
               ),

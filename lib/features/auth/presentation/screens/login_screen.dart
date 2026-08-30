@@ -97,7 +97,7 @@ class LoginScreen extends HookConsumerWidget {
         children: [
           const AppImageCover(
             assetPath: AppAssets.loginBg,
-            overlayOpacity: 0.45,
+            overlayOpacity: 0.65,
           ),
           SafeArea(
             child: LayoutBuilder(

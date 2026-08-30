@@ -169,13 +169,39 @@ class _MealSlotTile extends StatelessWidget {
         children: [
           SwitchListTile(
             title: Text(title),
-            subtitle: Text(config.time),
+            subtitle: Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: InkWell(
+                onTap: config.enabled ? onPickTime : null,
+                borderRadius: BorderRadius.circular(8),
+                child: UnconstrainedBox(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.access_time, size: 16),
+                        const SizedBox(width: 8),
+                        Text(
+                          config.time,
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
             value: config.enabled,
             onChanged: onToggle,
-            secondary: IconButton(
-              icon: const Icon(Icons.schedule_rounded),
-              onPressed: config.enabled ? onPickTime : null,
-            ),
           ),
           if (config.enabled)
             SwitchListTile(

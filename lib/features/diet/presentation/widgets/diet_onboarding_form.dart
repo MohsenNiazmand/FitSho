@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:fitsho/config/router/routes.dart';
 import 'package:fitsho/shared/presentation/utils/failure_message.dart';
 import 'package:fitsho/config/theme/app_radius.dart';
 import 'package:fitsho/core/constants/colors.dart';
@@ -97,60 +99,71 @@ class DietOnboardingForm extends HookConsumerWidget {
       }
 
       isSaving.value = true;
-      final profileResult =
-          await ref.read(dietProfileNotifierProvider.notifier).save(
-                DietProfile(
-                  age: age,
-                  heightCm: height,
-                  weightKg: weight,
-                  gender: gender.value!,
-                  goal: goal.value!,
-                  activityLevel: activityLevel.value!,
-                  doesExercise: doesExercise.value,
-                  job: jobController.text.trim().isEmpty
-                      ? null
-                      : jobController.text.trim(),
-                  goalNotes: goalNotesController.text.trim().isEmpty
-                      ? null
-                      : goalNotesController.text.trim(),
-                  exerciseType: doesExercise.value &&
-                          exerciseTypeController.text.trim().isNotEmpty
-                      ? exerciseTypeController.text.trim()
-                      : null,
-                  exerciseDaysPerWeek: doesExercise.value
-                      ? int.tryParse(exerciseDaysController.text.trim())
-                      : null,
-                  dietaryPreferences: dietaryPreferences.value.toList(),
-                  allergiesNotes: allergiesController.text.trim().isEmpty
-                      ? null
-                      : allergiesController.text.trim(),
-                ),
-              );
+      try {
+        final profileResult =
+            await ref.read(dietProfileNotifierProvider.notifier).save(
+                  DietProfile(
+                    age: age,
+                    heightCm: height,
+                    weightKg: weight,
+                    gender: gender.value!,
+                    goal: goal.value!,
+                    activityLevel: activityLevel.value!,
+                    doesExercise: doesExercise.value,
+                    job: jobController.text.trim().isEmpty
+                        ? null
+                        : jobController.text.trim(),
+                    goalNotes: goalNotesController.text.trim().isEmpty
+                        ? null
+                        : goalNotesController.text.trim(),
+                    exerciseType: doesExercise.value &&
+                            exerciseTypeController.text.trim().isNotEmpty
+                        ? exerciseTypeController.text.trim()
+                        : null,
+                    exerciseDaysPerWeek: doesExercise.value
+                        ? int.tryParse(exerciseDaysController.text.trim())
+                        : null,
+                    dietaryPreferences: dietaryPreferences.value.toList(),
+                    allergiesNotes: allergiesController.text.trim().isEmpty
+                        ? null
+                        : allergiesController.text.trim(),
+                  ),
+                );
 
-      if (profileResult == null) {
-        // Profile saved successfully, now save meal slots
-        await ref
-            .read(mealSlotsNotifierProvider.notifier)
-            .save(mealSlots.value);
-      }
-
-      if (isMounted()) {
-        isSaving.value = false;
-
-        if (profileResult != null) {
-          if (context.mounted) {
-            showFailureToast(context, profileResult);
-          }
-          return;
+        if (profileResult == null) {
+          // Profile saved successfully, now save meal slots
+          await ref
+              .read(mealSlotsNotifierProvider.notifier)
+              .save(mealSlots.value);
+          showSuccessToast(context.tr.profileUpdatedSuccess);
         }
-      }
 
-      if (context.mounted) {
-        await _maybePromptRegenerate(context, ref);
-      }
+        if (isMounted()) {
+          isSaving.value = false;
 
-      if (context.mounted && Navigator.of(context).canPop()) {
-        Navigator.of(context).pop();
+          if (profileResult != null) {
+            if (context.mounted) {
+              showFailureToast(context, profileResult);
+            }
+            return;
+          }
+        }
+
+        if (context.mounted) {
+          await _maybePromptRegenerate(context, ref);
+        }
+
+        if (context.mounted) {
+          if (Navigator.of(context).canPop()) {
+            Navigator.of(context).pop();
+          } else {
+            context.go(AppRoutes.home);
+          }
+        }
+      } finally {
+        if (isMounted()) {
+          isSaving.value = false;
+        }
       }
     }
 
@@ -645,13 +658,32 @@ class _MealSlotInput extends StatelessWidget {
             ),
           ),
           if (config.enabled)
-            TextButton(
-              onPressed: onPickTime,
-              child: Text(
-                config.time,
-                style: TextStyle(color: theme.colorScheme.primary),
+            InkWell(
+              onTap: onPickTime,
+              borderRadius: BorderRadius.circular(8),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade200,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.access_time, size: 16),
+                    const SizedBox(width: 8),
+                    Text(
+                      config.time,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.primary,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
+          Gap.h8(),
           Switch(
             value: config.enabled,
             onChanged: onToggle,
