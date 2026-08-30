@@ -1067,7 +1067,7 @@ abstract class AppLocalizations {
   /// No description provided for @dietSupplementLinkedMealLabel.
   ///
   /// In en, this message translates to:
-  /// **'Linked meal (optional)'**
+  /// **'Linked meal'**
   String get dietSupplementLinkedMealLabel;
 
   /// No description provided for @dietNone.
@@ -1123,6 +1123,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Plan deleted successfully'**
   String get dietHistoryDeleteSuccess;
+
+  /// No description provided for @dietSupplementLinkedMealRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select the linked meal'**
+  String get dietSupplementLinkedMealRequired;
 
   /// No description provided for @forceUpdateTitle.
   ///

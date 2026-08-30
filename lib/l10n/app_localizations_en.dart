@@ -524,7 +524,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dietAddTime => 'Add time';
 
   @override
-  String get dietSupplementLinkedMealLabel => 'Linked meal (optional)';
+  String get dietSupplementLinkedMealLabel => 'Linked meal';
 
   @override
   String get dietNone => 'None';
@@ -553,6 +553,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dietHistoryDeleteSuccess => 'Plan deleted successfully';
+
+  @override
+  String get dietSupplementLinkedMealRequired =>
+      'Please select the linked meal';
 
   @override
   String get forceUpdateTitle => 'Mandatory update';

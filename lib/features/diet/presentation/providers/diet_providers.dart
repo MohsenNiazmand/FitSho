@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:fitsho/core/error/failures.dart';
 import 'package:fitsho/core/injection_container.dart';
+import 'package:fitsho/features/diet/domain/constants/diet_constants.dart';
 import 'package:fitsho/features/diet/domain/entities/diet_entities.dart';
 import 'package:fitsho/features/diet/domain/repositories/diet_repository.dart';
 
@@ -350,11 +351,12 @@ class LogMealNotifier extends _$LogMealNotifier {
 class MealSlotsNotifier extends _$MealSlotsNotifier {
   @override
   Future<Map<String, MealSlotConfig>> build() async {
-    final result = await getIt<DietRepository>().getMealSlots();
-    return result.fold(
-      (failure) => throw StateError(failure.message),
-      (slots) => slots,
-    );
+    // There is no dedicated GET endpoint for meal slots — they only ever
+    // arrive embedded in the diet profile response, so derive from that
+    // provider instead of issuing a separate (nonexistent) request.
+    final profile = await ref.watch(dietProfileNotifierProvider.future);
+    final slots = profile?.mealSlots ?? const {};
+    return slots.isEmpty ? DietConstants.defaultMealSlots() : slots;
   }
 
   Future<Failure?> save(Map<String, MealSlotConfig> slots) async {
@@ -363,6 +365,7 @@ class MealSlotsNotifier extends _$MealSlotsNotifier {
       (failure) => failure,
       (saved) {
         state = AsyncValue.data(saved);
+        ref.invalidate(dietProfileNotifierProvider);
         return null;
       },
     );

@@ -6,6 +6,7 @@ import 'package:fitsho/core/constants/colors.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
 import 'package:fitsho/features/diet/presentation/providers/diet_navigation_provider.dart';
 import 'package:fitsho/features/diet/presentation/providers/diet_providers.dart';
+import 'package:fitsho/features/diet/presentation/widgets/ai_loading_dialog.dart';
 import 'package:fitsho/features/diet/presentation/widgets/diet_plan_section.dart';
 import 'package:fitsho/shared/presentation/utils/toast_utils.dart';
 import 'package:fitsho/shared/presentation/widgets/app_loading_indicator.dart';
@@ -107,12 +108,17 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
                                   onPressed: isGenerating
                                       ? null
                                       : () async {
+                                          AiLoadingDialog.show(context);
                                           final failure = await ref
                                               .read(dietPlanNotifierProvider
                                                   .notifier)
                                               .generate();
-                                          if (failure != null && mounted) {
-                                            showFailureToast(context, failure);
+                                          if (context.mounted) {
+                                            AiLoadingDialog.hide(context);
+                                            if (failure != null) {
+                                              showFailureToast(
+                                                  context, failure);
+                                            }
                                           }
                                         },
                                 ),

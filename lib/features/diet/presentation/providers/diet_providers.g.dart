@@ -155,7 +155,7 @@ final logMealNotifierProvider =
     );
 
 typedef _$LogMealNotifier = AutoDisposeNotifier<AsyncValue<void>>;
-String _$mealSlotsNotifierHash() => r'f0f1d67b3da2a8f4696743c7bd0e539d197ef3fe';
+String _$mealSlotsNotifierHash() => r'9a428eaf93202071ff6f8eeca582809a46ed98d9';
 
 /// See also [MealSlotsNotifier].
 @ProviderFor(MealSlotsNotifier)

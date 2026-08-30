@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:fpdart/fpdart.dart';
 import 'package:fitsho/core/error/exception_mapper.dart';
 import 'package:fitsho/core/error/failures.dart';
 import 'package:fitsho/core/utils/repository_guard.dart';
@@ -7,9 +6,9 @@ import 'package:fitsho/features/diet/data/datasources/diet_local_data_source.dar
 import 'package:fitsho/features/diet/data/mappers/diet_mappers.dart';
 import 'package:fitsho/features/diet/data/models/diet_models.dart';
 import 'package:fitsho/features/diet/data/services/diet_api.dart';
-import 'package:fitsho/features/diet/domain/constants/diet_constants.dart';
 import 'package:fitsho/features/diet/domain/entities/diet_entities.dart';
 import 'package:fitsho/features/diet/domain/repositories/diet_repository.dart';
+import 'package:fpdart/fpdart.dart';
 
 class DietRepositoryImpl implements DietRepository {
   DietRepositoryImpl(this._dietApi, this._localDataSource);
@@ -94,22 +93,6 @@ class DietRepositoryImpl implements DietRepository {
   }
 
   @override
-  Future<Either<Failure, Map<String, MealSlotConfig>>> getMealSlots() async {
-    try {
-      final response = await _dietApi.getMealSlots();
-      final slots = response.data.map(
-        (key, value) => MapEntry(key, value.toEntity()),
-      );
-      return Right(slots.isEmpty ? DietConstants.defaultMealSlots() : slots);
-    } on Object catch (error) {
-      if (error is DioException && error.response?.statusCode == 404) {
-        return Right(DietConstants.defaultMealSlots());
-      }
-      return Left(ExceptionMapper.mapException(error));
-    }
-  }
-
-  @override
   Future<Either<Failure, Map<String, MealSlotConfig>>> saveMealSlots(
     Map<String, MealSlotConfig> slots,
   ) {
@@ -120,9 +103,9 @@ class DietRepositoryImpl implements DietRepository {
       final response = await _dietApi.upsertMealSlots(
         UpsertMealSlotsRequest(mealSlots: slotsMap),
       );
-      return response.data.map(
-        (key, value) => MapEntry(key, value.toEntity()),
-      );
+      final entity = response.data.toEntity();
+      await _localDataSource.saveProfile(entity);
+      return entity.mealSlots;
     });
   }
 

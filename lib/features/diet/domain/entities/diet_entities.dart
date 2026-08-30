@@ -95,6 +95,18 @@ class MealSlotConfig {
     this.notificationsEnabled = true,
   });
 
+  MealSlotConfig copyWith({
+    bool? enabled,
+    String? time,
+    bool? notificationsEnabled,
+  }) {
+    return MealSlotConfig(
+      enabled: enabled ?? this.enabled,
+      time: time ?? this.time,
+      notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
+    );
+  }
+
   @HiveField(0)
   final bool enabled;
   @HiveField(1)

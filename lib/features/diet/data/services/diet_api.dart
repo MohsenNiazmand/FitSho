@@ -20,11 +20,8 @@ abstract class DietApi {
     @Body() UpsertDietProfileRequest body,
   );
 
-  @GET('diet-profile/meal-slots')
-  Future<MealSlotsEnvelope> getMealSlots();
-
   @PUT('diet-profile/meal-slots')
-  Future<MealSlotsEnvelope> upsertMealSlots(
+  Future<DietProfileEnvelope> upsertMealSlots(
     @Body() UpsertMealSlotsRequest body,
   );
 

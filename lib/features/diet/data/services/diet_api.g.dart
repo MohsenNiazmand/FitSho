@@ -102,40 +102,15 @@ class _DietApi implements DietApi {
   }
 
   @override
-  Future<MealSlotsEnvelope> getMealSlots() async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<MealSlotsEnvelope>(
-      Options(method: 'GET', headers: _headers, extra: _extra)
-          .compose(
-            _dio.options,
-            'diet-profile/meal-slots',
-            queryParameters: queryParameters,
-            data: _data,
-          )
-          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
-    );
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late MealSlotsEnvelope _value;
-    try {
-      _value = MealSlotsEnvelope.fromJson(_result.data!);
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
-      rethrow;
-    }
-    return _value;
-  }
-
-  @override
-  Future<MealSlotsEnvelope> upsertMealSlots(UpsertMealSlotsRequest body) async {
+  Future<DietProfileEnvelope> upsertMealSlots(
+    UpsertMealSlotsRequest body,
+  ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
-    final _options = _setStreamType<MealSlotsEnvelope>(
+    final _options = _setStreamType<DietProfileEnvelope>(
       Options(method: 'PUT', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -146,9 +121,9 @@ class _DietApi implements DietApi {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late MealSlotsEnvelope _value;
+    late DietProfileEnvelope _value;
     try {
-      _value = MealSlotsEnvelope.fromJson(_result.data!);
+      _value = DietProfileEnvelope.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

@@ -4,6 +4,7 @@ import 'package:fitsho/core/constants/colors.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
 import 'package:fitsho/core/utils/persian_digits.dart';
 import 'package:fitsho/core/utils/persian_input.dart';
+import 'package:fitsho/features/diet/domain/constants/diet_constants.dart';
 import 'package:fitsho/features/diet/domain/entities/diet_entities.dart';
 import 'package:fitsho/features/diet/presentation/providers/diet_providers.dart';
 import 'package:fitsho/features/diet/presentation/utils/diet_labels.dart';
@@ -23,11 +24,14 @@ class SupplementsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final supplementsAsync = ref.watch(supplementsNotifierProvider);
+    final planAsync = ref.watch(dietPlanNotifierProvider);
+    final hasActivePlan = planAsync.value != null;
 
     return Scaffold(
       appBar: AppBar(title: Text(context.tr.dietSupplementsTitle)),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _openForm(context, ref),
+        onPressed: hasActivePlan ? () => _openForm(context, ref) : null,
+        backgroundColor: hasActivePlan ? null : Theme.of(context).disabledColor,
         icon: const Icon(Icons.add_rounded),
         label: const Text('افزودن مکمل'),
       ),
@@ -48,8 +52,12 @@ class SupplementsScreen extends ConsumerWidget {
                   children: [
                     EmptyStateView(
                       imagePath: AppAssets.emptyState,
-                      message: context.tr.dietSupplementsEmpty,
-                      subtitle: context.tr.dietSupplementsEmptySubtitle,
+                      message: hasActivePlan
+                          ? context.tr.dietSupplementsEmpty
+                          : context.tr.dietNoPlanYet,
+                      subtitle: hasActivePlan
+                          ? context.tr.dietSupplementsEmptySubtitle
+                          : 'برای افزودن مکمل و مدیریت آن‌ها، ابتدا باید از بخش داشبورد برنامه‌ی غذایی خود را تولید کنید.',
                     ),
                   ],
                 ),
@@ -143,13 +151,8 @@ class _SupplementListItem extends HookWidget {
     final isConsumed = useState(false);
     final theme = Theme.of(context);
 
-    // Formatted subtitle string: "Dosage • Time"
-    final subtitleParts = [
-      if (item.dosageNote != null && item.dosageNote!.isNotEmpty)
-        item.dosageNote!,
-      if (item.times.isNotEmpty) PersianDigits.toPersian(item.times.join(' • ')),
-    ];
-    final subtitleText = subtitleParts.join('  •  ');
+    // Formatted subtitle string: "Dosage" (times removed as per requirement)
+    final subtitleText = item.dosageNote ?? '';
 
     Future<void> toggleConsumed() async {
       final previous = isConsumed.value;
@@ -264,7 +267,7 @@ class _SupplementListItem extends HookWidget {
   }
 }
 
-class _SupplementFormSheet extends HookWidget {
+class _SupplementFormSheet extends HookConsumerWidget {
   const _SupplementFormSheet({
     required this.onSubmit,
     this.supplement,
@@ -279,39 +282,53 @@ class _SupplementFormSheet extends HookWidget {
   ) onSubmit;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final planAsync = ref.watch(dietPlanNotifierProvider);
     final nameController = useTextEditingController(text: supplement?.name);
     final dosageController =
         useTextEditingController(text: supplement?.dosageNote);
-    final times = useState<List<String>>(
-      List<String>.from(supplement?.times ?? const []),
-    );
     final linkedSlot = useState<String?>(supplement?.linkedMealSlot);
     final isSaving = useState(false);
 
-    Future<void> addTime() async {
-      final picked = await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay.now(),
-      );
-      if (picked == null) return;
-      final formatted =
-          '${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}';
-      if (!times.value.contains(formatted)) {
-        times.value = [...times.value, formatted]..sort();
+    // Filter slots based on active plan
+    final activeSlots = useMemoized(() {
+      final plan = planAsync.value;
+      if (plan != null && plan.days.isNotEmpty) {
+        final slots = <String>{};
+        for (final day in plan.days) {
+          for (final entry in day.meals.entries) {
+            if (entry.value != null) {
+              slots.add(entry.key);
+            }
+          }
+        }
+        if (slots.isNotEmpty) {
+          return DietConstants.mealSlotKeys
+              .where((key) => slots.contains(key))
+              .toList();
+        }
       }
-    }
+      return orderedMealSlotKeys(); // Fallback if no plan
+    }, [planAsync.value]);
 
     Future<void> submit() async {
       final name = nameController.text.trim();
       if (name.isEmpty) return;
+
+      if (linkedSlot.value == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.tr.dietSupplementLinkedMealRequired)),
+        );
+        return;
+      }
+
       isSaving.value = true;
       final success = await onSubmit(
         name,
         dosageController.text.trim().isEmpty
             ? null
             : dosageController.text.trim(),
-        times.value,
+        const [], // Empty times as per requirement
         linkedSlot.value,
       );
       isSaving.value = false;
@@ -346,42 +363,13 @@ class _SupplementFormSheet extends HookWidget {
             inputFormatters: [createPersianTextFormatter()],
           ),
           Gap.v12(),
-          Text(
-            context.tr.dietSupplementTimesLabel,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: cTextSecondary,
-            ),
-          ),
-          Gap.v8(),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              for (final time in times.value)
-                Chip(
-                  label: Text(PersianDigits.toPersian(time)),
-                  onDeleted: () => times.value = times.value
-                      .where((item) => item != time)
-                      .toList(),
-                ),
-              ActionChip(
-                avatar: const Icon(Icons.add_rounded, size: 18),
-                label: Text(context.tr.dietAddTime),
-                onPressed: addTime,
-              ),
-            ],
-          ),
-          Gap.v12(),
           DropdownButtonFormField<String?>(
             value: linkedSlot.value,
             decoration: InputDecoration(
               labelText: context.tr.dietSupplementLinkedMealLabel,
             ),
             items: [
-              DropdownMenuItem<String?>(
-                child: Text(context.tr.dietNone),
-              ),
-              ...orderedMealSlotKeys().map(
+              ...activeSlots.map(
                 (slot) => DropdownMenuItem<String?>(
                   value: slot,
                   child: Text(dietMealSlotLabel(context, slot)),
@@ -389,6 +377,8 @@ class _SupplementFormSheet extends HookWidget {
               ),
             ],
             onChanged: (value) => linkedSlot.value = value,
+            validator: (value) =>
+                value == null ? context.tr.dietSupplementLinkedMealRequired : null,
           ),
           Gap.v16(),
           FilledButton(

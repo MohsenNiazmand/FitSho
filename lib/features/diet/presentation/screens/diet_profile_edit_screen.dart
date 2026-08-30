@@ -7,9 +7,11 @@ class DietProfileEditScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(context.tr.dietProfileEditTitle)),
-      body: const DietOnboardingForm(),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(title: Text(context.tr.dietProfileEditTitle)),
+        body: const DietOnboardingForm(),
+      ),
     );
   }
 }

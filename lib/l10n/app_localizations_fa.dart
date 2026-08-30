@@ -523,7 +523,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get dietAddTime => 'افزودن ساعت';
 
   @override
-  String get dietSupplementLinkedMealLabel => 'وعده مرتبط (اختیاری)';
+  String get dietSupplementLinkedMealLabel => 'وعده مرتبط';
 
   @override
   String get dietNone => 'بدون ارتباط';
@@ -552,6 +552,10 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get dietHistoryDeleteSuccess => 'برنامه با موفقیت حذف شد';
+
+  @override
+  String get dietSupplementLinkedMealRequired =>
+      'لطفاً وعده غذایی مرتبط را انتخاب کنید';
 
   @override
   String get forceUpdateTitle => 'بروزرسانی الزامی';

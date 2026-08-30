@@ -18,12 +18,14 @@ class DietMealSlotsScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final slotsAsync = ref.watch(mealSlotsNotifierProvider);
-    final profileAsync = ref.watch(dietProfileNotifierProvider);
     final planAsync = ref.watch(dietPlanNotifierProvider);
     final localSlots = useState<Map<String, MealSlotConfig>>({});
     final isSaving = useState(false);
 
     useEffect(() {
+      // mealSlotsNotifierProvider derives from the diet profile response
+      // (there's no dedicated GET endpoint for meal slots on the backend),
+      // so this already reflects the latest saved profile data.
       slotsAsync.whenData((slots) {
         if (slots.isEmpty) {
           localSlots.value = DietConstants.defaultMealSlots();
@@ -91,10 +93,17 @@ class DietMealSlotsScreen extends HookConsumerWidget {
 
     Future<void> save() async {
       isSaving.value = true;
+      final currentSlots = slotsAsync.value ?? {};
+      
+      // Merge: priority to local changes, then current server state,
+      // and finally defaults ONLY for keys that MUST exist.
       final payload = {
         for (final key in DietConstants.mealSlotKeys)
-          key: localSlots.value[key] ?? DietConstants.defaultMealSlots()[key]!,
+          key: localSlots.value[key] ??
+              currentSlots[key] ??
+              DietConstants.defaultMealSlots()[key]!.copyWith(enabled: false),
       };
+      
       final failure = await ref
           .read(mealSlotsNotifierProvider.notifier)
           .save(payload);
@@ -108,73 +117,75 @@ class DietMealSlotsScreen extends HookConsumerWidget {
       }
     }
 
-    return Scaffold(
-      appBar: AppBar(title: Text(context.tr.dietMealTimesSettings)),
-      body: slotsAsync.when(
-        loading: () => const AppLoadingIndicator(),
-        error: (error, _) => ErrorRetryView(
-          message: errorDisplayMessage(context, error),
-          onRetry: () => ref.invalidate(mealSlotsNotifierProvider),
-        ),
-        data: (_) {
-          return Column(
-            children: [
-              Expanded(
-                child: ListView(
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(title: Text(context.tr.dietMealTimesSettings)),
+        body: slotsAsync.when(
+          loading: () => const AppLoadingIndicator(),
+          error: (error, _) => ErrorRetryView(
+            message: errorDisplayMessage(context, error),
+            onRetry: () => ref.invalidate(mealSlotsNotifierProvider),
+          ),
+          data: (_) {
+            return Column(
+              children: [
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.all(20),
+                    children: [
+                      for (final slotKey in displaySlotKeys)
+                        _MealSlotTile(
+                          title: dietMealSlotLabel(context, slotKey),
+                          isEnabled: hasActivePlan,
+                          config:
+                              localSlots.value[slotKey] ??
+                              DietConstants.defaultMealSlots()[slotKey]!,
+                          onToggle: (enabled) {
+                            if (!hasActivePlan) return;
+                            final current =
+                                localSlots.value[slotKey] ??
+                                DietConstants.defaultMealSlots()[slotKey]!;
+                            localSlots.value = {
+                              ...localSlots.value,
+                              slotKey: MealSlotConfig(
+                                enabled: enabled,
+                                time: current.time,
+                                notificationsEnabled:
+                                    current.notificationsEnabled,
+                              ),
+                            };
+                          },
+                          onToggleNotifications: (enabled) {
+                            if (!hasActivePlan) return;
+                            final current =
+                                localSlots.value[slotKey] ??
+                                DietConstants.defaultMealSlots()[slotKey]!;
+                            localSlots.value = {
+                              ...localSlots.value,
+                              slotKey: MealSlotConfig(
+                                enabled: current.enabled,
+                                time: current.time,
+                                notificationsEnabled: enabled,
+                              ),
+                            };
+                          },
+                          onPickTime: () => pickTime(slotKey),
+                        ),
+                    ],
+                  ),
+                ),
+                Padding(
                   padding: const EdgeInsets.all(20),
-                  children: [
-                    for (final slotKey in displaySlotKeys)
-                      _MealSlotTile(
-                        title: dietMealSlotLabel(context, slotKey),
-                        isEnabled: hasActivePlan,
-                        config:
-                            localSlots.value[slotKey] ??
-                            DietConstants.defaultMealSlots()[slotKey]!,
-                        onToggle: (enabled) {
-                          if (!hasActivePlan) return;
-                          final current =
-                              localSlots.value[slotKey] ??
-                              DietConstants.defaultMealSlots()[slotKey]!;
-                          localSlots.value = {
-                            ...localSlots.value,
-                            slotKey: MealSlotConfig(
-                              enabled: enabled,
-                              time: current.time,
-                              notificationsEnabled:
-                                  current.notificationsEnabled,
-                            ),
-                          };
-                        },
-                        onToggleNotifications: (enabled) {
-                          if (!hasActivePlan) return;
-                          final current =
-                              localSlots.value[slotKey] ??
-                              DietConstants.defaultMealSlots()[slotKey]!;
-                          localSlots.value = {
-                            ...localSlots.value,
-                            slotKey: MealSlotConfig(
-                              enabled: current.enabled,
-                              time: current.time,
-                              notificationsEnabled: enabled,
-                            ),
-                          };
-                        },
-                        onPickTime: () => pickTime(slotKey),
-                      ),
-                  ],
+                  child: AppPrimaryButton(
+                    label: context.tr.save,
+                    isLoading: isSaving.value,
+                    onPressed: (isSaving.value || !hasActivePlan) ? null : save,
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: AppPrimaryButton(
-                  label: context.tr.save,
-                  isLoading: isSaving.value,
-                  onPressed: (isSaving.value || !hasActivePlan) ? null : save,
-                ),
-              ),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
       ),
     );
   }

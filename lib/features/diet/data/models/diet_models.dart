@@ -143,11 +143,9 @@ class MealSlotConfigModel {
   Map<String, dynamic> toJson() => _$MealSlotConfigModelToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class UpsertMealSlotsRequest {
-  const UpsertMealSlotsRequest({
-    required this.mealSlots,
-  });
+  const UpsertMealSlotsRequest({required this.mealSlots});
 
   factory UpsertMealSlotsRequest.fromJson(Map<String, dynamic> json) =>
       _$UpsertMealSlotsRequestFromJson(json);
@@ -409,22 +407,6 @@ class DietProfileOptionsEnvelope {
   final DietProfileOptionsModel data;
 
   Map<String, dynamic> toJson() => _$DietProfileOptionsEnvelopeToJson(this);
-}
-
-@JsonSerializable()
-class MealSlotsEnvelope {
-  const MealSlotsEnvelope({
-    required this.success,
-    required this.data,
-  });
-
-  factory MealSlotsEnvelope.fromJson(Map<String, dynamic> json) =>
-      _$MealSlotsEnvelopeFromJson(json);
-
-  final bool success;
-  final Map<String, MealSlotConfigModel> data;
-
-  Map<String, dynamic> toJson() => _$MealSlotsEnvelopeToJson(this);
 }
 
 @JsonSerializable()

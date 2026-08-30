@@ -26,8 +26,6 @@ abstract class DietRepository {
 
   Future<Either<Failure, DietProfile>> saveProfile(DietProfile profile);
 
-  Future<Either<Failure, Map<String, MealSlotConfig>>> getMealSlots();
-
   Future<Either<Failure, Map<String, MealSlotConfig>>> saveMealSlots(
     Map<String, MealSlotConfig> slots,
   );

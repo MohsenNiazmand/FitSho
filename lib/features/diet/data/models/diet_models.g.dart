@@ -168,7 +168,9 @@ UpsertMealSlotsRequest _$UpsertMealSlotsRequestFromJson(
 
 Map<String, dynamic> _$UpsertMealSlotsRequestToJson(
   UpsertMealSlotsRequest instance,
-) => <String, dynamic>{'mealSlots': instance.mealSlots};
+) => <String, dynamic>{
+  'mealSlots': instance.mealSlots.map((k, e) => MapEntry(k, e.toJson())),
+};
 
 DietMealModel _$DietMealModelFromJson(Map<String, dynamic> json) =>
     DietMealModel(
@@ -367,20 +369,6 @@ DietProfileOptionsEnvelope _$DietProfileOptionsEnvelopeFromJson(
 Map<String, dynamic> _$DietProfileOptionsEnvelopeToJson(
   DietProfileOptionsEnvelope instance,
 ) => <String, dynamic>{'success': instance.success, 'data': instance.data};
-
-MealSlotsEnvelope _$MealSlotsEnvelopeFromJson(Map<String, dynamic> json) =>
-    MealSlotsEnvelope(
-      success: json['success'] as bool,
-      data: (json['data'] as Map<String, dynamic>).map(
-        (k, e) => MapEntry(
-          k,
-          MealSlotConfigModel.fromJson(e as Map<String, dynamic>),
-        ),
-      ),
-    );
-
-Map<String, dynamic> _$MealSlotsEnvelopeToJson(MealSlotsEnvelope instance) =>
-    <String, dynamic>{'success': instance.success, 'data': instance.data};
 
 DietPlanEnvelope _$DietPlanEnvelopeFromJson(Map<String, dynamic> json) =>
     DietPlanEnvelope(
