@@ -22,15 +22,6 @@ class WeeklyPlanScreen extends ConsumerStatefulWidget {
 }
 
 class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
-  Future<void> _generatePlan() async {
-    final failure = await ref
-        .read(dietPlanNotifierProvider.notifier)
-        .generate();
-    if (failure != null && mounted) {
-      showFailureToast(context, failure);
-    }
-  }
-
   Future<void> _logMeal(String day, String slot) async {
     final failure = await ref
         .read(logMealNotifierProvider.notifier)
@@ -49,6 +40,9 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
 
     return Scaffold(
       backgroundColor: cBackground,
+      appBar: AppBar(
+        title: Text(context.tr.navWeeklyPlan),
+      ),
       body: SafeArea(
         bottom: false,
         child: profileAsync.when(
@@ -72,78 +66,77 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
               onRefresh: () async {
                 ref.invalidate(dietPlanNotifierProvider);
               },
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+              child: CustomScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        context.tr.navWeeklyPlan,
-                        style: Theme.of(context).textTheme.headlineSmall
-                            ?.copyWith(
-                              fontWeight: FontWeight.w800,
-                              color: cTextPrimary,
-                            ),
-                      ),
-                      if (planAsync.value != null)
-                        IconButton(
-                          onPressed: isGenerating ? null : _generatePlan,
-                          tooltip: context.tr.dietGeneratePlan,
-                          icon: isGenerating
-                              ? const SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                              : const Icon(Icons.refresh_rounded),
-                        ),
-                    ],
-                  ),
-                  Gap.v16(),
+                slivers: [
                   planAsync.when(
-                    loading: () => const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(24),
-                        child: CircularProgressIndicator(),
-                      ),
+                    loading: () => const SliverFillRemaining(
+                      child: Center(child: CircularProgressIndicator()),
                     ),
-                    error: (error, _) => ErrorRetryView(
-                      message: errorDisplayMessage(context, error),
-                      onRetry: () => ref.invalidate(dietPlanNotifierProvider),
+                    error: (error, _) => SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Center(
+                          child: ErrorRetryView(
+                            message: errorDisplayMessage(context, error),
+                            onRetry: () =>
+                                ref.invalidate(dietPlanNotifierProvider),
+                          ),
+                        ),
+                      ),
                     ),
                     data: (plan) {
                       if (plan == null) {
-                        return Column(
-                          children: [
-                            EmptyStateView(
-                              imagePath: AppAssets.emptyState,
-                              message: context.tr.dietNoPlanYet,
-                              subtitle: context.tr.dietNoPlanYetSubtitle,
+                        return SliverFillRemaining(
+                          hasScrollBody: false,
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                EmptyStateView(
+                                  imagePath: AppAssets.emptyState,
+                                  message: context.tr.dietNoPlanYet,
+                                  subtitle: context.tr.dietNoPlanYetSubtitle,
+                                ),
+                                Gap.v16(),
+                                AppPrimaryButton(
+                                  label: context.tr.dietGeneratePlan,
+                                  isLoading: isGenerating,
+                                  onPressed: isGenerating
+                                      ? null
+                                      : () async {
+                                          final failure = await ref
+                                              .read(dietPlanNotifierProvider
+                                                  .notifier)
+                                              .generate();
+                                          if (failure != null && mounted) {
+                                            showFailureToast(context, failure);
+                                          }
+                                        },
+                                ),
+                              ],
                             ),
-                            Gap.v16(),
-                            AppPrimaryButton(
-                              label: context.tr.dietGeneratePlan,
-                              isLoading: isGenerating,
-                              onPressed: isGenerating ? null : _generatePlan,
-                            ),
-                          ],
+                          ),
                         );
                       }
 
-                      return DietPlanSection(
-                        plan: plan,
-                        highlightDay: navigationTarget?.highlightDay,
-                        highlightSlot: navigationTarget?.highlightSlot,
-                        onLogMeal: _logMeal,
-                        onHighlightHandled: () {
-                          ref
-                              .read(dietNavigationNotifierProvider.notifier)
-                              .clear();
-                        },
+                      return SliverPadding(
+                        padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+                        sliver: SliverToBoxAdapter(
+                          child: DietPlanSection(
+                            plan: plan,
+                            highlightDay: navigationTarget?.highlightDay,
+                            highlightSlot: navigationTarget?.highlightSlot,
+                            onLogMeal: _logMeal,
+                            onHighlightHandled: () {
+                              ref
+                                  .read(dietNavigationNotifierProvider.notifier)
+                                  .clear();
+                            },
+                          ),
+                        ),
                       );
                     },
                   ),

@@ -26,10 +26,12 @@ class SupplementsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(context.tr.dietSupplementsTitle)),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _openForm(context, ref),
-        child: const Icon(Icons.add_rounded),
+        icon: const Icon(Icons.add_rounded),
+        label: const Text('افزودن مکمل'),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: supplementsAsync.when(
         loading: () => const AppLoadingIndicator(),
         error: (error, _) => ErrorRetryView(
@@ -61,42 +63,17 @@ class SupplementsScreen extends ConsumerWidget {
             separatorBuilder: (_, __) => Gap.v12(),
             itemBuilder: (context, index) {
               final item = items[index];
-              return Card(
-                child: ListTile(
-                  title: Text(item.name),
-                  subtitle: Text(
-                    [
-                      if (item.dosageNote != null) item.dosageNote!,
-                      if (item.times.isNotEmpty) item.times.join(' • '),
-                      if (item.linkedMealSlot != null)
-                        dietMealSlotLabel(context, item.linkedMealSlot!),
-                    ].join('\n'),
-                  ),
-                  trailing: PopupMenuButton<String>(
-                    onSelected: (value) async {
-                      if (value == 'edit') {
-                        await _openForm(context, ref, supplement: item);
-                      } else if (value == 'delete') {
-                        final failure = await ref
-                            .read(supplementsNotifierProvider.notifier)
-                            .delete(item.id);
-                        if (failure != null && context.mounted) {
-                          showFailureToast(context, failure);
-                        }
-                      }
-                    },
-                    itemBuilder: (context) => [
-                      PopupMenuItem(
-                        value: 'edit',
-                        child: Text(context.tr.edit),
-                      ),
-                      PopupMenuItem(
-                        value: 'delete',
-                        child: Text(context.tr.delete),
-                      ),
-                    ],
-                  ),
-                ),
+              return _SupplementListItem(
+                item: item,
+                onEdit: () => _openForm(context, ref, supplement: item),
+                onDelete: () async {
+                  final failure = await ref
+                      .read(supplementsNotifierProvider.notifier)
+                      .delete(item.id);
+                  if (failure != null && context.mounted) {
+                    showFailureToast(context, failure);
+                  }
+                },
               );
             },
           );
@@ -146,6 +123,143 @@ class SupplementsScreen extends ConsumerWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _SupplementListItem extends HookWidget {
+  const _SupplementListItem({
+    required this.item,
+    required this.onEdit,
+    required this.onDelete,
+  });
+
+  final Supplement item;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final isConsumed = useState(false);
+    final theme = Theme.of(context);
+
+    // Formatted subtitle string: "Dosage • Time"
+    final subtitleParts = [
+      if (item.dosageNote != null && item.dosageNote!.isNotEmpty)
+        item.dosageNote!,
+      if (item.times.isNotEmpty) PersianDigits.toPersian(item.times.join(' • ')),
+    ];
+    final subtitleText = subtitleParts.join('  •  ');
+
+    Future<void> toggleConsumed() async {
+      final previous = isConsumed.value;
+      isConsumed.value = !previous;
+
+      // Hypothetical API call
+      try {
+        // await ref.read(supplementsNotifierProvider.notifier).toggleLog(item.id);
+        await Future.delayed(const Duration(milliseconds: 600));
+      } catch (e) {
+        if (context.mounted) {
+          isConsumed.value = previous;
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('خطا در بروزرسانی وضعیت مکمل')),
+          );
+        }
+      }
+    }
+
+    return Card(
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        leading: Container(
+          width: 48,
+          height: 48,
+          decoration: BoxDecoration(
+            color: cPrimary.withValues(alpha: 0.1),
+            shape: BoxShape.circle,
+          ),
+          child: const Icon(Icons.medication_outlined, color: cPrimary),
+        ),
+        title: Text(
+          item.name,
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 4),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (subtitleText.isNotEmpty)
+                Text(
+                  subtitleText,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+              if (item.linkedMealSlot != null) ...[
+                const SizedBox(height: 4),
+                Text(
+                  dietMealSlotLabel(context, item.linkedMealSlot!),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: cPrimary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            InkWell(
+              onTap: toggleConsumed,
+              borderRadius: BorderRadius.circular(24),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  transitionBuilder: (child, animation) => ScaleTransition(
+                    scale: animation,
+                    child: child,
+                  ),
+                  child: Icon(
+                    isConsumed.value
+                        ? Icons.check_circle_rounded
+                        : Icons.radio_button_unchecked_rounded,
+                    key: ValueKey(isConsumed.value),
+                    color: isConsumed.value ? cSuccess : theme.disabledColor,
+                    size: 28,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 4),
+            PopupMenuButton<String>(
+              onSelected: (value) {
+                if (value == 'edit') {
+                  onEdit();
+                } else if (value == 'delete') {
+                  onDelete();
+                }
+              },
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  value: 'edit',
+                  child: Text(context.tr.edit),
+                ),
+                PopupMenuItem(
+                  value: 'delete',
+                  child: Text(context.tr.delete),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

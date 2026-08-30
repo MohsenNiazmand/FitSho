@@ -144,26 +144,71 @@ class DietMealCard extends StatelessWidget {
               ],
             ),
             Gap.v12(),
-            FilledButton(
-              onPressed: (!canLog || isLogging || isLogged)
+            InkWell(
+              onTap: (!canLog || isLogging || isLogged)
                   ? null
                   : () {
                       HapticFeedback.mediumImpact();
                       onLogMeal?.call();
                     },
-              style: isLogged
-                  ? FilledButton.styleFrom(
-                      backgroundColor: cSuccess.withValues(alpha: 0.1),
-                      foregroundColor: cSuccess,
-                    )
-                  : null,
-              child: isLogging
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : Text(isLogged ? 'خورده شد ✓' : context.tr.dietIAteThis),
+              borderRadius: BorderRadius.circular(AppRadius.pill),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: isLogged
+                      ? cSuccess.withValues(alpha: 0.1)
+                      : (isLogging || !canLog
+                          ? cSurfaceElevated
+                          : theme.colorScheme.primary),
+                  borderRadius: BorderRadius.circular(AppRadius.pill),
+                  border: isLogged
+                      ? Border.all(color: cSuccess.withValues(alpha: 0.2))
+                      : null,
+                ),
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  child: isLogging
+                      ? const Center(
+                          key: ValueKey('logging'),
+                          child: SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                            ),
+                          ),
+                        )
+                      : Center(
+                          key: ValueKey(isLogged),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              if (isLogged) ...[
+                                const Icon(
+                                  Icons.check_circle_rounded,
+                                  size: 20,
+                                  color: cSuccess,
+                                ),
+                                Gap.h8(),
+                              ],
+                              Text(
+                                isLogged ? 'خورده شد ✓' : context.tr.dietIAteThis,
+                                style: theme.textTheme.labelLarge?.copyWith(
+                                  color: isLogged
+                                      ? cSuccess
+                                      : (isLogging || !canLog
+                                          ? cTextSecondary
+                                          : Colors.white),
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                ),
+              ),
             ),
           ],
         ),

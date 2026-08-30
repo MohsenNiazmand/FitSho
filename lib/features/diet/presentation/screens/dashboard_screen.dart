@@ -60,6 +60,19 @@ class DashboardScreen extends HookConsumerWidget {
     final statsAsync = ref.watch(complianceStatsNotifierProvider);
     final isGenerating = planAsync.isLoading;
 
+    final plan = planAsync.value;
+    final now = DateTime.now();
+    final lastGeneratedAt = plan?.createdAt;
+    final bool cooldownActive = lastGeneratedAt != null &&
+        now.difference(lastGeneratedAt).inHours < 24;
+
+    String getGenerateLabel() {
+      final baseLabel = context.tr.dietGeneratePlan;
+      if (!cooldownActive) return baseLabel;
+      final remainingHours = 24 - now.difference(lastGeneratedAt!).inHours;
+      return '$baseLabel (${PersianDigits.toPersian(remainingHours.toString())} ساعت دیگر)';
+    }
+
     return Scaffold(
       backgroundColor: cBackground,
       body: SafeArea(
@@ -115,12 +128,6 @@ class DashboardScreen extends HookConsumerWidget {
                                     fontWeight: FontWeight.bold,
                                   ),
                             ),
-                          IconButton(
-                            onPressed: () =>
-                                context.push(AppRoutes.dietProfileEdit),
-                            tooltip: context.tr.dietProfileEditTitle,
-                            icon: const Icon(Icons.edit_outlined, size: 20),
-                          ),
                         ],
                       ),
                     ],
@@ -221,28 +228,91 @@ class DashboardScreen extends HookConsumerWidget {
                       return LastMealCard(mealLog: log);
                     },
                   ),
-                  Gap.v16(),
+                  Gap.v24(),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _QuickActionCard(
+                          icon: Icons.tune,
+                          label: context.tr.dietProfileEditTitle,
+                          onTap: () => context.push(AppRoutes.dietProfileEdit),
+                        ),
+                      ),
+                      Gap.h12(),
+                      Expanded(
+                        child: _QuickActionCard(
+                          icon: Icons.access_time,
+                          label: context.tr.dietMealTimesSettings,
+                          onTap: () => context.push(AppRoutes.dietMealSlots),
+                        ),
+                      ),
+                      Gap.h12(),
+                      Expanded(
+                        child: _QuickActionCard(
+                          icon: Icons.history,
+                          label: context.tr.dietHistoryTitle,
+                          onTap: () => context.push(AppRoutes.dietHistory),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Gap.v24(),
                   AppPrimaryButton(
-                    label: context.tr.dietGeneratePlan,
+                    label: getGenerateLabel(),
                     isLoading: isGenerating,
-                    onPressed: isGenerating
+                    onPressed: (isGenerating || cooldownActive)
                         ? null
                         : () => _generatePlan(context, ref),
-                  ),
-                  Gap.v12(),
-                  AppOutlinedButton(
-                    label: context.tr.dietMealTimesSettings,
-                    onPressed: () => context.push(AppRoutes.dietMealSlots),
-                  ),
-                  Gap.v12(),
-                  AppOutlinedButton(
-                    label: context.tr.dietHistoryTitle,
-                    onPressed: () => context.push(AppRoutes.dietHistory),
                   ),
                 ],
               ),
             );
           },
+        ),
+      ),
+    );
+  }
+}
+
+class _QuickActionCard extends StatelessWidget {
+  const _QuickActionCard({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.grey.shade100,
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, color: cPrimary, size: 28),
+              Gap.v8(),
+              Text(
+                label,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: cTextPrimary,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 11,
+                    ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -91,13 +91,6 @@ class DietPlanSection extends HookConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          context.tr.dietWeeklyPlanTitle,
-          style: Theme.of(
-            context,
-          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-        ),
-        Gap.v8(),
-        Text(
           context.tr.dietDailyCalorieTarget(
             PersianDigits.toPersian(plan.dailyCalorieTarget.toString()),
           ),

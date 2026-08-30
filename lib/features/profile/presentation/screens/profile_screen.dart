@@ -178,6 +178,7 @@ class ProfileScreen extends HookConsumerWidget {
     }
 
     return Scaffold(
+      backgroundColor: Colors.grey.shade50,
       resizeToAvoidBottomInset: true,
       body: SafeArea(
         bottom: false,
@@ -193,179 +194,216 @@ class ProfileScreen extends HookConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       _ProfileCoverHeader(colorScheme: colorScheme),
-                    Gap.custom(height: _avatarSize / 2 + 8),
-                    Text(
-                      displayName,
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: colorScheme.onSurface,
-                      ),
-                    ),
-                    Gap.v8(),
-                    Text(
-                      PersianDigits.toPersian(user.mobileNumber),
-                      textAlign: TextAlign.center,
-                      textDirection: TextDirection.ltr,
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        color: cTextHint,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Gap.v32(),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: TextFormField(
-                        controller: nameController,
-                        enabled: !isBusy,
-                        textInputAction: TextInputAction.done,
-                        textAlign: TextAlign.right,
-                        decoration: InputDecoration(
-                          labelText: context.tr.displayNameLabel,
-                          hintText: context.tr.displayNameHint,
-                          alignLabelWithHint: false,
-                          filled: true,
-                          fillColor: cSurfaceElevated,
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 18,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide: const BorderSide(color: cBorder),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide: BorderSide(
-                              color: cBorder.withValues(alpha: 0.9),
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide: BorderSide(
-                              color: colorScheme.primary.withValues(alpha: 0.6),
-                            ),
-                          ),
-                          prefixIcon: Icon(
-                            Icons.badge_outlined,
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return context.tr.displayNameRequired;
-                          }
-                          return null;
-                        },
-                        onFieldSubmitted: (_) => saveProfile(),
-                      ),
-                    ),
-                    Gap.v24(),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          borderRadius: AppRadius.button,
-                          boxShadow: [
-                            BoxShadow(
-                              color: cPrimary.withValues(alpha: 0.22),
-                              blurRadius: 14,
-                              offset: const Offset(0, 6),
-                            ),
-                          ],
-                        ),
-                        child: AppPrimaryButton(
-                          label: context.tr.saveProfile,
-                          isLoading: updateState.isLoading,
-                          onPressed: isBusy ? null : saveProfile,
+                      Gap.custom(height: _avatarSize / 2 + 16),
+                      Text(
+                        displayName,
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.w800,
+                          color: colorScheme.onSurface,
                         ),
                       ),
-                    ),
-                    Gap.v32(),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: Material(
-                        color: cSurfaceElevated,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: AppRadius.card,
-                          side: const BorderSide(color: cBorder),
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: ListTile(
-                          onTap: contactSupport,
-                          leading: Icon(
-                            Icons.mail_outline_rounded,
-                            color: colorScheme.primary,
-                          ),
-                          title: Text(context.tr.contactUsTitle),
-                          subtitle: Text(context.tr.contactUsSubtitle),
-                          trailing: const Icon(Icons.chevron_right_rounded),
+                      Gap.v8(),
+                      Text(
+                        PersianDigits.toPersian(user.mobileNumber),
+                        textAlign: TextAlign.center,
+                        textDirection: TextDirection.ltr,
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          color: Colors.grey.shade600,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
-                    ),
-                    Gap.v32(),
-                    const Divider(
-                      height: 1,
-                      thickness: 1,
-                      color: cDivider,
-                      indent: 24,
-                      endIndent: 24,
-                    ),
-                    Gap.v16(),
-                    Center(
-                      child: TextButton.icon(
-                        onPressed: isBusy ? null : confirmLogout,
-                        style: TextButton.styleFrom(
-                          foregroundColor: colorScheme.error,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 12,
-                          ),
+                      Gap.v32(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: _ProfileInfoCard(
+                          nameController: nameController,
+                          isBusy: isBusy,
+                          updateState: updateState,
+                          onSave: saveProfile,
                         ),
-                        icon: logoutState.isLoading
-                            ? SizedBox(
-                                width: 18,
-                                height: 18,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: colorScheme.error,
-                                ),
-                              )
-                            : const Icon(Icons.logout_rounded, size: 20),
-                        label: Text(context.tr.logout),
                       ),
-                    ),
-                    Center(
-                      child: TextButton.icon(
-                        onPressed: isBusy ? null : confirmDeleteAccount,
-                        style: TextButton.styleFrom(
-                          foregroundColor: colorScheme.error,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 12,
-                          ),
+                      Gap.v16(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: _SettingsActionsCard(
+                          isBusy: isBusy,
+                          logoutState: logoutState,
+                          deleteAccountState: deleteAccountState,
+                          onContactSupport: contactSupport,
+                          onLogout: confirmLogout,
+                          onDeleteAccount: confirmDeleteAccount,
                         ),
-                        icon: deleteAccountState.isLoading
-                            ? SizedBox(
-                                width: 18,
-                                height: 18,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: colorScheme.error,
-                                ),
-                              )
-                            : const Icon(
-                                Icons.delete_forever_rounded,
-                                size: 20,
-                              ),
-                        label: Text(context.tr.deleteAccount),
                       ),
-                    ),
-                    Gap.v8(),
-                  ],
+                      Gap.v16(),
+                    ],
+                  ),
                 ),
               ),
+      ),
+    );
+  }
+}
+
+class _ProfileInfoCard extends StatelessWidget {
+  const _ProfileInfoCard({
+    required this.nameController,
+    required this.isBusy,
+    required this.updateState,
+    required this.onSave,
+  });
+
+  final TextEditingController nameController;
+  final bool isBusy;
+  final AsyncValue updateState;
+  final VoidCallback onSave;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(color: Colors.grey.shade200),
+      ),
+      color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'اطلاعات حساب',
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
             ),
+            Gap.v16(),
+            TextFormField(
+              controller: nameController,
+              enabled: !isBusy,
+              textInputAction: TextInputAction.done,
+              textAlign: TextAlign.right,
+              decoration: InputDecoration(
+                labelText: context.tr.displayNameLabel,
+                hintText: context.tr.displayNameHint,
+                filled: true,
+                fillColor: Colors.grey.shade50,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: BorderSide(color: Colors.grey.shade200),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: BorderSide(color: Colors.grey.shade200),
+                ),
+                prefixIcon: const Icon(Icons.person_outline_rounded),
+              ),
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return context.tr.displayNameRequired;
+                }
+                return null;
+              },
+              onFieldSubmitted: (_) => onSave(),
+            ),
+            Gap.v24(),
+            AppPrimaryButton(
+              label: context.tr.saveProfile,
+              isLoading: updateState.isLoading,
+              onPressed: isBusy ? null : onSave,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SettingsActionsCard extends StatelessWidget {
+  const _SettingsActionsCard({
+    required this.isBusy,
+    required this.logoutState,
+    required this.deleteAccountState,
+    required this.onContactSupport,
+    required this.onLogout,
+    required this.onDeleteAccount,
+  });
+
+  final bool isBusy;
+  final AsyncValue logoutState;
+  final AsyncValue deleteAccountState;
+  final VoidCallback onContactSupport;
+  final VoidCallback onLogout;
+  final VoidCallback onDeleteAccount;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final destructiveColor = Colors.red.shade600;
+
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(color: Colors.grey.shade200),
+      ),
+      color: Colors.white,
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        children: [
+          ListTile(
+            onTap: onContactSupport,
+            leading: const Icon(Icons.email_outlined, color: cPrimary),
+            title: Text(context.tr.contactUsTitle),
+            subtitle: Text(
+              context.tr.contactUsSubtitle,
+              style: const TextStyle(fontSize: 12),
+            ),
+            trailing: const Icon(Icons.chevron_left_rounded, size: 20),
+          ),
+          const Divider(height: 1, indent: 56),
+          ListTile(
+            onTap: isBusy ? null : onLogout,
+            leading: logoutState.isLoading
+                ? const SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(strokeWidth: 2.5),
+                  )
+                : Icon(Icons.logout_rounded, color: destructiveColor),
+            title: Text(
+              context.tr.logout,
+              style: TextStyle(
+                color: destructiveColor,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            trailing: const Icon(Icons.chevron_left_rounded, size: 20),
+          ),
+          const Divider(height: 1, indent: 56),
+          ListTile(
+            onTap: isBusy ? null : onDeleteAccount,
+            leading: deleteAccountState.isLoading
+                ? const SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(strokeWidth: 2.5),
+                  )
+                : Icon(Icons.delete_outline_rounded, color: destructiveColor),
+            title: Text(
+              context.tr.deleteAccount,
+              style: TextStyle(
+                color: destructiveColor,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            trailing: const Icon(Icons.chevron_left_rounded, size: 20),
+          ),
+        ],
       ),
     );
   }
