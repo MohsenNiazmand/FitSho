@@ -67,11 +67,6 @@ class ExceptionMapper {
     if (statusCode == 422) {
       return ValidationFailure(message ?? 'Invalid input');
     }
-    if (statusCode == 502) {
-      return AiProviderFailure(
-        message ?? 'AI service temporarily unavailable',
-      );
-    }
     if (statusCode != null && statusCode >= 500 && statusCode < 600) {
       return ServerFailure(message ?? 'Server error');
     }

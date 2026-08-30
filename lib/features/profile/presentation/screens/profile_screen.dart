@@ -343,7 +343,7 @@ class _SettingsActionsCard extends StatelessWidget {
               context.tr.contactUsSubtitle,
               style: const TextStyle(fontSize: 12),
             ),
-            trailing: const Icon(Icons.chevron_left_rounded, size: 20),
+            trailing: const Icon(Icons.chevron_right_rounded, size: 20),
           ),
           const Divider(height: 1, indent: 56),
           ListTile(
@@ -362,27 +362,27 @@ class _SettingsActionsCard extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            trailing: const Icon(Icons.chevron_left_rounded, size: 20),
+            trailing: const Icon(Icons.chevron_right_rounded, size: 20),
           ),
-          const Divider(height: 1, indent: 56),
-          ListTile(
-            onTap: isBusy ? null : onDeleteAccount,
-            leading: deleteAccountState.isLoading
-                ? const SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(strokeWidth: 2.5),
-                  )
-                : Icon(Icons.delete_outline_rounded, color: destructiveColor),
-            title: Text(
-              context.tr.deleteAccount,
-              style: TextStyle(
-                color: destructiveColor,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            trailing: const Icon(Icons.chevron_left_rounded, size: 20),
-          ),
+          // const Divider(height: 1, indent: 56),
+          // ListTile(
+          //   onTap: isBusy ? null : onDeleteAccount,
+          //   leading: deleteAccountState.isLoading
+          //       ? const SizedBox(
+          //           width: 24,
+          //           height: 24,
+          //           child: CircularProgressIndicator(strokeWidth: 2.5),
+          //         )
+          //       : Icon(Icons.delete_outline_rounded, color: destructiveColor),
+          //   title: Text(
+          //     context.tr.deleteAccount,
+          //     style: TextStyle(
+          //       color: destructiveColor,
+          //       fontWeight: FontWeight.w600,
+          //     ),
+          //   ),
+          //   trailing: const Icon(Icons.chevron_left_rounded, size: 20),
+          // ),
         ],
       ),
     );
