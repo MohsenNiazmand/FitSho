@@ -5,6 +5,7 @@ import 'package:fitsho/core/constants/colors.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
 import 'package:fitsho/core/utils/persian_digits.dart';
 import 'package:fitsho/features/diet/domain/entities/diet_entities.dart';
+import 'package:fitsho/features/diet/presentation/utils/diet_labels.dart';
 import 'package:fitsho/shared/presentation/widgets/gap.dart';
 
 class DietMealCard extends StatelessWidget {
@@ -14,8 +15,9 @@ class DietMealCard extends StatelessWidget {
     required this.day,
     required this.isHighlighted,
     required this.isLogging,
-    this.isLogged = false,
     required this.onLogMeal,
+    this.isLogged = false,
+    this.canLog = true,
     super.key,
   });
 
@@ -25,6 +27,7 @@ class DietMealCard extends StatelessWidget {
   final bool isHighlighted;
   final bool isLogging;
   final bool isLogged;
+  final bool canLog;
   final VoidCallback? onLogMeal;
 
   @override
@@ -61,6 +64,20 @@ class DietMealCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Row(
+              children: [
+                Icon(dietSlotIcon(slot), size: 16, color: cPrimary),
+                Gap.h8(),
+                Text(
+                  dietMealSlotLabel(context, slot),
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: cPrimary,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+            Gap.v8(),
             Text(
               meal.title,
               style: theme.textTheme.titleMedium?.copyWith(
@@ -128,7 +145,7 @@ class DietMealCard extends StatelessWidget {
             ),
             Gap.v12(),
             FilledButton(
-              onPressed: (isLogging || isLogged)
+              onPressed: (!canLog || isLogging || isLogged)
                   ? null
                   : () {
                       HapticFeedback.mediumImpact();

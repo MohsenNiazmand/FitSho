@@ -380,14 +380,7 @@ class DietOnboardingForm extends HookConsumerWidget {
                       ...mealSlots.value.entries.map((entry) {
                         final slotKey = entry.key;
                         final config = entry.value;
-                        final icon = switch (slotKey) {
-                          'breakfast' => Icons.coffee_rounded,
-                          'lunch' => Icons.wb_sunny_rounded,
-                          'dinner' => Icons.nightlight_round,
-                          'morning_snack' => Icons.apple_rounded,
-                          'afternoon_snack' => Icons.cookie_rounded,
-                          _ => Icons.restaurant_rounded,
-                        };
+                        final icon = dietSlotIcon(slotKey);
 
                         return _MealSlotInput(
                           title: dietMealSlotLabel(context, slotKey),

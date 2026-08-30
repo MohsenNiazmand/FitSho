@@ -28,6 +28,17 @@ String dietMealSlotLabel(BuildContext context, String slotKey) {
   };
 }
 
+IconData dietSlotIcon(String slotKey) {
+  return switch (slotKey) {
+    'breakfast' => Icons.coffee_rounded,
+    'lunch' => Icons.wb_sunny_rounded,
+    'dinner' => Icons.nightlight_round,
+    'morning_snack' => Icons.apple_rounded,
+    'afternoon_snack' => Icons.cookie_rounded,
+    _ => Icons.restaurant_rounded,
+  };
+}
+
 String dietGenderLabel(BuildContext context, String gender) {
   final tr = context.tr;
   return switch (gender) {

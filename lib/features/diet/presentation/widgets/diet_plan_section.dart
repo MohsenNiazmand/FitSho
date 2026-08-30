@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:fitsho/core/constants/colors.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
 import 'package:fitsho/core/utils/persian_digits.dart';
+import 'package:fitsho/features/diet/domain/constants/diet_constants.dart';
 import 'package:fitsho/features/diet/domain/entities/diet_entities.dart';
 import 'package:fitsho/features/diet/presentation/providers/diet_providers.dart';
 import 'package:fitsho/features/diet/presentation/utils/diet_labels.dart';
@@ -32,10 +33,8 @@ class DietPlanSection extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final todayLogs = ref.watch(todayMealLogsNotifierProvider).value ?? [];
     final dayKeys = orderedDayKeys();
-    final selectedDay = useState(
-      highlightDay ??
-          (plan.days.isNotEmpty ? plan.days.first.day : dayKeys.first),
-    );
+    final todayKey = DietConstants.todayKey();
+    final selectedDay = useState(highlightDay ?? todayKey);
 
     final mealCardKeys = useMemoized(
       () => {for (final slot in orderedMealSlotKeys()) slot: GlobalKey()},
@@ -120,6 +119,17 @@ class DietPlanSection extends HookConsumerWidget {
                     label: Text(dietDayLabel(context, dayKey)),
                     selected: selectedDay.value == dayKey,
                     onSelected: (_) => selectedDay.value = dayKey,
+                    side: dayKey == todayKey
+                        ? const BorderSide(color: cPrimary, width: 1.5)
+                        : null,
+                    labelStyle: dayKey == todayKey
+                        ? TextStyle(
+                            fontWeight: FontWeight.w700,
+                            color: selectedDay.value == dayKey
+                                ? null
+                                : cPrimary,
+                          )
+                        : null,
                   ),
                 ),
             ],
@@ -139,6 +149,7 @@ class DietPlanSection extends HookConsumerWidget {
               isLogged: todayLogs.any(
                 (log) => log.day == currentDay.day && log.slot == slot,
               ),
+              canLog: currentDay.day == todayKey,
               onLogMeal: () => onLogMeal(currentDay.day, slot),
             ),
       ],
