@@ -9,14 +9,14 @@ part 'preference_api.g.dart';
 abstract class PreferenceApi {
   factory PreferenceApi(Dio dio, {String baseUrl}) = _PreferenceApi;
 
-  @GET('/api/preferences')
+  @GET('preferences')
   Future<PreferenceEnvelope> getPreferences();
 
-  @PUT('/api/preferences')
+  @PUT('preferences')
   Future<PreferenceEnvelope> upsertPreferences(
     @Body() UpsertPreferenceRequest body,
   );
 
-  @DELETE('/api/preferences')
+  @DELETE('preferences')
   Future<MessageResponse> deletePreferences();
 }

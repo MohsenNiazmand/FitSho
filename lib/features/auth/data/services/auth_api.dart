@@ -10,24 +10,24 @@ part 'auth_api.g.dart';
 abstract class AuthApi {
   factory AuthApi(Dio dio, {String baseUrl}) = _AuthApi;
 
-  @POST('/api/auth/otp/request')
+  @POST('auth/otp/request')
   Future<MessageResponse> requestOtp(@Body() OtpRequestBody body);
 
-  @POST('/api/auth/otp/verify')
+  @POST('auth/otp/verify')
   Future<AuthTokenResponse> verifyOtp(@Body() OtpVerifyBody body);
 
-  @POST('/api/auth/refresh')
+  @POST('auth/refresh')
   Future<RefreshTokenResponse> refreshToken(@Body() RefreshTokenBody body);
 
-  @POST('/api/auth/logout')
+  @POST('auth/logout')
   Future<MessageResponse> logout();
 
-  @GET('/api/auth/me')
+  @GET('auth/me')
   Future<UserEnvelope> getMe();
 
-  @PATCH('/api/auth/me')
+  @PATCH('auth/me')
   Future<UserEnvelope> updateProfile(@Body() UpdateProfileBody body);
 
-  @DELETE('/api/auth/me')
+  @DELETE('auth/me')
   Future<MessageResponse> deleteAccount();
 }

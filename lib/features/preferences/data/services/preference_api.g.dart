@@ -27,7 +27,7 @@ class _PreferenceApi implements PreferenceApi {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/preferences',
+            'preferences',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -57,7 +57,7 @@ class _PreferenceApi implements PreferenceApi {
       Options(method: 'PUT', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/preferences',
+            'preferences',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -84,7 +84,7 @@ class _PreferenceApi implements PreferenceApi {
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/preferences',
+            'preferences',
             queryParameters: queryParameters,
             data: _data,
           )

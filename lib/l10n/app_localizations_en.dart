@@ -553,4 +553,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dietHistoryDeleteSuccess => 'Plan deleted successfully';
+
+  @override
+  String get forceUpdateTitle => 'Mandatory update';
+
+  @override
+  String get forceUpdateMessage =>
+      'To continue using the app, you must update to the latest version.';
+
+  @override
+  String get optionalUpdateTitle => 'New version available';
+
+  @override
+  String get optionalUpdateMessage =>
+      'A new version of FitSho is available. Would you like to update?';
+
+  @override
+  String get updateNow => 'Update now';
+
+  @override
+  String get later => 'Later';
 }

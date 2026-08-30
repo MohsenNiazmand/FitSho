@@ -3,6 +3,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fitsho/core/app_config/data/repositories/app_config_repository_impl.dart';
+import 'package:fitsho/core/app_config/data/services/app_config_api.dart';
+import 'package:fitsho/core/app_config/domain/repositories/app_config_repository.dart';
 import 'package:fitsho/core/network/dio_client.dart';
 import 'package:fitsho/core/storage/device_id_service.dart';
 import 'package:fitsho/core/storage/hive_initializer.dart';
@@ -75,8 +78,12 @@ Future<void> initializeDependencies() async {
       ),
     )
     ..registerLazySingleton<AuthApi>(() => AuthApi(getIt()))
+    ..registerLazySingleton<AppConfigApi>(() => AppConfigApi(getIt()))
     ..registerLazySingleton<PreferenceApi>(() => PreferenceApi(getIt()))
     ..registerLazySingleton<DietApi>(() => DietApi(getIt()))
+    ..registerLazySingleton<AppConfigRepository>(
+      () => AppConfigRepositoryImpl(getIt()),
+    )
     ..registerLazySingleton<DietRepository>(
       () => DietRepositoryImpl(getIt(), getIt()),
     )

@@ -1,11 +1,11 @@
 import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
 import 'package:dio/dio.dart';
-import 'package:logger/logger.dart';
 import 'package:fitsho/core/constants/app_config.dart';
 import 'package:fitsho/core/network/api_response_logger_interceptor.dart';
 import 'package:fitsho/core/network/auth_interceptor.dart';
 import 'package:fitsho/core/storage/device_id_service.dart';
 import 'package:fitsho/core/storage/token_storage.dart';
+import 'package:logger/logger.dart';
 
 Dio createDio({
   required TokenStorage tokenStorage,

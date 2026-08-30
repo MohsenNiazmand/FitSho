@@ -552,4 +552,24 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get dietHistoryDeleteSuccess => 'برنامه با موفقیت حذف شد';
+
+  @override
+  String get forceUpdateTitle => 'بروزرسانی الزامی';
+
+  @override
+  String get forceUpdateMessage =>
+      'برای ادامه‌ی استفاده باید اپلیکیشن را به آخرین نسخه بروزرسانی کنید.';
+
+  @override
+  String get optionalUpdateTitle => 'نسخه جدید موجود است';
+
+  @override
+  String get optionalUpdateMessage =>
+      'نسخه جدید اپلیکیشن فیت‌شو منتشر شده است. مایل به بروزرسانی هستید؟';
+
+  @override
+  String get updateNow => 'بروزرسانی';
+
+  @override
+  String get later => 'بعداً';
 }

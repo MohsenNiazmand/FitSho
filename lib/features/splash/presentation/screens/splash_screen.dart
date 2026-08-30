@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:fitsho/core/app_config/presentation/providers/app_config_provider.dart';
+import 'package:fitsho/core/app_config/presentation/widgets/update_dialogs.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
 import 'package:fitsho/features/auth/presentation/providers/auth_state_provider.dart';
 import 'package:fitsho/shared/presentation/widgets/app_icon_badge.dart';
@@ -13,14 +15,45 @@ class SplashScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final versionCheck = ref.watch(appVersionCheckProvider);
+
     useEffect(
       () {
-        SchedulerBinding.instance.addPostFrameCallback((_) async {
-          await ref.read(authStateProvider.notifier).checkSession();
-        });
+        if (versionCheck is AsyncData) {
+          final info = versionCheck.value!;
+          if (info.status == VersionStatus.forceUpdate) {
+            SchedulerBinding.instance.addPostFrameCallback((_) {
+              showDialog<void>(
+                context: context,
+                barrierDismissible: false,
+                builder: (_) => ForceUpdateDialog(updateUrl: info.updateUrl!),
+              );
+            });
+          } else if (info.status == VersionStatus.updateAvailable) {
+            SchedulerBinding.instance.addPostFrameCallback((_) async {
+              await showDialog<void>(
+                context: context,
+                builder: (_) => OptionalUpdateDialog(updateUrl: info.updateUrl!),
+              );
+              if (context.mounted) {
+                await ref.read(authStateProvider.notifier).checkSession();
+              }
+            });
+          } else {
+            // Latest version or error (already handled by provider)
+            SchedulerBinding.instance.addPostFrameCallback((_) async {
+              await ref.read(authStateProvider.notifier).checkSession();
+            });
+          }
+        } else if (versionCheck is AsyncError) {
+          // If error (offline, server down), continue to app
+          SchedulerBinding.instance.addPostFrameCallback((_) async {
+            await ref.read(authStateProvider.notifier).checkSession();
+          });
+        }
         return null;
       },
-      const [],
+      [versionCheck],
     );
 
     final theme = Theme.of(context);

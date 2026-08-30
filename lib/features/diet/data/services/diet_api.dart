@@ -9,71 +9,71 @@ part 'diet_api.g.dart';
 abstract class DietApi {
   factory DietApi(Dio dio, {String baseUrl}) = _DietApi;
 
-  @GET('/api/diet-profile/options')
+  @GET('diet-profile/options')
   Future<DietProfileOptionsEnvelope> getProfileOptions();
 
-  @GET('/api/diet-profile')
+  @GET('diet-profile')
   Future<DietProfileEnvelope> getProfile();
 
-  @PUT('/api/diet-profile')
+  @PUT('diet-profile')
   Future<DietProfileEnvelope> upsertProfile(
     @Body() UpsertDietProfileRequest body,
   );
 
-  @GET('/api/diet-profile/meal-slots')
+  @GET('diet-profile/meal-slots')
   Future<MealSlotsEnvelope> getMealSlots();
 
-  @PUT('/api/diet-profile/meal-slots')
+  @PUT('diet-profile/meal-slots')
   Future<MealSlotsEnvelope> upsertMealSlots(
     @Body() UpsertMealSlotsRequest body,
   );
 
-  @GET('/api/diet-plans')
+  @GET('diet-plans')
   Future<DietPlanEnvelope> getActivePlan();
 
-  @GET('/api/diet-plans/history')
+  @GET('diet-plans/history')
   Future<DietPlanListEnvelope> getPlanHistory();
 
-  @POST('/api/diet-plans/generate')
+  @POST('diet-plans/generate')
   Future<DietPlanEnvelope> generatePlan();
 
-  @DELETE('/api/diet-plans/{id}')
+  @DELETE('diet-plans/{id}')
   Future<MessageResponse> deletePlan(@Path('id') String id);
 
-  @GET('/api/meal-logs/last')
+  @GET('meal-logs/last')
   Future<MealLogEnvelope> getLastMealLog();
 
-  @GET('/api/meal-logs/today')
+  @GET('meal-logs/today')
   Future<MealLogListEnvelope> getTodayMealLogs();
 
-  @GET('/api/meal-logs/stats')
+  @GET('meal-logs/stats')
   Future<ComplianceStatsEnvelope> getComplianceStats();
 
-  @POST('/api/meal-logs')
+  @POST('meal-logs')
   Future<MealLogEnvelope> logMeal(@Body() LogMealRequest body);
 
-  @GET('/api/supplements')
+  @GET('supplements')
   Future<SupplementListEnvelope> listSupplements();
 
-  @POST('/api/supplements')
+  @POST('supplements')
   Future<SupplementEnvelope> createSupplement(
     @Body() CreateSupplementRequest body,
   );
 
-  @PATCH('/api/supplements/{id}')
+  @PATCH('supplements/{id}')
   Future<SupplementEnvelope> updateSupplement(
     @Path('id') String id,
     @Body() UpdateSupplementRequest body,
   );
 
-  @DELETE('/api/supplements/{id}')
+  @DELETE('supplements/{id}')
   Future<MessageResponse> deleteSupplement(@Path('id') String id);
 
-  @POST('/api/notifications/tokens')
+  @POST('notifications/tokens')
   Future<MessageResponse> registerFcmToken(
     @Body() FcmTokenRegistrationRequest body,
   );
 
-  @DELETE('/api/notifications/tokens/{token}')
+  @DELETE('notifications/tokens/{token}')
   Future<MessageResponse> unregisterFcmToken(@Path('token') String token);
 }

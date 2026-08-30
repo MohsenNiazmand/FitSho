@@ -28,7 +28,7 @@ class _AuthApi implements AuthApi {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/auth/otp/request',
+            'auth/otp/request',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -56,7 +56,7 @@ class _AuthApi implements AuthApi {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/auth/otp/verify',
+            'auth/otp/verify',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -84,7 +84,7 @@ class _AuthApi implements AuthApi {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/auth/refresh',
+            'auth/refresh',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -111,7 +111,7 @@ class _AuthApi implements AuthApi {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/auth/logout',
+            'auth/logout',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -138,7 +138,7 @@ class _AuthApi implements AuthApi {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/auth/me',
+            'auth/me',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -166,7 +166,7 @@ class _AuthApi implements AuthApi {
       Options(method: 'PATCH', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/auth/me',
+            'auth/me',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -193,7 +193,7 @@ class _AuthApi implements AuthApi {
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/auth/me',
+            'auth/me',
             queryParameters: queryParameters,
             data: _data,
           )

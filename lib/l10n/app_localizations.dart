@@ -1123,6 +1123,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Plan deleted successfully'**
   String get dietHistoryDeleteSuccess;
+
+  /// No description provided for @forceUpdateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mandatory update'**
+  String get forceUpdateTitle;
+
+  /// No description provided for @forceUpdateMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'To continue using the app, you must update to the latest version.'**
+  String get forceUpdateMessage;
+
+  /// No description provided for @optionalUpdateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New version available'**
+  String get optionalUpdateTitle;
+
+  /// No description provided for @optionalUpdateMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'A new version of FitSho is available. Would you like to update?'**
+  String get optionalUpdateMessage;
+
+  /// No description provided for @updateNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Update now'**
+  String get updateNow;
+
+  /// No description provided for @later.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get later;
 }
 
 class _AppLocalizationsDelegate

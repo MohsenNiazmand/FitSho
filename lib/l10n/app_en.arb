@@ -226,5 +226,11 @@
   "dietHistoryDeleteConfirmBody": "Are you sure you want to delete this diet plan?",
   "dietHistoryDeleteConfirmConfirm": "Delete",
   "dietHistoryDeleteConfirmCancel": "Cancel",
-  "dietHistoryDeleteSuccess": "Plan deleted successfully"
+  "dietHistoryDeleteSuccess": "Plan deleted successfully",
+  "forceUpdateTitle": "Mandatory update",
+  "forceUpdateMessage": "To continue using the app, you must update to the latest version.",
+  "optionalUpdateTitle": "New version available",
+  "optionalUpdateMessage": "A new version of FitSho is available. Would you like to update?",
+  "updateNow": "Update now",
+  "later": "Later"
 }

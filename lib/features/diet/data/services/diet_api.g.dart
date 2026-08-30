@@ -27,7 +27,7 @@ class _DietApi implements DietApi {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/diet-profile/options',
+            'diet-profile/options',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -54,7 +54,7 @@ class _DietApi implements DietApi {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/diet-profile',
+            'diet-profile',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -84,7 +84,7 @@ class _DietApi implements DietApi {
       Options(method: 'PUT', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/diet-profile',
+            'diet-profile',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -111,7 +111,7 @@ class _DietApi implements DietApi {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/diet-profile/meal-slots',
+            'diet-profile/meal-slots',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -139,7 +139,7 @@ class _DietApi implements DietApi {
       Options(method: 'PUT', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/diet-profile/meal-slots',
+            'diet-profile/meal-slots',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -166,7 +166,7 @@ class _DietApi implements DietApi {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/diet-plans',
+            'diet-plans',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -193,7 +193,7 @@ class _DietApi implements DietApi {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/diet-plans/history',
+            'diet-plans/history',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -220,7 +220,7 @@ class _DietApi implements DietApi {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/diet-plans/generate',
+            'diet-plans/generate',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -247,7 +247,7 @@ class _DietApi implements DietApi {
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/diet-plans/${id}',
+            'diet-plans/${id}',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -274,7 +274,7 @@ class _DietApi implements DietApi {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/meal-logs/last',
+            'meal-logs/last',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -301,7 +301,7 @@ class _DietApi implements DietApi {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/meal-logs/today',
+            'meal-logs/today',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -328,7 +328,7 @@ class _DietApi implements DietApi {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/meal-logs/stats',
+            'meal-logs/stats',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -356,7 +356,7 @@ class _DietApi implements DietApi {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/meal-logs',
+            'meal-logs',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -383,7 +383,7 @@ class _DietApi implements DietApi {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/supplements',
+            'supplements',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -413,7 +413,7 @@ class _DietApi implements DietApi {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/supplements',
+            'supplements',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -444,7 +444,7 @@ class _DietApi implements DietApi {
       Options(method: 'PATCH', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/supplements/${id}',
+            'supplements/${id}',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -471,7 +471,7 @@ class _DietApi implements DietApi {
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/supplements/${id}',
+            'supplements/${id}',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -501,7 +501,7 @@ class _DietApi implements DietApi {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/notifications/tokens',
+            'notifications/tokens',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -528,7 +528,7 @@ class _DietApi implements DietApi {
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/notifications/tokens/${token}',
+            'notifications/tokens/${token}',
             queryParameters: queryParameters,
             data: _data,
           )

@@ -38,17 +38,19 @@ class AuthInterceptor extends QueuedInterceptor {
   static Future<bool>? _refreshFuture;
 
   static const _noAuthHeaderPaths = {
-    '/api/auth/otp/request',
-    '/api/auth/otp/verify',
-    '/api/auth/refresh',
+    'auth/otp/request',
+    'auth/otp/verify',
+    'auth/refresh',
+    'app-config',
     '/health',
   };
 
   static const _noRefreshOn401Paths = {
-    '/api/auth/otp/request',
-    '/api/auth/otp/verify',
-    '/api/auth/refresh',
-    '/api/auth/logout',
+    'auth/otp/request',
+    'auth/otp/verify',
+    'auth/refresh',
+    'auth/logout',
+    'app-config',
     '/health',
   };
 
