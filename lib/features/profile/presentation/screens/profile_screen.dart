@@ -284,17 +284,15 @@ class ProfileScreen extends HookConsumerWidget {
                     Gap.v32(),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: cSurfaceElevated,
+                      child: Material(
+                        color: cSurfaceElevated,
+                        shape: RoundedRectangleBorder(
                           borderRadius: AppRadius.card,
-                          border: Border.all(color: cBorder),
+                          side: const BorderSide(color: cBorder),
                         ),
+                        clipBehavior: Clip.antiAlias,
                         child: ListTile(
                           onTap: contactSupport,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: AppRadius.card,
-                          ),
                           leading: Icon(
                             Icons.mail_outline_rounded,
                             color: colorScheme.primary,

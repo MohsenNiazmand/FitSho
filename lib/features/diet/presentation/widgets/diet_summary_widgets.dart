@@ -184,8 +184,8 @@ class ComplianceRing extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final percentage = (rate * 100).toInt();
-    final isHigh = rate >= 0.8;
+    final percentage = rate.toInt();
+    final isHigh = percentage >= 80;
     final mainColor = isHigh ? Colors.amber.shade700 : cWarning;
 
     return Container(
@@ -204,7 +204,7 @@ class ComplianceRing extends StatelessWidget {
                 width: 64,
                 height: 64,
                 child: CircularProgressIndicator(
-                  value: rate,
+                  value: (rate / 100).clamp(0.0, 1.0),
                   strokeWidth: 6,
                   backgroundColor: mainColor.withValues(alpha: 0.1),
                   valueColor: AlwaysStoppedAnimation(mainColor),
