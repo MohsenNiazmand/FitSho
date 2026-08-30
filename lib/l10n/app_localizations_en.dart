@@ -600,4 +600,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get onboardingSubtitle3 =>
       'We are with you every step of the way to achieve your health goals.';
+
+  @override
+  String get aiGeneratingPlanTitle => 'AI is analyzing...';
+
+  @override
+  String get aiGeneratingPlanMessage =>
+      'Please be patient, FitSho\'s AI is formulating the best meal plan based on your physique and goals.';
 }

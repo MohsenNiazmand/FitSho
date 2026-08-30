@@ -1207,6 +1207,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'We are with you every step of the way to achieve your health goals.'**
   String get onboardingSubtitle3;
+
+  /// No description provided for @aiGeneratingPlanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'AI is analyzing...'**
+  String get aiGeneratingPlanTitle;
+
+  /// No description provided for @aiGeneratingPlanMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please be patient, FitSho\'s AI is formulating the best meal plan based on your physique and goals.'**
+  String get aiGeneratingPlanMessage;
 }
 
 class _AppLocalizationsDelegate

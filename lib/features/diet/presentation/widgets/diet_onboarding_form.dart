@@ -13,6 +13,7 @@ import 'package:fitsho/features/diet/domain/entities/diet_entities.dart';
 import 'package:fitsho/features/diet/presentation/providers/diet_providers.dart';
 import 'package:fitsho/features/diet/presentation/utils/diet_labels.dart';
 import 'package:fitsho/shared/presentation/utils/toast_utils.dart';
+import 'package:fitsho/features/diet/presentation/widgets/ai_loading_dialog.dart';
 import 'package:fitsho/shared/presentation/widgets/app_primary_button.dart';
 import 'package:fitsho/shared/presentation/widgets/app_text_field.dart';
 import 'package:fitsho/shared/presentation/widgets/gap.dart';
@@ -475,8 +476,10 @@ Future<void> _generatePlanAfterProfileSave(
   BuildContext context,
   WidgetRef ref,
 ) async {
+  AiLoadingDialog.show(context);
   final failure = await ref.read(dietPlanNotifierProvider.notifier).generate();
   if (!context.mounted) return;
+  AiLoadingDialog.hide(context);
 
   if (failure != null) {
     if (failure is AiProviderFailure) {

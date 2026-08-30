@@ -599,4 +599,11 @@ class AppLocalizationsFa extends AppLocalizations {
   @override
   String get onboardingSubtitle3 =>
       'ما در هر قدم همراه شما هستیم تا به اهداف سلامتی خود برسید.';
+
+  @override
+  String get aiGeneratingPlanTitle => 'هوش مصنوعی در حال بررسی...';
+
+  @override
+  String get aiGeneratingPlanMessage =>
+      'لطفاً صبور باشید، هوش مصنوعی فیت‌شو در حال تدوین بهترین برنامه غذایی بر اساس فیزیک و اهداف شماست.';
 }

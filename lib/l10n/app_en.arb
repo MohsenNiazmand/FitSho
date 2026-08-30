@@ -240,5 +240,7 @@
   "onboardingTitle2": "Track Daily Progress",
   "onboardingSubtitle2": "Easily record and manage your calorie intake and workout activities.",
   "onboardingTitle3": "Achieve Ideal Body",
-  "onboardingSubtitle3": "We are with you every step of the way to achieve your health goals."
+  "onboardingSubtitle3": "We are with you every step of the way to achieve your health goals.",
+  "aiGeneratingPlanTitle": "AI is analyzing...",
+  "aiGeneratingPlanMessage": "Please be patient, FitSho's AI is formulating the best meal plan based on your physique and goals."
 }

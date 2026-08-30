@@ -18,6 +18,8 @@ class DietMealSlotsScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final slotsAsync = ref.watch(mealSlotsNotifierProvider);
+    final profileAsync = ref.watch(dietProfileNotifierProvider);
+    final planAsync = ref.watch(dietPlanNotifierProvider);
     final localSlots = useState<Map<String, MealSlotConfig>>({});
     final isSaving = useState(false);
 
@@ -32,7 +34,36 @@ class DietMealSlotsScreen extends HookConsumerWidget {
       return null;
     }, [slotsAsync]);
 
+    // Determine which slots to show based on the active plan or profile selection
+    final displaySlotKeys = useMemoized(() {
+      final plan = planAsync.value;
+      if (plan != null && plan.days.isNotEmpty) {
+        // Collect all slots that have at least one meal in the plan
+        final activeSlots = <String>{};
+        for (final day in plan.days) {
+          for (final entry in day.meals.entries) {
+            if (entry.value != null) {
+              activeSlots.add(entry.key);
+            }
+          }
+        }
+        if (activeSlots.isNotEmpty) {
+          return DietConstants.mealSlotKeys
+              .where((key) => activeSlots.contains(key))
+              .toList();
+        }
+      }
+
+      // Fallback to localSlots enabled status if no plan or empty plan
+      return DietConstants.mealSlotKeys.where((key) {
+        return localSlots.value[key]?.enabled ?? false;
+      }).toList();
+    }, [planAsync.value, localSlots.value]);
+
+    final bool hasActivePlan = planAsync.value != null;
+
     Future<void> pickTime(String slotKey) async {
+      if (!hasActivePlan) return;
       final current =
           localSlots.value[slotKey] ??
           DietConstants.defaultMealSlots()[slotKey]!;
@@ -92,13 +123,15 @@ class DietMealSlotsScreen extends HookConsumerWidget {
                 child: ListView(
                   padding: const EdgeInsets.all(20),
                   children: [
-                    for (final slotKey in DietConstants.mealSlotKeys)
+                    for (final slotKey in displaySlotKeys)
                       _MealSlotTile(
                         title: dietMealSlotLabel(context, slotKey),
+                        isEnabled: hasActivePlan,
                         config:
                             localSlots.value[slotKey] ??
                             DietConstants.defaultMealSlots()[slotKey]!,
                         onToggle: (enabled) {
+                          if (!hasActivePlan) return;
                           final current =
                               localSlots.value[slotKey] ??
                               DietConstants.defaultMealSlots()[slotKey]!;
@@ -113,6 +146,7 @@ class DietMealSlotsScreen extends HookConsumerWidget {
                           };
                         },
                         onToggleNotifications: (enabled) {
+                          if (!hasActivePlan) return;
                           final current =
                               localSlots.value[slotKey] ??
                               DietConstants.defaultMealSlots()[slotKey]!;
@@ -135,7 +169,7 @@ class DietMealSlotsScreen extends HookConsumerWidget {
                 child: AppPrimaryButton(
                   label: context.tr.save,
                   isLoading: isSaving.value,
-                  onPressed: isSaving.value ? null : save,
+                  onPressed: (isSaving.value || !hasActivePlan) ? null : save,
                 ),
               ),
             ],
@@ -153,6 +187,7 @@ class _MealSlotTile extends StatelessWidget {
     required this.onToggle,
     required this.onToggleNotifications,
     required this.onPickTime,
+    this.isEnabled = true,
   });
 
   final String title;
@@ -160,19 +195,28 @@ class _MealSlotTile extends StatelessWidget {
   final ValueChanged<bool> onToggle;
   final ValueChanged<bool> onToggleNotifications;
   final VoidCallback onPickTime;
+  final bool isEnabled;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final bool canInteract = isEnabled && config.enabled;
+
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: Column(
         children: [
           SwitchListTile(
-            title: Text(title),
+            title: Text(
+              title,
+              style: TextStyle(
+                color: isEnabled ? null : theme.disabledColor,
+              ),
+            ),
             subtitle: Padding(
               padding: const EdgeInsets.only(top: 8),
               child: InkWell(
-                onTap: config.enabled ? onPickTime : null,
+                onTap: canInteract ? onPickTime : null,
                 borderRadius: BorderRadius.circular(8),
                 child: UnconstrainedBox(
                   alignment: AlignmentDirectional.centerStart,
@@ -180,19 +224,26 @@ class _MealSlotTile extends StatelessWidget {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
-                      color: Colors.grey.shade200,
+                      color: isEnabled
+                          ? Colors.grey.shade200
+                          : Colors.grey.shade100,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.access_time, size: 16),
+                        Icon(
+                          Icons.access_time,
+                          size: 16,
+                          color: isEnabled ? null : theme.disabledColor,
+                        ),
                         const SizedBox(width: 8),
                         Text(
                           config.time,
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.w600,
-                              ),
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: isEnabled ? null : theme.disabledColor,
+                          ),
                         ),
                       ],
                     ),
@@ -201,13 +252,18 @@ class _MealSlotTile extends StatelessWidget {
               ),
             ),
             value: config.enabled,
-            onChanged: onToggle,
+            onChanged: isEnabled ? onToggle : null,
           ),
           if (config.enabled)
             SwitchListTile(
-              title: Text(context.tr.dietSlotNotificationLabel),
+              title: Text(
+                context.tr.dietSlotNotificationLabel,
+                style: TextStyle(
+                  color: isEnabled ? null : theme.disabledColor,
+                ),
+              ),
               value: config.notificationsEnabled,
-              onChanged: onToggleNotifications,
+              onChanged: isEnabled ? onToggleNotifications : null,
               dense: true,
             ),
         ],

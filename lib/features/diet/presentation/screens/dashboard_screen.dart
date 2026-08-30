@@ -12,6 +12,7 @@ import 'package:fitsho/core/utils/persian_digits.dart';
 import 'package:fitsho/features/diet/domain/constants/diet_constants.dart';
 import 'package:fitsho/features/diet/presentation/providers/diet_navigation_provider.dart';
 import 'package:fitsho/features/diet/presentation/providers/diet_providers.dart';
+import 'package:fitsho/features/diet/presentation/widgets/ai_loading_dialog.dart';
 import 'package:fitsho/features/diet/presentation/widgets/diet_onboarding_form.dart';
 import 'package:fitsho/features/diet/presentation/widgets/diet_summary_widgets.dart';
 import 'package:fitsho/features/diet/presentation/widgets/last_meal_card.dart';
@@ -26,11 +27,15 @@ class DashboardScreen extends HookConsumerWidget {
   const DashboardScreen({super.key});
 
   Future<void> _generatePlan(BuildContext context, WidgetRef ref) async {
+    AiLoadingDialog.show(context);
     final failure = await ref
         .read(dietPlanNotifierProvider.notifier)
         .generate();
-    if (failure != null && context.mounted) {
-      showFailureToast(context, failure);
+    if (context.mounted) {
+      AiLoadingDialog.hide(context);
+      if (failure != null) {
+        showFailureToast(context, failure);
+      }
     }
   }
 
