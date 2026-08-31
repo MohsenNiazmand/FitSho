@@ -1,10 +1,12 @@
 import 'dart:math';
-import 'package:flutter/material.dart';
+
 import 'package:fitsho/config/theme/app_radius.dart';
 import 'package:fitsho/config/theme/app_shadows.dart';
 import 'package:fitsho/core/constants/colors.dart';
+import 'package:fitsho/core/extensions/context_extensions.dart';
 import 'package:fitsho/core/utils/persian_digits.dart';
 import 'package:fitsho/shared/presentation/widgets/gap.dart';
+import 'package:flutter/material.dart';
 
 class HealthStatCard extends StatelessWidget {
   const HealthStatCard({
@@ -63,11 +65,11 @@ class HealthStatCard extends StatelessWidget {
   }
 }
 
-String bmiStatusLabel(double bmi) {
-  if (bmi < 18.5) return 'کمبود وزن';
-  if (bmi < 25) return 'نرمال';
-  if (bmi < 30) return 'اضافه وزن';
-  return 'چاقی';
+String bmiStatusLabel(BuildContext context, double bmi) {
+  if (bmi < 18.5) return context.tr.dietBmiUnderweight;
+  if (bmi < 25) return context.tr.dietBmiNormal;
+  if (bmi < 30) return context.tr.dietBmiOverweight;
+  return context.tr.dietBmiObesity;
 }
 
 Color bmiStatusColor(double bmi) {
@@ -141,7 +143,7 @@ class CalorieProgressRing extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'هدف کالری روزانه',
+                  context.tr.dietDailyCalorieTargetLabel,
                   style: theme.textTheme.titleSmall?.copyWith(
                     color: cTextSecondary,
                   ),
@@ -157,8 +159,8 @@ class CalorieProgressRing extends StatelessWidget {
                 Gap.v8(),
                 Text(
                   remaining > 0
-                      ? '${PersianDigits.toPersian(remaining.toString())} کالری باقی‌مانده'
-                      : 'بیش از حد مصرف شده!',
+                      ? context.tr.dietCaloriesRemaining(PersianDigits.toPersian(remaining.toString()))
+                      : context.tr.dietOverConsumed,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: remaining > 0 ? cSuccess : cError,
                     fontWeight: FontWeight.w600,
@@ -235,7 +237,7 @@ class ComplianceRing extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'پایبندی به رژیم',
+                  context.tr.dietComplianceLabel,
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w700,
                     color: cTextPrimary,
@@ -244,8 +246,8 @@ class ComplianceRing extends StatelessWidget {
                 Gap.v4(),
                 Text(
                   isHigh
-                      ? 'عالیه! همینجوری ادامه بده 🏆'
-                      : 'کمی بیشتر تلاش کن، تو می‌تونی! 💪',
+                      ? context.tr.dietComplianceHigh
+                      : context.tr.dietComplianceLow,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: cTextSecondary,
                   ),
@@ -283,20 +285,20 @@ class RegenerationBanner extends StatelessWidget {
         children: [
           const Icon(Icons.info_outline, color: Colors.amber),
           Gap.h12(),
-          const Expanded(
+           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'وزن شما تغییر کرده است!',
-                  style: TextStyle(
+                  context.tr.dietWeightChangedTitle,
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
                   ),
                 ),
                 Text(
-                  'مایلید برنامه جدیدی بر اساس مشخصات جدیدتان تولید شود؟',
-                  style: TextStyle(fontSize: 12, color: Colors.black54),
+                  context.tr.dietWeightChangedSubtitle,
+                  style: const TextStyle(fontSize: 12, color: Colors.black54),
                 ),
               ],
             ),
@@ -317,7 +319,7 @@ class RegenerationBanner extends StatelessWidget {
                       valueColor: AlwaysStoppedAnimation(Colors.amber),
                     ),
                   )
-                : const Text('تولید برنامه جدید'),
+                : Text(context.tr.dietRegenerateButton),
           ),
         ],
       ),

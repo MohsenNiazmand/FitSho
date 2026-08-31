@@ -227,6 +227,80 @@
   "dietHistoryDeleteConfirmConfirm": "Delete",
   "dietHistoryDeleteConfirmCancel": "Cancel",
   "dietHistoryDeleteSuccess": "Plan deleted successfully",
+  "dietHoursLeft": "{hours} hours left",
+  "@dietHoursLeft": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "dietDailyProgress": "Daily progress",
+  "dietHealthStats": "Health stats",
+  "dietDailyWaterGoal": "Daily water goal",
+  "dietLiters": "{value} Liters",
+  "@dietLiters": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "dietDailyCalories": "{value} daily calories",
+  "@dietDailyCalories": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "dietSupplementsRequirementHint": "To add and manage supplements, you first need to generate your meal plan from the dashboard.",
+  "dietSupplementUpdateError": "Error updating supplement status",
+  "dietEaten": "Eaten ✓",
+  "dietDailyMealSlots": "Daily meals",
+  "dietRegenerateButton": "Generate new plan",
+  "dietWeightChangedTitle": "Your weight has changed!",
+  "dietWeightChangedSubtitle": "Would you like a new plan to be generated based on your new profile?",
+  "dietAgeValidation": "Please enter a valid value",
+  "dietHeightValidation": "Please enter a valid value",
+  "dietWeightValidation": "Please enter a valid value",
+  "dietExerciseDaysValidation": "Please enter a valid value",
+  "dietBmiUnderweight": "Underweight",
+  "dietBmiNormal": "Normal",
+  "dietBmiOverweight": "Overweight",
+  "dietBmiObesity": "Obese",
+  "dietCaloriesRemaining": "{value} calories remaining",
+  "@dietCaloriesRemaining": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "dietOverConsumed": "Over-consumed!",
+  "dietComplianceHigh": "Great! keep going 🏆",
+  "dietComplianceLow": "Try a bit harder, you can do it! 💪",
+  "dietComplianceLabel": "Diet compliance",
+  "dietDailyCalorieTargetLabel": "Daily calorie target",
+  "dietTdeeLabel": "TDEE: {value}",
+  "@dietTdeeLabel": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "dietBmiLabel": "BMI ({status})",
+  "@dietBmiLabel": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "view": "View",
+  "dietReminderTitle": "Diet Reminder",
+  "dietReminderBody": "Your meal time is near.",
   "dietSupplementLinkedMealRequired": "Please select the linked meal",
   "forceUpdateTitle": "Mandatory update",
   "forceUpdateMessage": "To continue using the app, you must update to the latest version.",

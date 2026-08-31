@@ -555,6 +555,116 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dietHistoryDeleteSuccess => 'Plan deleted successfully';
 
   @override
+  String dietHoursLeft(String hours) {
+    return '$hours hours left';
+  }
+
+  @override
+  String get dietDailyProgress => 'Daily progress';
+
+  @override
+  String get dietHealthStats => 'Health stats';
+
+  @override
+  String get dietDailyWaterGoal => 'Daily water goal';
+
+  @override
+  String dietLiters(String value) {
+    return '$value Liters';
+  }
+
+  @override
+  String dietDailyCalories(String value) {
+    return '$value daily calories';
+  }
+
+  @override
+  String get dietSupplementsRequirementHint =>
+      'To add and manage supplements, you first need to generate your meal plan from the dashboard.';
+
+  @override
+  String get dietSupplementUpdateError => 'Error updating supplement status';
+
+  @override
+  String get dietEaten => 'Eaten ✓';
+
+  @override
+  String get dietDailyMealSlots => 'Daily meals';
+
+  @override
+  String get dietRegenerateButton => 'Generate new plan';
+
+  @override
+  String get dietWeightChangedTitle => 'Your weight has changed!';
+
+  @override
+  String get dietWeightChangedSubtitle =>
+      'Would you like a new plan to be generated based on your new profile?';
+
+  @override
+  String get dietAgeValidation => 'Please enter a valid value';
+
+  @override
+  String get dietHeightValidation => 'Please enter a valid value';
+
+  @override
+  String get dietWeightValidation => 'Please enter a valid value';
+
+  @override
+  String get dietExerciseDaysValidation => 'Please enter a valid value';
+
+  @override
+  String get dietBmiUnderweight => 'Underweight';
+
+  @override
+  String get dietBmiNormal => 'Normal';
+
+  @override
+  String get dietBmiOverweight => 'Overweight';
+
+  @override
+  String get dietBmiObesity => 'Obese';
+
+  @override
+  String dietCaloriesRemaining(String value) {
+    return '$value calories remaining';
+  }
+
+  @override
+  String get dietOverConsumed => 'Over-consumed!';
+
+  @override
+  String get dietComplianceHigh => 'Great! keep going 🏆';
+
+  @override
+  String get dietComplianceLow => 'Try a bit harder, you can do it! 💪';
+
+  @override
+  String get dietComplianceLabel => 'Diet compliance';
+
+  @override
+  String get dietDailyCalorieTargetLabel => 'Daily calorie target';
+
+  @override
+  String dietTdeeLabel(String value) {
+    return 'TDEE: $value';
+  }
+
+  @override
+  String dietBmiLabel(String status) {
+    return 'BMI ($status)';
+  }
+
+  @override
+  String get view => 'View';
+
+  @override
+  String get dietReminderTitle => 'Diet Reminder';
+
+  @override
+  String get dietReminderBody => 'Your meal time is near.';
+
+  @override
   String get dietSupplementLinkedMealRequired =>
       'Please select the linked meal';
 

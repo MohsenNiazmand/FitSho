@@ -194,7 +194,7 @@ class DietMealCard extends StatelessWidget {
                                 Gap.h8(),
                               ],
                               Text(
-                                isLogged ? 'خورده شد ✓' : context.tr.dietIAteThis,
+                                isLogged ? context.tr.dietEaten : context.tr.dietIAteThis,
                                 style: theme.textTheme.labelLarge?.copyWith(
                                   color: isLogged
                                       ? cSuccess

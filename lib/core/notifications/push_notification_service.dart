@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:fitsho/core/extensions/context_extensions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -129,8 +130,8 @@ class PushNotificationService {
         duration: const Duration(seconds: 5),
         toastBuilder: (cancelFunc) {
           return _InAppNotification(
-            title: title ?? 'یادآوری رژیم',
-            body: body ?? 'زمان وعده غذایی شما نزدیک است.',
+            title: title,
+            body: body,
             onTap: () {
               cancelFunc();
               _handleMessage(message);
@@ -144,18 +145,24 @@ class PushNotificationService {
 
 class _InAppNotification extends StatelessWidget {
   const _InAppNotification({
-    required this.title,
-    required this.body,
+    this.title,
+    this.body,
     required this.onTap,
   });
 
-  final String title;
-  final String body;
+  final String? title;
+  final String? body;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final displayTitle = (title == null || title!.isEmpty)
+        ? context.tr.dietReminderTitle
+        : title!;
+    final displayBody = (body == null || body!.isEmpty)
+        ? context.tr.dietReminderBody
+        : body!;
 
     return SafeArea(
       child: Padding(
@@ -201,7 +208,7 @@ class _InAppNotification extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          title,
+                          displayTitle,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.titleSmall?.copyWith(
@@ -209,7 +216,7 @@ class _InAppNotification extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          body,
+                          displayBody,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.bodySmall,
@@ -225,7 +232,7 @@ class _InAppNotification extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      'مشاهده',
+                      context.tr.view,
                       style: theme.textTheme.labelSmall?.copyWith(
                         color: theme.colorScheme.primary,
                         fontWeight: FontWeight.bold,

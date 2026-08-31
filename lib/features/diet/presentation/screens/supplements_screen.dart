@@ -33,7 +33,7 @@ class SupplementsScreen extends ConsumerWidget {
         onPressed: hasActivePlan ? () => _openForm(context, ref) : null,
         backgroundColor: hasActivePlan ? null : Theme.of(context).disabledColor,
         icon: const Icon(Icons.add_rounded),
-        label: const Text('افزودن مکمل'),
+        label: Text(context.tr.dietAddSupplement),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: supplementsAsync.when(
@@ -57,7 +57,7 @@ class SupplementsScreen extends ConsumerWidget {
                           : context.tr.dietNoPlanYet,
                       subtitle: hasActivePlan
                           ? context.tr.dietSupplementsEmptySubtitle
-                          : 'برای افزودن مکمل و مدیریت آن‌ها، ابتدا باید از بخش داشبورد برنامه‌ی غذایی خود را تولید کنید.',
+                          : context.tr.dietSupplementsRequirementHint,
                     ),
                   ],
                 ),
@@ -166,7 +166,7 @@ class _SupplementListItem extends HookWidget {
         if (context.mounted) {
           isConsumed.value = previous;
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('خطا در بروزرسانی وضعیت مکمل')),
+            SnackBar(content: Text(context.tr.dietSupplementUpdateError)),
           );
         }
       }

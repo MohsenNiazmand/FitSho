@@ -67,7 +67,7 @@ class DashboardScreen extends HookConsumerWidget {
       final baseLabel = context.tr.dietGeneratePlan;
       if (!cooldownActive) return baseLabel;
       final remainingHours = 24 - now.difference(lastGeneratedAt!).inHours;
-      return '$baseLabel (${PersianDigits.toPersian(remainingHours.toString())} ساعت دیگر)';
+      return '$baseLabel (${context.tr.dietHoursLeft(PersianDigits.toPersian(remainingHours.toString()))})';
     }
 
     return Scaffold(
@@ -118,7 +118,11 @@ class DashboardScreen extends HookConsumerWidget {
                         children: [
                           if (profile.dailyCalorieTarget != null)
                             Text(
-                              'TDEE: ${PersianDigits.toPersian(profile.dailyCalorieTarget.toString())}',
+                              context.tr.dietTdeeLabel(
+                                PersianDigits.toPersian(
+                                  profile.dailyCalorieTarget.toString(),
+                                ),
+                              ),
                               style: Theme.of(context).textTheme.labelLarge
                                   ?.copyWith(
                                     color: cPrimary,
@@ -137,7 +141,7 @@ class DashboardScreen extends HookConsumerWidget {
                     ),
                   ],
                   Text(
-                    'پیشرفت روزانه',
+                    context.tr.dietDailyProgress,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w700,
                       color: cTextPrimary,
@@ -180,7 +184,7 @@ class DashboardScreen extends HookConsumerWidget {
                     ),
                   Gap.v24(),
                   Text(
-                    'آمار سلامت',
+                    context.tr.dietHealthStats,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w700,
                       color: cTextPrimary,
@@ -193,7 +197,7 @@ class DashboardScreen extends HookConsumerWidget {
                         Expanded(
                           child: HealthStatCard(
                             icon: Icons.monitor_weight_outlined,
-                            label: 'BMI (${bmiStatusLabel(profile.bmi!)})',
+                            label: context.tr.dietBmiLabel(bmiStatusLabel(context, profile.bmi!)),
                             value: PersianDigits.toPersian(
                               profile.bmi!.toStringAsFixed(1),
                             ),
@@ -204,9 +208,12 @@ class DashboardScreen extends HookConsumerWidget {
                       Expanded(
                         child: HealthStatCard(
                           icon: Icons.water_drop_outlined,
-                          label: 'هدف آب روزانه',
-                          value:
-                              '${PersianDigits.toPersian(waterGoalLiters.toStringAsFixed(1))} لیتر',
+                          label: context.tr.dietDailyWaterGoal,
+                          value: context.tr.dietLiters(
+                            PersianDigits.toPersian(
+                              waterGoalLiters.toStringAsFixed(1),
+                            ),
+                          ),
                           accentColor: cPrimary,
                         ),
                       ),

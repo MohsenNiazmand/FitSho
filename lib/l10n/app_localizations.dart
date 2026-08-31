@@ -1124,6 +1124,198 @@ abstract class AppLocalizations {
   /// **'Plan deleted successfully'**
   String get dietHistoryDeleteSuccess;
 
+  /// No description provided for @dietHoursLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours} hours left'**
+  String dietHoursLeft(String hours);
+
+  /// No description provided for @dietDailyProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily progress'**
+  String get dietDailyProgress;
+
+  /// No description provided for @dietHealthStats.
+  ///
+  /// In en, this message translates to:
+  /// **'Health stats'**
+  String get dietHealthStats;
+
+  /// No description provided for @dietDailyWaterGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily water goal'**
+  String get dietDailyWaterGoal;
+
+  /// No description provided for @dietLiters.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} Liters'**
+  String dietLiters(String value);
+
+  /// No description provided for @dietDailyCalories.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} daily calories'**
+  String dietDailyCalories(String value);
+
+  /// No description provided for @dietSupplementsRequirementHint.
+  ///
+  /// In en, this message translates to:
+  /// **'To add and manage supplements, you first need to generate your meal plan from the dashboard.'**
+  String get dietSupplementsRequirementHint;
+
+  /// No description provided for @dietSupplementUpdateError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error updating supplement status'**
+  String get dietSupplementUpdateError;
+
+  /// No description provided for @dietEaten.
+  ///
+  /// In en, this message translates to:
+  /// **'Eaten ✓'**
+  String get dietEaten;
+
+  /// No description provided for @dietDailyMealSlots.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily meals'**
+  String get dietDailyMealSlots;
+
+  /// No description provided for @dietRegenerateButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate new plan'**
+  String get dietRegenerateButton;
+
+  /// No description provided for @dietWeightChangedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your weight has changed!'**
+  String get dietWeightChangedTitle;
+
+  /// No description provided for @dietWeightChangedSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Would you like a new plan to be generated based on your new profile?'**
+  String get dietWeightChangedSubtitle;
+
+  /// No description provided for @dietAgeValidation.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid value'**
+  String get dietAgeValidation;
+
+  /// No description provided for @dietHeightValidation.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid value'**
+  String get dietHeightValidation;
+
+  /// No description provided for @dietWeightValidation.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid value'**
+  String get dietWeightValidation;
+
+  /// No description provided for @dietExerciseDaysValidation.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid value'**
+  String get dietExerciseDaysValidation;
+
+  /// No description provided for @dietBmiUnderweight.
+  ///
+  /// In en, this message translates to:
+  /// **'Underweight'**
+  String get dietBmiUnderweight;
+
+  /// No description provided for @dietBmiNormal.
+  ///
+  /// In en, this message translates to:
+  /// **'Normal'**
+  String get dietBmiNormal;
+
+  /// No description provided for @dietBmiOverweight.
+  ///
+  /// In en, this message translates to:
+  /// **'Overweight'**
+  String get dietBmiOverweight;
+
+  /// No description provided for @dietBmiObesity.
+  ///
+  /// In en, this message translates to:
+  /// **'Obese'**
+  String get dietBmiObesity;
+
+  /// No description provided for @dietCaloriesRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} calories remaining'**
+  String dietCaloriesRemaining(String value);
+
+  /// No description provided for @dietOverConsumed.
+  ///
+  /// In en, this message translates to:
+  /// **'Over-consumed!'**
+  String get dietOverConsumed;
+
+  /// No description provided for @dietComplianceHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'Great! keep going 🏆'**
+  String get dietComplianceHigh;
+
+  /// No description provided for @dietComplianceLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a bit harder, you can do it! 💪'**
+  String get dietComplianceLow;
+
+  /// No description provided for @dietComplianceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Diet compliance'**
+  String get dietComplianceLabel;
+
+  /// No description provided for @dietDailyCalorieTargetLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily calorie target'**
+  String get dietDailyCalorieTargetLabel;
+
+  /// No description provided for @dietTdeeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'TDEE: {value}'**
+  String dietTdeeLabel(String value);
+
+  /// No description provided for @dietBmiLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'BMI ({status})'**
+  String dietBmiLabel(String status);
+
+  /// No description provided for @view.
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get view;
+
+  /// No description provided for @dietReminderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Diet Reminder'**
+  String get dietReminderTitle;
+
+  /// No description provided for @dietReminderBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your meal time is near.'**
+  String get dietReminderBody;
+
   /// No description provided for @dietSupplementLinkedMealRequired.
   ///
   /// In en, this message translates to:

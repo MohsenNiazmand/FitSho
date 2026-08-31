@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -51,6 +52,50 @@ class DietOnboardingForm extends HookConsumerWidget {
     final isMounted = useIsMounted();
     final pageController = usePageController();
     final currentStep = useState(0);
+    final formKey = useMemoized(GlobalKey<FormState>.new);
+
+    Widget requiredLabel(String text) {
+      return Text.rich(
+        TextSpan(
+          children: [
+            TextSpan(text: text),
+            const TextSpan(
+              text: ' *',
+              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      );
+    }
+
+    String? validateAge(String? value) {
+      final val = int.tryParse(value ?? '');
+      if (val == null) return context.tr.dietFormValidationError;
+      if (val < 8 || val > 140) return context.tr.dietAgeValidation;
+      return null;
+    }
+
+    String? validateHeight(String? value) {
+      final val = int.tryParse(value ?? '');
+      if (val == null) return context.tr.dietFormValidationError;
+      if (val < 60 || val > 250) return context.tr.dietHeightValidation;
+      return null;
+    }
+
+    String? validateWeight(String? value) {
+      final val = double.tryParse(value ?? '');
+      if (val == null) return context.tr.dietFormValidationError;
+      if (val < 30 || val > 250) return context.tr.dietWeightValidation;
+      return null;
+    }
+
+    String? validateExerciseDays(String? value) {
+      if (!doesExercise.value) return null;
+      final val = int.tryParse(value ?? '');
+      if (val == null) return context.tr.dietFormValidationError;
+      if (val < 1 || val > 7) return context.tr.dietExerciseDaysValidation;
+      return null;
+    }
 
     useEffect(
       () {
@@ -191,20 +236,6 @@ class DietOnboardingForm extends HookConsumerWidget {
       };
     }
 
-    bool canAdvanceFrom(int step) {
-      switch (step) {
-        case 0:
-          return int.tryParse(ageController.text.trim()) != null &&
-              int.tryParse(heightController.text.trim()) != null &&
-              double.tryParse(weightController.text.trim()) != null &&
-              gender.value != null;
-        case 1:
-          return goal.value != null && activityLevel.value != null;
-        default:
-          return true;
-      }
-    }
-
     void goToStep(int step) {
       currentStep.value = step;
       pageController.animateToPage(
@@ -215,12 +246,10 @@ class DietOnboardingForm extends HookConsumerWidget {
     }
 
     void handleNext(DietProfileOptions options) {
-      if (!canAdvanceFrom(currentStep.value)) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.tr.dietFormValidationError)),
-        );
+      if (formKey.currentState?.validate() != true) {
         return;
       }
+
       if (currentStep.value == _stepCount - 1) {
         submit(options);
         return;
@@ -259,164 +288,202 @@ class DietOnboardingForm extends HookConsumerWidget {
               ),
             ),
             Expanded(
-              child: PageView(
-                controller: pageController,
-                physics: const NeverScrollableScrollPhysics(),
-                onPageChanged: (index) => currentStep.value = index,
-                children: [
-                  _StepScaffold(
-                    children: [
-                      AppTextField(
-                        controller: ageController,
-                        labelText: context.tr.dietAgeLabel,
-                        keyboardType: TextInputType.number,
-                      ),
-                      Gap.v12(),
-                      AppTextField(
-                        controller: heightController,
-                        labelText: context.tr.dietHeightLabel,
-                        keyboardType: TextInputType.number,
-                      ),
-                      Gap.v12(),
-                      AppTextField(
-                        controller: weightController,
-                        labelText: context.tr.dietWeightLabel,
-                        keyboardType: TextInputType.number,
-                      ),
-                      Gap.v12(),
-                      _DropdownField(
-                        label: context.tr.dietGenderLabel,
-                        value: gender.value,
-                        items: options.genders,
-                        onChanged: (value) => gender.value = value,
-                      ),
-                    ],
-                  ),
-                  _StepScaffold(
-                    children: [
-                      AppTextField(
-                        controller: jobController,
-                        labelText: context.tr.dietJobLabel,
-                        inputFormatters: [createPersianTextFormatter()],
-                      ),
-                      Gap.v12(),
-                      _DropdownField(
-                        label: context.tr.dietGoalLabel,
-                        value: goal.value,
-                        items: options.goals,
-                        onChanged: (value) => goal.value = value,
-                      ),
-                      Gap.v12(),
-                      AppTextField(
-                        controller: goalNotesController,
-                        labelText: context.tr.dietGoalNotesLabel,
-                        maxLines: 2,
-                        inputFormatters: [createPersianTextFormatter()],
-                      ),
-                      Gap.v12(),
-                      _DropdownField(
-                        label: context.tr.dietActivityLevelLabel,
-                        value: activityLevel.value,
-                        items: options.activityLevels,
-                        onChanged: (value) => activityLevel.value = value,
-                      ),
-                    ],
-                  ),
-                  _StepScaffold(
-                    children: [
-                      SwitchListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(context.tr.dietDoesExerciseLabel),
-                        value: doesExercise.value,
-                        onChanged: (value) => doesExercise.value = value,
-                      ),
-                      if (doesExercise.value) ...[
-                        Gap.v8(),
+              child: Form(
+                key: formKey,
+                child: PageView(
+                  controller: pageController,
+                  physics: const NeverScrollableScrollPhysics(),
+                  onPageChanged: (index) => currentStep.value = index,
+                  children: [
+                    _StepScaffold(
+                      children: [
                         AppTextField(
-                          controller: exerciseTypeController,
-                          labelText: context.tr.dietExerciseTypeLabel,
-                          inputFormatters: [createPersianTextFormatter()],
+                          controller: ageController,
+                          label: requiredLabel(context.tr.dietAgeLabel),
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                            LengthLimitingTextInputFormatter(3),
+                          ],
+                          validator: validateAge,
                         ),
                         Gap.v12(),
                         AppTextField(
-                          controller: exerciseDaysController,
-                          labelText: context.tr.dietExerciseDaysLabel,
+                          controller: heightController,
+                          label: requiredLabel(context.tr.dietHeightLabel),
                           keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                            LengthLimitingTextInputFormatter(3),
+                          ],
+                          validator: validateHeight,
+                        ),
+                        Gap.v12(),
+                        AppTextField(
+                          controller: weightController,
+                          label: requiredLabel(context.tr.dietWeightLabel),
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                              RegExp(r'^\d{0,3}(\.\d{0,1})?'),
+                            ),
+                          ],
+                          validator: validateWeight,
+                        ),
+                        Gap.v12(),
+                        _DropdownField(
+                          label: requiredLabel(context.tr.dietGenderLabel),
+                          value: gender.value,
+                          items: options.genders,
+                          onChanged: (value) => gender.value = value,
+                          validator: (v) => v == null
+                              ? context.tr.dietFormValidationError
+                              : null,
                         ),
                       ],
-                      Gap.v16(),
-                      Text(
-                        context.tr.dietDietaryPreferencesLabel,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      Gap.v12(),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: [
-                          for (final option in options.dietaryPreferences)
-                            if (option.isAvailable)
-                              FilterChip(
-                                label: Text(option.label),
-                                selected: dietaryPreferences.value
-                                    .contains(option.id),
-                                onSelected: (selected) {
-                                  final updated = Set<String>.from(
-                                    dietaryPreferences.value,
-                                  );
-                                  if (selected) {
-                                    updated.add(option.id);
-                                  } else {
-                                    updated.remove(option.id);
-                                  }
-                                  dietaryPreferences.value = updated;
-                                },
-                              ),
+                    ),
+                    _StepScaffold(
+                      children: [
+                        AppTextField(
+                          controller: jobController,
+                          labelText: context.tr.dietJobLabel,
+                          inputFormatters: [createPersianTextFormatter()],
+                        ),
+                        Gap.v12(),
+                        _DropdownField(
+                          label: requiredLabel(context.tr.dietGoalLabel),
+                          value: goal.value,
+                          items: options.goals,
+                          onChanged: (value) => goal.value = value,
+                          validator: (v) => v == null
+                              ? context.tr.dietFormValidationError
+                              : null,
+                        ),
+                        Gap.v12(),
+                        AppTextField(
+                          controller: goalNotesController,
+                          labelText: context.tr.dietGoalNotesLabel,
+                          maxLines: 2,
+                          inputFormatters: [createPersianTextFormatter()],
+                        ),
+                        Gap.v12(),
+                        _DropdownField(
+                          label: requiredLabel(context.tr.dietActivityLevelLabel),
+                          value: activityLevel.value,
+                          items: options.activityLevels,
+                          onChanged: (value) => activityLevel.value = value,
+                          validator: (v) => v == null
+                              ? context.tr.dietFormValidationError
+                              : null,
+                        ),
+                      ],
+                    ),
+                    _StepScaffold(
+                      children: [
+                        SwitchListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(context.tr.dietDoesExerciseLabel),
+                          value: doesExercise.value,
+                          onChanged: (value) => doesExercise.value = value,
+                        ),
+                        if (doesExercise.value) ...[
+                          Gap.v8(),
+                          AppTextField(
+                            controller: exerciseTypeController,
+                            label: requiredLabel(context.tr.dietExerciseTypeLabel),
+                            inputFormatters: [createPersianTextFormatter()],
+                            validator: (v) => v?.trim().isEmpty == true
+                                ? context.tr.dietFormValidationError
+                                : null,
+                          ),
+                          Gap.v12(),
+                          AppTextField(
+                            controller: exerciseDaysController,
+                            label: requiredLabel(context.tr.dietExerciseDaysLabel),
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                              LengthLimitingTextInputFormatter(1),
+                            ],
+                            validator: validateExerciseDays,
+                          ),
                         ],
-                      ),
-                      Gap.v12(),
-                      AppTextField(
-                        controller: allergiesController,
-                        labelText: context.tr.dietAllergiesLabel,
-                        maxLines: 2,
-                        inputFormatters: [createPersianTextFormatter()],
-                      ),
-                    ],
-                  ),
-                  _StepScaffold(
-                    children: [
-                      Text(
-                        'وعده‌های روزانه',
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      Gap.v12(),
-                      ...mealSlots.value.entries.map((entry) {
-                        final slotKey = entry.key;
-                        final config = entry.value;
-                        final icon = dietSlotIcon(slotKey);
+                        Gap.v16(),
+                        Text(
+                          context.tr.dietDietaryPreferencesLabel,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        Gap.v12(),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            for (final option in options.dietaryPreferences)
+                              if (option.isAvailable)
+                                FilterChip(
+                                  label: Text(option.label),
+                                  selected: dietaryPreferences.value
+                                      .contains(option.id),
+                                  onSelected: (selected) {
+                                    final updated = Set<String>.from(
+                                      dietaryPreferences.value,
+                                    );
+                                    if (selected) {
+                                      updated.add(option.id);
+                                    } else {
+                                      updated.remove(option.id);
+                                    }
+                                    dietaryPreferences.value = updated;
+                                  },
+                                ),
+                          ],
+                        ),
+                        Gap.v12(),
+                        AppTextField(
+                          controller: allergiesController,
+                          labelText: context.tr.dietAllergiesLabel,
+                          maxLines: 2,
+                          inputFormatters: [createPersianTextFormatter()],
+                        ),
+                      ],
+                    ),
+                    _StepScaffold(
+                      children: [
+                        Text(
+                          context.tr.dietDailyMealSlots,
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        Gap.v12(),
+                        ...mealSlots.value.entries.map((entry) {
+                          final slotKey = entry.key;
+                          final config = entry.value;
+                          final icon = dietSlotIcon(slotKey);
 
-                        return _MealSlotInput(
-                          title: dietMealSlotLabel(context, slotKey),
-                          icon: icon,
-                          config: config,
-                          onToggle: (enabled) {
-                            mealSlots.value = {
-                              ...mealSlots.value,
-                              slotKey: MealSlotConfig(
-                                enabled: enabled,
-                                time: config.time,
-                                notificationsEnabled:
-                                    config.notificationsEnabled,
-                              ),
-                            };
-                          },
-                          onPickTime: () => pickTime(slotKey),
-                        );
-                      }),
-                    ],
-                  ),
-                ],
+                          return _MealSlotInput(
+                            title: dietMealSlotLabel(context, slotKey),
+                            icon: icon,
+                            config: config,
+                            onToggle: (enabled) {
+                              mealSlots.value = {
+                                ...mealSlots.value,
+                                slotKey: MealSlotConfig(
+                                  enabled: enabled,
+                                  time: config.time,
+                                  notificationsEnabled:
+                                      config.notificationsEnabled,
+                                ),
+                              };
+                            },
+                            onPickTime: () => pickTime(slotKey),
+                          );
+                        }),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
             Padding(
@@ -602,18 +669,26 @@ class _DropdownField extends StatelessWidget {
     required this.value,
     required this.items,
     required this.onChanged,
+    this.labelText,
+    this.validator,
   });
 
-  final String label;
+  final Widget label;
+  final String? labelText;
   final String? value;
   final List<DietOptionItem> items;
   final ValueChanged<String?> onChanged;
+  final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
       value: value,
-      decoration: InputDecoration(labelText: label),
+      decoration: InputDecoration(
+        label: label,
+        labelText: labelText,
+      ),
+      validator: validator,
       items: items
           .map(
             (item) => DropdownMenuItem(

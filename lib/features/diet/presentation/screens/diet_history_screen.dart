@@ -66,7 +66,11 @@ class DietHistoryScreen extends ConsumerWidget {
                           ),
                           Gap.v4(),
                           Text(
-                            '${PersianDigits.toPersian(plan.dailyCalorieTarget.toString())} کالری روزانه',
+                            context.tr.dietDailyCalories(
+                            PersianDigits.toPersian(
+                              plan.dailyCalorieTarget.toString(),
+                            ),
+                          ),
                             style: const TextStyle(
                               color: cTextSecondary,
                               fontSize: 13,

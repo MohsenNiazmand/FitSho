@@ -554,6 +554,116 @@ class AppLocalizationsFa extends AppLocalizations {
   String get dietHistoryDeleteSuccess => 'برنامه با موفقیت حذف شد';
 
   @override
+  String dietHoursLeft(String hours) {
+    return '$hours ساعت دیگر';
+  }
+
+  @override
+  String get dietDailyProgress => 'پیشرفت روزانه';
+
+  @override
+  String get dietHealthStats => 'آمار سلامت';
+
+  @override
+  String get dietDailyWaterGoal => 'هدف آب روزانه';
+
+  @override
+  String dietLiters(String value) {
+    return '$value لیتر';
+  }
+
+  @override
+  String dietDailyCalories(String value) {
+    return '$value کالری روزانه';
+  }
+
+  @override
+  String get dietSupplementsRequirementHint =>
+      'برای افزودن مکمل و مدیریت آن‌ها، ابتدا باید از بخش داشبورد برنامه‌ی غذایی خود را تولید کنید.';
+
+  @override
+  String get dietSupplementUpdateError => 'خطا در بروزرسانی وضعیت مکمل';
+
+  @override
+  String get dietEaten => 'خورده شد ✓';
+
+  @override
+  String get dietDailyMealSlots => 'وعده‌های روزانه';
+
+  @override
+  String get dietRegenerateButton => 'تولید برنامه جدید';
+
+  @override
+  String get dietWeightChangedTitle => 'وزن شما تغییر کرده است!';
+
+  @override
+  String get dietWeightChangedSubtitle =>
+      'مایلید برنامه جدیدی بر اساس مشخصات جدیدتان تولید شود؟';
+
+  @override
+  String get dietAgeValidation => 'لطفاً مقدار صحیح را وارد کنید';
+
+  @override
+  String get dietHeightValidation => 'لطفاً مقدار صحیح را وارد کنید';
+
+  @override
+  String get dietWeightValidation => 'لطفاً مقدار صحیح را وارد کنید';
+
+  @override
+  String get dietExerciseDaysValidation => 'لطفاً مقدار صحیح را وارد کنید';
+
+  @override
+  String get dietBmiUnderweight => 'کمبود وزن';
+
+  @override
+  String get dietBmiNormal => 'نرمال';
+
+  @override
+  String get dietBmiOverweight => 'اضافه وزن';
+
+  @override
+  String get dietBmiObesity => 'چاقی';
+
+  @override
+  String dietCaloriesRemaining(String value) {
+    return '$value کالری باقی‌مانده';
+  }
+
+  @override
+  String get dietOverConsumed => 'بیش از حد مصرف شده!';
+
+  @override
+  String get dietComplianceHigh => 'عالیه! همینجوری ادامه بده 🏆';
+
+  @override
+  String get dietComplianceLow => 'کمی بیشتر تلاش کن، تو می‌تونی! 💪';
+
+  @override
+  String get dietComplianceLabel => 'پایبندی به رژیم';
+
+  @override
+  String get dietDailyCalorieTargetLabel => 'هدف کالری روزانه';
+
+  @override
+  String dietTdeeLabel(String value) {
+    return 'کالری مورد نیاز (TDEE): $value';
+  }
+
+  @override
+  String dietBmiLabel(String status) {
+    return 'BMI ($status)';
+  }
+
+  @override
+  String get view => 'مشاهده';
+
+  @override
+  String get dietReminderTitle => 'یادآوری رژیم';
+
+  @override
+  String get dietReminderBody => 'زمان وعده غذایی شما نزدیک است.';
+
+  @override
   String get dietSupplementLinkedMealRequired =>
       'لطفاً وعده غذایی مرتبط را انتخاب کنید';
 

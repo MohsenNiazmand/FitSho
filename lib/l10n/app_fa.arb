@@ -213,6 +213,80 @@
   "dietHistoryDeleteConfirmConfirm": "حذف",
   "dietHistoryDeleteConfirmCancel": "انصراف",
   "dietHistoryDeleteSuccess": "برنامه با موفقیت حذف شد",
+  "dietHoursLeft": "{hours} ساعت دیگر",
+  "@dietHoursLeft": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "dietDailyProgress": "پیشرفت روزانه",
+  "dietHealthStats": "آمار سلامت",
+  "dietDailyWaterGoal": "هدف آب روزانه",
+  "dietLiters": "{value} لیتر",
+  "@dietLiters": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "dietDailyCalories": "{value} کالری روزانه",
+  "@dietDailyCalories": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "dietSupplementsRequirementHint": "برای افزودن مکمل و مدیریت آن‌ها، ابتدا باید از بخش داشبورد برنامه‌ی غذایی خود را تولید کنید.",
+  "dietSupplementUpdateError": "خطا در بروزرسانی وضعیت مکمل",
+  "dietEaten": "خورده شد ✓",
+  "dietDailyMealSlots": "وعده‌های روزانه",
+  "dietRegenerateButton": "تولید برنامه جدید",
+  "dietWeightChangedTitle": "وزن شما تغییر کرده است!",
+  "dietWeightChangedSubtitle": "مایلید برنامه جدیدی بر اساس مشخصات جدیدتان تولید شود؟",
+  "dietAgeValidation": "لطفاً مقدار صحیح را وارد کنید",
+  "dietHeightValidation": "لطفاً مقدار صحیح را وارد کنید",
+  "dietWeightValidation": "لطفاً مقدار صحیح را وارد کنید",
+  "dietExerciseDaysValidation": "لطفاً مقدار صحیح را وارد کنید",
+  "dietBmiUnderweight": "کمبود وزن",
+  "dietBmiNormal": "نرمال",
+  "dietBmiOverweight": "اضافه وزن",
+  "dietBmiObesity": "چاقی",
+  "dietCaloriesRemaining": "{value} کالری باقی‌مانده",
+  "@dietCaloriesRemaining": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "dietOverConsumed": "بیش از حد مصرف شده!",
+  "dietComplianceHigh": "عالیه! همینجوری ادامه بده 🏆",
+  "dietComplianceLow": "کمی بیشتر تلاش کن، تو می‌تونی! 💪",
+  "dietComplianceLabel": "پایبندی به رژیم",
+  "dietDailyCalorieTargetLabel": "هدف کالری روزانه",
+  "dietTdeeLabel": "کالری مورد نیاز (TDEE): {value}",
+  "@dietTdeeLabel": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "dietBmiLabel": "BMI ({status})",
+  "@dietBmiLabel": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "view": "مشاهده",
+  "dietReminderTitle": "یادآوری رژیم",
+  "dietReminderBody": "زمان وعده غذایی شما نزدیک است.",
   "dietSupplementLinkedMealRequired": "لطفاً وعده غذایی مرتبط را انتخاب کنید",
   "forceUpdateTitle": "بروزرسانی الزامی",
   "forceUpdateMessage": "برای ادامه‌ی استفاده باید اپلیکیشن را به آخرین نسخه بروزرسانی کنید.",
