@@ -283,18 +283,18 @@ class RegenerationBanner extends StatelessWidget {
         children: [
           const Icon(Icons.info_outline, color: Colors.amber),
           Gap.h12(),
-          Expanded(
+          const Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'وزن شما تغییر کرده است!',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
                   ),
                 ),
-                const Text(
+                Text(
                   'مایلید برنامه جدیدی بر اساس مشخصات جدیدتان تولید شود؟',
                   style: TextStyle(fontSize: 12, color: Colors.black54),
                 ),

@@ -20,7 +20,14 @@ class DietRepositoryImpl implements DietRepository {
   DietProfile? peekCachedProfile() => _localDataSource.getCachedProfile();
 
   @override
-  DietPlan? peekCachedPlan() => _localDataSource.getCachedPlan();
+  DietPlan? peekCachedPlan() {
+    try {
+      return _localDataSource.getCachedPlan();
+    } catch (_) {
+      _localDataSource.savePlan(null);
+      return null;
+    }
+  }
 
   @override
   List<Supplement>? peekCachedSupplements() {

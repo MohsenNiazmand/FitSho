@@ -115,6 +115,10 @@ class DietPlanNotifier extends _$DietPlanNotifier {
         if (failure is NotFoundFailure) {
           return null;
         }
+        // If it's a mapping error (like String to num mismatch), return null to force reload
+        if (failure.message.contains('type') && failure.message.contains('subtype')) {
+          return null;
+        }
         throw StateError(failure.message);
       },
       (plan) => plan,

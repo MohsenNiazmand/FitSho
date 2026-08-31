@@ -108,7 +108,7 @@ class DietMealCard extends StatelessWidget {
                 (item) => Padding(
                   padding: const EdgeInsets.only(bottom: 4),
                   child: Text(
-                    '${item.name} — ${PersianDigits.toPersian(item.amount)}',
+                    '${item.name} — ${PersianDigits.toPersian(item.displayAmount)}',
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: cTextSecondary,
                     ),

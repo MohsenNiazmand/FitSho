@@ -19,7 +19,11 @@ extension UserModelX on UserModel {
 
 extension IngredientModelX on IngredientModel {
   Ingredient toEntity() {
-    return Ingredient(name: name, amount: amount);
+    return Ingredient(
+      name: name,
+      amount: amount.toDouble(),
+      unit: unit,
+    );
   }
 }
 

@@ -57,7 +57,7 @@ class DashboardScreen extends HookConsumerWidget {
     final statsAsync = ref.watch(complianceStatsNotifierProvider);
     final isGenerating = planAsync.isLoading;
 
-    final plan = planAsync.value;
+    final plan = planAsync.valueOrNull;
     final now = DateTime.now();
     final lastGeneratedAt = plan?.createdAt;
     final bool cooldownActive = lastGeneratedAt != null &&
@@ -268,9 +268,11 @@ class DashboardScreen extends HookConsumerWidget {
                   AppPrimaryButton(
                     label: getGenerateLabel(),
                     isLoading: isGenerating,
-                    onPressed: (isGenerating || cooldownActive)
-                        ? null
-                        : () => _generatePlan(context, ref),
+                    onPressed:
+                    // (isGenerating || cooldownActive)
+                    //     ? null
+                    //     :
+                        () => _generatePlan(context, ref),
                   ),
                 ],
               ),

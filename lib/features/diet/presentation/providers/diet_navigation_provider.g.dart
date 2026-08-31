@@ -7,7 +7,7 @@ part of 'diet_navigation_provider.dart';
 // **************************************************************************
 
 String _$dietNavigationNotifierHash() =>
-    r'9fffc7df3d47c50d6ca90f5f3da41263d9471ed5';
+    r'7b00580477f9892a7e9340deff8f100c2a042839';
 
 /// See also [DietNavigationNotifier].
 @ProviderFor(DietNavigationNotifier)

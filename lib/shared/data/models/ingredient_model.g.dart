@@ -9,8 +9,13 @@ part of 'ingredient_model.dart';
 IngredientModel _$IngredientModelFromJson(Map<String, dynamic> json) =>
     IngredientModel(
       name: json['name'] as String,
-      amount: json['amount'] as String,
+      amount: json['amount'] as num,
+      unit: json['unit'] as String?,
     );
 
 Map<String, dynamic> _$IngredientModelToJson(IngredientModel instance) =>
-    <String, dynamic>{'name': instance.name, 'amount': instance.amount};
+    <String, dynamic>{
+      'name': instance.name,
+      'amount': instance.amount,
+      'unit': instance.unit,
+    };

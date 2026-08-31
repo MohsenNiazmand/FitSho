@@ -7,13 +7,15 @@ class IngredientModel {
   const IngredientModel({
     required this.name,
     required this.amount,
+    this.unit,
   });
 
   factory IngredientModel.fromJson(Map<String, dynamic> json) =>
       _$IngredientModelFromJson(json);
 
   final String name;
-  final String amount;
+  final num amount;
+  final String? unit;
 
   Map<String, dynamic> toJson() => _$IngredientModelToJson(this);
 }

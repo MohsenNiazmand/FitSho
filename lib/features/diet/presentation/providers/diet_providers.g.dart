@@ -83,7 +83,7 @@ final dietPlanHistoryNotifierProvider =
 
 typedef _$DietPlanHistoryNotifier = AutoDisposeAsyncNotifier<List<DietPlan>>;
 String _$lastMealLogNotifierHash() =>
-    r'f08fdae5fd1456e5628a18edf2f5f895b3256240';
+    r'e7febc825234145b11623d73f3ea805911da6b61';
 
 /// See also [LastMealLogNotifier].
 @ProviderFor(LastMealLogNotifier)
@@ -120,7 +120,7 @@ final todayMealLogsNotifierProvider =
 
 typedef _$TodayMealLogsNotifier = AutoDisposeAsyncNotifier<List<MealLog>>;
 String _$complianceStatsNotifierHash() =>
-    r'4b3a1a7e2365b21c8d850af8bc1a41e51e8a3f5d';
+    r'3511af2b644acbb7c532ec52bcdd2d4efb2f3d56';
 
 /// See also [ComplianceStatsNotifier].
 @ProviderFor(ComplianceStatsNotifier)
@@ -139,7 +139,7 @@ final complianceStatsNotifierProvider =
     );
 
 typedef _$ComplianceStatsNotifier = AutoDisposeAsyncNotifier<ComplianceStats?>;
-String _$logMealNotifierHash() => r'fc058f0c848bdb451ed01954017bc492f3c2b038';
+String _$logMealNotifierHash() => r'50dad4ca9a350022f6d315c547960c350971583b';
 
 /// See also [LogMealNotifier].
 @ProviderFor(LogMealNotifier)

@@ -16,23 +16,33 @@ class HiveInitializer {
     Hive.registerAdapters();
   }
 
+  static Future<Box<T>> _openResilientBox<T>(String name) async {
+    try {
+      return await Hive.openBox<T>(name);
+    } catch (e) {
+      // In case of schema mismatch or corrupted data, delete and reopen
+      await Hive.deleteBoxFromDisk(name);
+      return await Hive.openBox<T>(name);
+    }
+  }
+
   static Future<Box<DietProfile>> openDietProfileBox() {
-    return Hive.openBox<DietProfile>(dietProfileBoxName);
+    return _openResilientBox<DietProfile>(dietProfileBoxName);
   }
 
   static Future<Box<DietPlan>> openDietPlanBox() {
-    return Hive.openBox<DietPlan>(dietPlanBoxName);
+    return _openResilientBox<DietPlan>(dietPlanBoxName);
   }
 
   static Future<Box<Supplement>> openSupplementsBox() {
-    return Hive.openBox<Supplement>(supplementsBoxName);
+    return _openResilientBox<Supplement>(supplementsBoxName);
   }
 
   static Future<Box<MealLog>> openTodayMealLogsBox() {
-    return Hive.openBox<MealLog>(todayMealLogsBoxName);
+    return _openResilientBox<MealLog>(todayMealLogsBoxName);
   }
 
   static Future<Box<MealLog>> openLastMealLogBox() {
-    return Hive.openBox<MealLog>(lastMealLogBoxName);
+    return _openResilientBox<MealLog>(lastMealLogBoxName);
   }
 }
