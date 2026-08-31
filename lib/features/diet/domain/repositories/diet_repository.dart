@@ -36,6 +36,15 @@ abstract class DietRepository {
 
   Future<Either<Failure, DietPlan>> generatePlan();
 
+  Future<Either<Failure, (DietMeal, int)>> swapMeal({
+    required int calories,
+    required double proteinG,
+    required double carbsG,
+    required double fatG,
+    required String currentMealTitle,
+    required String mealType,
+  });
+
   Future<Either<Failure, void>> deletePlan(String id);
 
   Future<Either<Failure, MealLog>> getLastMealLog();

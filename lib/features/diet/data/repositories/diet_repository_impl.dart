@@ -156,6 +156,39 @@ class DietRepositoryImpl implements DietRepository {
   }
 
   @override
+  Future<Either<Failure, (DietMeal, int)>> swapMeal({
+    required int calories,
+    required double proteinG,
+    required double carbsG,
+    required double fatG,
+    required String currentMealTitle,
+    required String mealType,
+  }) {
+    return guard(() async {
+      final response = await _dietApi.swapMeal(
+        SwapMealRequest(
+          calories: calories,
+          proteinG: proteinG,
+          carbsG: carbsG,
+          fatG: fatG,
+          currentMealTitle: currentMealTitle,
+          mealType: mealType,
+        ),
+      );
+      final meal = response.data.meal.toEntity();
+      final remaining = response.data.remainingMealSwaps;
+      
+      // Update local cache if possible? 
+      // The current cache is the full DietPlan. 
+      // Swapping a meal means we should probably update the cached plan too if we want persistence.
+      // But the instructions say "update local state; no need to refetch the full plan".
+      // Usually "local state" in Riverpod means updating the notifier.
+      
+      return (meal, remaining);
+    });
+  }
+
+  @override
   Future<Either<Failure, void>> deletePlan(String id) {
     return guard(() async {
       await _dietApi.deletePlan(id);

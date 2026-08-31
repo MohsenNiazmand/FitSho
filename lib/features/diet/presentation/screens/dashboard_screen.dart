@@ -58,16 +58,9 @@ class DashboardScreen extends HookConsumerWidget {
     final isGenerating = planAsync.isLoading;
 
     final plan = planAsync.valueOrNull;
-    final now = DateTime.now();
-    final lastGeneratedAt = plan?.createdAt;
-    final bool cooldownActive = lastGeneratedAt != null &&
-        now.difference(lastGeneratedAt).inHours < 24;
 
     String getGenerateLabel() {
-      final baseLabel = context.tr.dietGeneratePlan;
-      if (!cooldownActive) return baseLabel;
-      final remainingHours = 24 - now.difference(lastGeneratedAt!).inHours;
-      return '$baseLabel (${context.tr.dietHoursLeft(PersianDigits.toPersian(remainingHours.toString()))})';
+      return context.tr.dietGeneratePlan;
     }
 
     return Scaffold(
@@ -272,15 +265,85 @@ class DashboardScreen extends HookConsumerWidget {
                     ],
                   ),
                   Gap.v24(),
-                  AppPrimaryButton(
-                    label: getGenerateLabel(),
-                    isLoading: isGenerating,
-                    onPressed:
-                    // (isGenerating || cooldownActive)
-                    //     ? null
-                    //     :
-                        () => _generatePlan(context, ref),
-                  ),
+                  if (plan?.remainingFullGenerations != null) ...[
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: cPrimary.withValues(alpha: 0.05),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: cPrimary.withValues(alpha: 0.1)),
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'تغییر رژیم غذایی',
+                                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: cTextPrimary,
+                                        ),
+                                  ),
+                                  Gap.v4(),
+                                  Text(
+                                    'محدودیت ۳ بار در هفته',
+                                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                          color: cTextSecondary,
+                                        ),
+                                  ),
+                                ],
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: plan!.remainingFullGenerations == 0
+                                      ? Colors.red.withValues(alpha: 0.1)
+                                      : cPrimary.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text(
+                                  '${PersianDigits.toPersian(plan.remainingFullGenerations.toString())} بار باقی‌مانده',
+                                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                                        color: plan.remainingFullGenerations == 0
+                                            ? Colors.red
+                                            : cPrimary,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Gap.v16(),
+                          AppPrimaryButton(
+                            label: getGenerateLabel(),
+                            isLoading: isGenerating,
+                            onPressed: plan.remainingFullGenerations == 0
+                                ? null
+                                : () => _generatePlan(context, ref),
+                          ),
+                          if (plan.remainingFullGenerations == 0) ...[
+                            Gap.v8(),
+                            Text(
+                              'شما در این هفته ۳ بار رژیم خود را تغییر داده‌اید.',
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                    color: Colors.red.shade700,
+                                  ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ] else
+                    AppPrimaryButton(
+                      label: getGenerateLabel(),
+                      isLoading: isGenerating,
+                      onPressed: () => _generatePlan(context, ref),
+                    ),
                 ],
               ),
             );

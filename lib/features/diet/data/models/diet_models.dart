@@ -167,8 +167,26 @@ class DietMealModel {
     required this.fatG,
   });
 
-  factory DietMealModel.fromJson(Map<String, dynamic> json) =>
-      _$DietMealModelFromJson(json);
+  factory DietMealModel.fromJson(Map<String, dynamic> json) {
+    num parseNum(dynamic value) {
+      if (value is num) return value;
+      if (value is String) return num.tryParse(value) ?? 0;
+      return 0;
+    }
+
+    return DietMealModel(
+      title: json['title'] as String,
+      description: json['description'] as String?,
+      ingredients: (json['ingredients'] as List<dynamic>?)
+              ?.map((e) => IngredientModel.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
+      calories: parseNum(json['calories']).toInt(),
+      proteinG: parseNum(json['proteinG']),
+      carbsG: parseNum(json['carbsG']),
+      fatG: parseNum(json['fatG']),
+    );
+  }
 
   final String title;
   final String? description;
@@ -226,6 +244,7 @@ class DietPlanModel {
     required this.days,
     required this.createdAt,
     @JsonKey(defaultValue: false) this.shouldRegeneratePlan = false,
+    this.remainingFullGenerations,
   });
 
   factory DietPlanModel.fromJson(Map<String, dynamic> json) =>
@@ -237,6 +256,8 @@ class DietPlanModel {
   final List<DietDayModel> days;
   final DateTime createdAt;
   final bool shouldRegeneratePlan;
+  @JsonKey(name: 'remaining_full_generations')
+  final int? remainingFullGenerations;
 
   Map<String, dynamic> toJson() => _$DietPlanModelToJson(this);
 }
@@ -519,4 +540,61 @@ class ComplianceStatsEnvelope {
   final ComplianceStatsModel data;
 
   Map<String, dynamic> toJson() => _$ComplianceStatsEnvelopeToJson(this);
+}
+
+@JsonSerializable()
+class SwapMealRequest {
+  const SwapMealRequest({
+    required this.calories,
+    required this.proteinG,
+    required this.carbsG,
+    required this.fatG,
+    required this.currentMealTitle,
+    required this.mealType,
+  });
+
+  factory SwapMealRequest.fromJson(Map<String, dynamic> json) =>
+      _$SwapMealRequestFromJson(json);
+
+  final int calories;
+  final num proteinG;
+  final num carbsG;
+  final num fatG;
+  final String currentMealTitle;
+  final String mealType;
+
+  Map<String, dynamic> toJson() => _$SwapMealRequestToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class SwapMealResponseModel {
+  const SwapMealResponseModel({
+    required this.meal,
+    required this.remainingMealSwaps,
+  });
+
+  factory SwapMealResponseModel.fromJson(Map<String, dynamic> json) =>
+      _$SwapMealResponseModelFromJson(json);
+
+  final DietMealModel meal;
+  @JsonKey(name: 'remaining_meal_swaps')
+  final int remainingMealSwaps;
+
+  Map<String, dynamic> toJson() => _$SwapMealResponseModelToJson(this);
+}
+
+@JsonSerializable()
+class SwapMealEnvelope {
+  const SwapMealEnvelope({
+    required this.success,
+    required this.data,
+  });
+
+  factory SwapMealEnvelope.fromJson(Map<String, dynamic> json) =>
+      _$SwapMealEnvelopeFromJson(json);
+
+  final bool success;
+  final SwapMealResponseModel data;
+
+  Map<String, dynamic> toJson() => _$SwapMealEnvelopeToJson(this);
 }

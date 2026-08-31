@@ -165,6 +165,8 @@ class DietPlan {
     required this.days,
     required this.createdAt,
     this.shouldRegeneratePlan = false,
+    this.remainingFullGenerations,
+    this.remainingMealSwaps,
   });
 
   @HiveField(0)
@@ -179,6 +181,33 @@ class DietPlan {
   final DateTime createdAt;
   @HiveField(5)
   final bool shouldRegeneratePlan;
+  @HiveField(6)
+  final int? remainingFullGenerations;
+  @HiveField(7)
+  final int? remainingMealSwaps;
+
+  DietPlan copyWith({
+    String? id,
+    String? status,
+    int? dailyCalorieTarget,
+    List<DietDay>? days,
+    DateTime? createdAt,
+    bool? shouldRegeneratePlan,
+    int? remainingFullGenerations,
+    int? remainingMealSwaps,
+  }) {
+    return DietPlan(
+      id: id ?? this.id,
+      status: status ?? this.status,
+      dailyCalorieTarget: dailyCalorieTarget ?? this.dailyCalorieTarget,
+      days: days ?? this.days,
+      createdAt: createdAt ?? this.createdAt,
+      shouldRegeneratePlan: shouldRegeneratePlan ?? this.shouldRegeneratePlan,
+      remainingFullGenerations:
+          remainingFullGenerations ?? this.remainingFullGenerations,
+      remainingMealSwaps: remainingMealSwaps ?? this.remainingMealSwaps,
+    );
+  }
 }
 
 @HiveType(typeId: 6)

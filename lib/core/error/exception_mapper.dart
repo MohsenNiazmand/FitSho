@@ -64,6 +64,9 @@ class ExceptionMapper {
     if (statusCode == 409) {
       return ConflictFailure(message ?? 'Resource already exists');
     }
+    if (statusCode == 429) {
+      return RateLimitFailure(message ?? 'Rate limit exceeded');
+    }
     if (statusCode == 422) {
       return ValidationFailure(message ?? 'Invalid input');
     }

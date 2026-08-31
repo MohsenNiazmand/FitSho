@@ -18,6 +18,8 @@ class DietMealCard extends StatelessWidget {
     required this.onLogMeal,
     this.isLogged = false,
     this.canLog = true,
+    this.onSwapMeal,
+    this.isSwapping = false,
     super.key,
   });
 
@@ -29,6 +31,8 @@ class DietMealCard extends StatelessWidget {
   final bool isLogged;
   final bool canLog;
   final VoidCallback? onLogMeal;
+  final VoidCallback? onSwapMeal;
+  final bool isSwapping;
 
   @override
   Widget build(BuildContext context) {
@@ -59,159 +63,183 @@ class DietMealCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
+      child: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Icon(dietSlotIcon(slot), size: 16, color: cPrimary),
-                Gap.h8(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(dietSlotIcon(slot), size: 16, color: cPrimary),
+                        Gap.h8(),
+                        Text(
+                          dietMealSlotLabel(context, slot),
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            color: cPrimary,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (onSwapMeal != null && !isLogged)
+                      IconButton(
+                        onPressed: isSwapping ? null : onSwapMeal,
+                        icon: isSwapping
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(strokeWidth: 2),
+                              )
+                            : const Icon(Icons.swap_horiz, size: 20),
+                        tooltip: 'جایگزین کن',
+                        constraints: const BoxConstraints(),
+                        padding: EdgeInsets.zero,
+                        color: cPrimary,
+                      ),
+                  ],
+                ),
+                Gap.v8(),
                 Text(
-                  dietMealSlotLabel(context, slot),
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    color: cPrimary,
+                  meal.title,
+                  style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w700,
+                    color: cTextPrimary,
                   ),
                 ),
-              ],
-            ),
-            Gap.v8(),
-            Text(
-              meal.title,
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w700,
-                color: cTextPrimary,
-              ),
-            ),
-            if (meal.description != null && meal.description!.isNotEmpty) ...[
-              Gap.v8(),
-              Text(
-                meal.description!,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: cTextSecondary,
-                  height: 1.5,
-                ),
-              ),
-            ],
-            if (meal.ingredients.isNotEmpty) ...[
-              Gap.v12(),
-              Text(
-                context.tr.dietIngredientsTitle,
-                style: theme.textTheme.labelLarge?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              Gap.v6(),
-              ...meal.ingredients.map(
-                (item) => Padding(
-                  padding: const EdgeInsets.only(bottom: 4),
-                  child: Text(
-                    '${item.name} — ${PersianDigits.toPersian(item.displayAmount)}',
-                    style: theme.textTheme.bodySmall?.copyWith(
+                if (meal.description != null && meal.description!.isNotEmpty) ...[
+                  Gap.v8(),
+                  Text(
+                    meal.description!,
+                    style: theme.textTheme.bodyMedium?.copyWith(
                       color: cTextSecondary,
+                      height: 1.5,
+                    ),
+                  ),
+                ],
+                if (meal.ingredients.isNotEmpty) ...[
+                  Gap.v12(),
+                  Text(
+                    context.tr.dietIngredientsTitle,
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  Gap.v6(),
+                  ...meal.ingredients.map(
+                    (item) => Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: Text(
+                        '${item.name} — ${PersianDigits.toPersian(item.displayAmount)}',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: cTextSecondary,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+                Gap.v12(),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    _MacroChip(
+                      label: context.tr.dietCaloriesShort(
+                        PersianDigits.toPersian(meal.calories.toString()),
+                      ),
+                    ),
+                    _MacroChip(
+                      label: context.tr.dietProteinShort(
+                        PersianDigits.toPersian(meal.proteinG.toStringAsFixed(0)),
+                      ),
+                    ),
+                    _MacroChip(
+                      label: context.tr.dietCarbsShort(
+                        PersianDigits.toPersian(meal.carbsG.toStringAsFixed(0)),
+                      ),
+                    ),
+                    _MacroChip(
+                      label: context.tr.dietFatShort(
+                        PersianDigits.toPersian(meal.fatG.toStringAsFixed(0)),
+                      ),
+                    ),
+                  ],
+                ),
+                Gap.v12(),
+                InkWell(
+                  onTap: (!canLog || isLogging || isLogged)
+                      ? null
+                      : () {
+                          HapticFeedback.mediumImpact();
+                          onLogMeal?.call();
+                        },
+                  borderRadius: BorderRadius.circular(AppRadius.pill),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: isLogged
+                          ? cSuccess.withValues(alpha: 0.1)
+                          : (isLogging || !canLog
+                              ? cSurfaceElevated
+                              : theme.colorScheme.primary),
+                      borderRadius: BorderRadius.circular(AppRadius.pill),
+                      border: isLogged
+                          ? Border.all(color: cSuccess.withValues(alpha: 0.2))
+                          : null,
+                    ),
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      child: isLogging
+                          ? const Center(
+                              key: ValueKey('logging'),
+                              child: SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.5,
+                                ),
+                              ),
+                            )
+                          : Center(
+                              key: ValueKey(isLogged),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  if (isLogged) ...[
+                                    const Icon(
+                                      Icons.check_circle_rounded,
+                                      size: 20,
+                                      color: cSuccess,
+                                    ),
+                                    Gap.h8(),
+                                  ],
+                                  Text(
+                                    isLogged ? context.tr.dietEaten : context.tr.dietIAteThis,
+                                    style: theme.textTheme.labelLarge?.copyWith(
+                                      color: isLogged
+                                          ? cSuccess
+                                          : (isLogging || !canLog
+                                              ? cTextSecondary
+                                              : Colors.white),
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                     ),
                   ),
                 ),
-              ),
-            ],
-            Gap.v12(),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                _MacroChip(
-                  label: context.tr.dietCaloriesShort(
-                    PersianDigits.toPersian(meal.calories.toString()),
-                  ),
-                ),
-                _MacroChip(
-                  label: context.tr.dietProteinShort(
-                    PersianDigits.toPersian(meal.proteinG.toStringAsFixed(0)),
-                  ),
-                ),
-                _MacroChip(
-                  label: context.tr.dietCarbsShort(
-                    PersianDigits.toPersian(meal.carbsG.toStringAsFixed(0)),
-                  ),
-                ),
-                _MacroChip(
-                  label: context.tr.dietFatShort(
-                    PersianDigits.toPersian(meal.fatG.toStringAsFixed(0)),
-                  ),
-                ),
               ],
             ),
-            Gap.v12(),
-            InkWell(
-              onTap: (!canLog || isLogging || isLogged)
-                  ? null
-                  : () {
-                      HapticFeedback.mediumImpact();
-                      onLogMeal?.call();
-                    },
-              borderRadius: BorderRadius.circular(AppRadius.pill),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: isLogged
-                      ? cSuccess.withValues(alpha: 0.1)
-                      : (isLogging || !canLog
-                          ? cSurfaceElevated
-                          : theme.colorScheme.primary),
-                  borderRadius: BorderRadius.circular(AppRadius.pill),
-                  border: isLogged
-                      ? Border.all(color: cSuccess.withValues(alpha: 0.2))
-                      : null,
-                ),
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  child: isLogging
-                      ? const Center(
-                          key: ValueKey('logging'),
-                          child: SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2.5,
-                            ),
-                          ),
-                        )
-                      : Center(
-                          key: ValueKey(isLogged),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              if (isLogged) ...[
-                                const Icon(
-                                  Icons.check_circle_rounded,
-                                  size: 20,
-                                  color: cSuccess,
-                                ),
-                                Gap.h8(),
-                              ],
-                              Text(
-                                isLogged ? context.tr.dietEaten : context.tr.dietIAteThis,
-                                style: theme.textTheme.labelLarge?.copyWith(
-                                  color: isLogged
-                                      ? cSuccess
-                                      : (isLogging || !canLog
-                                          ? cTextSecondary
-                                          : Colors.white),
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

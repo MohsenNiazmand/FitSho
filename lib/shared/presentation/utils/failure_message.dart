@@ -10,6 +10,7 @@ String failureMessage(BuildContext context, Failure failure) {
     ValidationFailure() => failure.message,
     ConflictFailure() => failure.message,
     NotFoundFailure() => failure.message,
+    RateLimitFailure() => failure.message,
     ServerFailure() => failure.message.isNotEmpty
         ? failure.message
         : context.tr.genericError,

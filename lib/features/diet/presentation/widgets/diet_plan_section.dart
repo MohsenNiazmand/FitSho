@@ -17,6 +17,7 @@ class DietPlanSection extends HookConsumerWidget {
     required this.highlightDay,
     required this.highlightSlot,
     required this.onLogMeal,
+    this.onSwapMeal,
     this.onHighlightHandled,
     super.key,
   });
@@ -25,6 +26,7 @@ class DietPlanSection extends HookConsumerWidget {
   final String? highlightDay;
   final String? highlightSlot;
   final void Function(String day, String slot) onLogMeal;
+  final Future<void> Function(String day, String slot, DietMeal meal)? onSwapMeal;
   final VoidCallback? onHighlightHandled;
 
   @override
@@ -33,6 +35,7 @@ class DietPlanSection extends HookConsumerWidget {
     final dayKeys = orderedDayKeys();
     final todayKey = DietConstants.todayKey();
     final selectedDay = useState(highlightDay ?? todayKey);
+    final swappingKey = useState<String?>(null);
 
     final mealCardKeys = useMemoized(
       () => {for (final slot in orderedMealSlotKeys()) slot: GlobalKey()},
@@ -142,6 +145,17 @@ class DietPlanSection extends HookConsumerWidget {
               ),
               canLog: currentDay.day == todayKey,
               onLogMeal: () => onLogMeal(currentDay.day, slot),
+              isSwapping: swappingKey.value == '${currentDay.day}-$slot',
+              onSwapMeal: onSwapMeal == null
+                  ? null
+                  : () async {
+                      swappingKey.value = '${currentDay.day}-$slot';
+                      try {
+                        await onSwapMeal!(currentDay.day, slot, currentDay.meals[slot]!);
+                      } finally {
+                        swappingKey.value = null;
+                      }
+                    },
             ),
       ],
     );

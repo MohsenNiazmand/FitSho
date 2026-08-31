@@ -4,6 +4,8 @@ import 'package:fitsho/shared/presentation/utils/failure_message.dart';
 import 'package:fitsho/core/constants/app_assets.dart';
 import 'package:fitsho/core/constants/colors.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
+import 'package:fitsho/core/utils/persian_digits.dart';
+import 'package:fitsho/features/diet/domain/entities/diet_entities.dart';
 import 'package:fitsho/features/diet/presentation/providers/diet_navigation_provider.dart';
 import 'package:fitsho/features/diet/presentation/providers/diet_providers.dart';
 import 'package:fitsho/features/diet/presentation/widgets/ai_loading_dialog.dart';
@@ -29,6 +31,23 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
         .logMeal(slot: slot, day: day);
     if (mounted && failure != null) {
       showFailureToast(context, failure);
+    }
+  }
+
+  Future<void> _swapMeal(String day, String slot, DietMeal meal) async {
+    final result = await ref
+        .read(dietPlanNotifierProvider.notifier)
+        .swapMeal(day: day, slot: slot, currentMeal: meal);
+
+    if (mounted) {
+      result.fold(
+        (failure) => showFailureToast(context, failure),
+        (remaining) {
+          showMessageToast(
+            '${PersianDigits.toPersian(remaining.toString())} بار جایگزینی امروز باقی مانده',
+          );
+        },
+      );
     }
   }
 
@@ -136,6 +155,7 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
                             highlightDay: navigationTarget?.highlightDay,
                             highlightSlot: navigationTarget?.highlightSlot,
                             onLogMeal: _logMeal,
+                            onSwapMeal: _swapMeal,
                             onHighlightHandled: () {
                               ref
                                   .read(dietNavigationNotifierProvider.notifier)

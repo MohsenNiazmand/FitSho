@@ -10,8 +10,19 @@ class IngredientModel {
     this.unit,
   });
 
-  factory IngredientModel.fromJson(Map<String, dynamic> json) =>
-      _$IngredientModelFromJson(json);
+  factory IngredientModel.fromJson(Map<String, dynamic> json) {
+    num parseNum(dynamic value) {
+      if (value is num) return value;
+      if (value is String) return num.tryParse(value) ?? 0;
+      return 0;
+    }
+
+    return IngredientModel(
+      name: json['name'] as String,
+      amount: parseNum(json['amount']),
+      unit: json['unit'] as String?,
+    );
+  }
 
   final String name;
   final num amount;

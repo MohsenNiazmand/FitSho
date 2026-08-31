@@ -1,3 +1,4 @@
+import 'package:fpdart/fpdart.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:fitsho/core/error/failures.dart';
 import 'package:fitsho/core/injection_container.dart';
@@ -150,6 +151,50 @@ class DietPlanNotifier extends _$DietPlanNotifier {
       (plan) {
         state = AsyncValue.data(plan);
         return null;
+      },
+    );
+  }
+
+  Future<Either<Failure, int>> swapMeal({
+    required String day,
+    required String slot,
+    required DietMeal currentMeal,
+  }) async {
+    final result = await getIt<DietRepository>().swapMeal(
+      calories: currentMeal.calories,
+      proteinG: currentMeal.proteinG,
+      carbsG: currentMeal.carbsG,
+      fatG: currentMeal.fatG,
+      currentMealTitle: currentMeal.title,
+      mealType: slot,
+    );
+
+    return result.fold(
+      (failure) => Left(failure),
+      (data) {
+        final newMeal = data.$1;
+        final remaining = data.$2;
+
+        final currentPlan = state.valueOrNull;
+        if (currentPlan != null) {
+          final newDays = currentPlan.days.map((d) {
+            if (d.day == day) {
+              final newMeals = Map<String, DietMeal?>.from(d.meals);
+              newMeals[slot] = newMeal;
+              return DietDay(day: d.day, meals: newMeals);
+            }
+            return d;
+          }).toList();
+
+          state = AsyncValue.data(
+            currentPlan.copyWith(
+              days: newDays,
+              remainingMealSwaps: remaining,
+            ),
+          );
+        }
+
+        return Right(remaining);
       },
     );
   }

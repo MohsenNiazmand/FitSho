@@ -34,6 +34,9 @@ abstract class DietApi {
   @POST('diet-plans/generate')
   Future<DietPlanEnvelope> generatePlan();
 
+  @POST('diet-plans/swap-meal')
+  Future<SwapMealEnvelope> swapMeal(@Body() SwapMealRequest body);
+
   @DELETE('diet-plans/{id}')
   Future<MessageResponse> deletePlan(@Path('id') String id);
 

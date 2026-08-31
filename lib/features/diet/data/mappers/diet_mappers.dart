@@ -94,6 +94,7 @@ extension DietPlanModelX on DietPlanModel {
       days: days.map((day) => day.toEntity()).toList(),
       createdAt: createdAt,
       shouldRegeneratePlan: shouldRegeneratePlan,
+      remainingFullGenerations: remainingFullGenerations,
     );
   }
 }

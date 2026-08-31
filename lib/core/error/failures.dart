@@ -36,6 +36,10 @@ final class AiProviderFailure extends Failure {
   ]);
 }
 
+final class RateLimitFailure extends Failure {
+  const RateLimitFailure([super.message = 'Rate limit exceeded']);
+}
+
 final class CacheFailure extends Failure {
   const CacheFailure([super.message = 'Local storage error']);
 }
