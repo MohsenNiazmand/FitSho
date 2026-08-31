@@ -1,27 +1,26 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:fitsho/shared/presentation/utils/failure_message.dart';
+import 'dart:math';
+
 import 'package:fitsho/config/router/routes.dart';
 import 'package:fitsho/core/constants/colors.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
 import 'package:fitsho/core/notifications/push_notification_service.dart';
 import 'package:fitsho/core/utils/persian_digits.dart';
 import 'package:fitsho/features/diet/domain/constants/diet_constants.dart';
-import 'package:fitsho/features/diet/presentation/providers/diet_navigation_provider.dart';
 import 'package:fitsho/features/diet/presentation/providers/diet_providers.dart';
 import 'package:fitsho/features/diet/presentation/widgets/ai_loading_dialog.dart';
-import 'package:fitsho/features/diet/presentation/widgets/diet_onboarding_form.dart';
 import 'package:fitsho/features/diet/presentation/widgets/diet_summary_widgets.dart';
 import 'package:fitsho/features/diet/presentation/widgets/last_meal_card.dart';
+import 'package:fitsho/shared/presentation/utils/failure_message.dart';
 import 'package:fitsho/shared/presentation/utils/toast_utils.dart';
 import 'package:fitsho/shared/presentation/widgets/app_loading_indicator.dart';
-import 'package:fitsho/shared/presentation/widgets/app_outlined_button.dart';
 import 'package:fitsho/shared/presentation/widgets/app_primary_button.dart';
 import 'package:fitsho/shared/presentation/widgets/error_retry_view.dart';
 import 'package:fitsho/shared/presentation/widgets/gap.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class DashboardScreen extends HookConsumerWidget {
   const DashboardScreen({super.key});
@@ -215,7 +214,18 @@ class DashboardScreen extends HookConsumerWidget {
                   ),
                   Gap.v24(),
                   if (statsAsync.value != null) ...[
-                    ComplianceRing(rate: statsAsync.value!.complianceRate),
+                    Builder(builder: (context) {
+                      final stats = statsAsync.value!;
+                      final todayLogs = todayLogsAsync.value ?? [];
+                      
+                      // Use optimistic count if it's higher than server count (during log process)
+                      final displayConsumed = max(stats.totalConsumed, todayLogs.length);
+                      final displayRate = stats.totalPlanned > 0 
+                          ? (displayConsumed / stats.totalPlanned) * 100 
+                          : stats.complianceRate;
+
+                      return ComplianceRing(rate: displayRate);
+                    }),
                     Gap.v16(),
                   ],
                   lastMealAsync.when(

@@ -203,19 +203,28 @@ class ComplianceRing extends StatelessWidget {
               SizedBox(
                 width: 64,
                 height: 64,
-                child: CircularProgressIndicator(
-                  value: (rate / 100).clamp(0.0, 1.0),
-                  strokeWidth: 6,
-                  backgroundColor: mainColor.withValues(alpha: 0.1),
-                  valueColor: AlwaysStoppedAnimation(mainColor),
-                  strokeCap: StrokeCap.round,
+                child: TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0, end: rate / 100),
+                  duration: const Duration(milliseconds: 1000),
+                  curve: Curves.easeOutBack,
+                  builder: (context, value, _) => CircularProgressIndicator(
+                    value: value.clamp(0.0, 1.0),
+                    strokeWidth: 6,
+                    backgroundColor: mainColor.withValues(alpha: 0.1),
+                    valueColor: AlwaysStoppedAnimation(mainColor),
+                    strokeCap: StrokeCap.round,
+                  ),
                 ),
               ),
-              Text(
-                '${PersianDigits.toPersian(percentage.toString())}٪',
-                style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: mainColor,
+              TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0, end: percentage.toDouble()),
+                duration: const Duration(milliseconds: 1000),
+                builder: (context, value, _) => Text(
+                  '${PersianDigits.toPersian(value.toInt().toString())}٪',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: mainColor,
+                  ),
                 ),
               ),
             ],

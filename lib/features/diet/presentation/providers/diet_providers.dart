@@ -231,6 +231,8 @@ class LastMealLogNotifier extends _$LastMealLogNotifier {
     ref.invalidateSelf();
     await future;
   }
+
+  set state(AsyncValue<MealLog?> value) => super.state = value;
 }
 
 @riverpod
@@ -301,6 +303,8 @@ class ComplianceStatsNotifier extends _$ComplianceStatsNotifier {
     ref.invalidateSelf();
     await future;
   }
+
+  set state(AsyncValue<ComplianceStats?> value) => super.state = value;
 }
 
 @riverpod
@@ -312,18 +316,40 @@ class LogMealNotifier extends _$LogMealNotifier {
     required String slot,
     required String day,
   }) async {
-    final previousLogs = ref.read(todayMealLogsNotifierProvider).valueOrNull ?? [];
-    
-    // Optimistic Update
+    final previousLogs =
+        ref.read(todayMealLogsNotifierProvider).valueOrNull ?? [];
+    final previousLastMeal =
+        ref.read(lastMealLogNotifierProvider).valueOrNull;
+    final previousStats =
+        ref.read(complianceStatsNotifierProvider).valueOrNull;
+
+    // Optimistic Update Data
     final tempLog = MealLog(
       id: 'temp-${DateTime.now().millisecondsSinceEpoch}',
       slot: slot,
       day: day,
       loggedAt: DateTime.now(),
     );
-    
+
+    // 1. Update Today Logs
     ref.read(todayMealLogsNotifierProvider.notifier).state =
         AsyncValue.data([...previousLogs, tempLog]);
+
+    // 2. Update Last Meal Log
+    ref.read(lastMealLogNotifierProvider.notifier).state =
+        AsyncValue.data(tempLog);
+
+    // 3. Update Compliance Stats
+    if (previousStats != null) {
+      final newConsumed = previousStats.totalConsumed + 1;
+      final newRate = (newConsumed / previousStats.totalPlanned) * 100;
+      ref.read(complianceStatsNotifierProvider.notifier).state =
+          AsyncValue.data(ComplianceStats(
+        complianceRate: newRate,
+        totalPlanned: previousStats.totalPlanned,
+        totalConsumed: newConsumed,
+      ));
+    }
 
     final result = await getIt<DietRepository>().logMeal(
       slot: slot,
@@ -332,15 +358,26 @@ class LogMealNotifier extends _$LogMealNotifier {
 
     return result.fold(
       (failure) {
-        // Rollback
+        // Rollback all
         ref.read(todayMealLogsNotifierProvider.notifier).state =
             AsyncValue.data(previousLogs);
+        ref.read(lastMealLogNotifierProvider.notifier).state =
+            AsyncValue.data(previousLastMeal);
+        if (previousStats != null) {
+          ref.read(complianceStatsNotifierProvider.notifier).state =
+              AsyncValue.data(previousStats);
+        }
         return failure;
       },
       (_) {
+        // Re-invalidate to ensure we have the real server data (IDs, exact stats)
         ref.invalidate(lastMealLogNotifierProvider);
         ref.invalidate(todayMealLogsNotifierProvider);
-        ref.invalidate(complianceStatsNotifierProvider);
+        
+        // Delay stats invalidation to allow server-side aggregation to finish
+        Future.delayed(const Duration(milliseconds: 500), () {
+          ref.invalidate(complianceStatsNotifierProvider);
+        });
         return null;
       },
     );
