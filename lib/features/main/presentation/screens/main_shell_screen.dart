@@ -1,9 +1,11 @@
+import 'package:fitsho/core/extensions/context_extensions.dart';
+import 'package:fitsho/features/diet/presentation/providers/diet_navigation_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:fitsho/core/extensions/context_extensions.dart';
 
 class MainShellScreen extends HookConsumerWidget {
   const MainShellScreen({
@@ -56,6 +58,35 @@ class MainShellScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final lastBackPress = useRef<DateTime?>(null);
+
+    // Handle initial navigation (cold start) and subsequent updates
+    useEffect(() {
+      void handleNavigation(DietNavigationTarget? target) {
+        if (target == null) return;
+
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          if (target.openSupplements) {
+            navigationShell.goBranch(2);
+          } else if (target.openWeeklyPlan) {
+            navigationShell.goBranch(1);
+          }
+
+          // Clear navigation state after handling
+          ref.read(dietNavigationNotifierProvider.notifier).clear();
+        });
+      }
+
+      // Check immediately on build
+      handleNavigation(ref.read(dietNavigationNotifierProvider));
+
+      // Listen for changes
+      final subscription = ref.listenManual(
+        dietNavigationNotifierProvider,
+        (prev, next) => handleNavigation(next),
+      );
+
+      return subscription.close;
+    }, []);
 
     return PopScope(
       canPop: false,

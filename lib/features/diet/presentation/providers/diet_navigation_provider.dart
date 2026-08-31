@@ -7,11 +7,13 @@ class DietNavigationTarget {
     this.highlightDay,
     this.highlightSlot,
     this.openSupplements = false,
+    this.openWeeklyPlan = false,
   });
 
   final String? highlightDay;
   final String? highlightSlot;
   final bool openSupplements;
+  final bool openWeeklyPlan;
 }
 
 @Riverpod(keepAlive: true)
@@ -26,11 +28,16 @@ class DietNavigationNotifier extends _$DietNavigationNotifier {
     state = DietNavigationTarget(
       highlightDay: day,
       highlightSlot: slot,
+      openWeeklyPlan: true,
     );
   }
 
   void openSupplements() {
     state = const DietNavigationTarget(openSupplements: true);
+  }
+
+  void openWeeklyPlan() {
+    state = const DietNavigationTarget(openWeeklyPlan: true);
   }
 
   void clear() {

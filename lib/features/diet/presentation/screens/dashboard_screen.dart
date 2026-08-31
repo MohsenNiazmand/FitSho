@@ -51,13 +51,6 @@ class DashboardScreen extends HookConsumerWidget {
       return null;
     }, const []);
 
-    ref.listen(dietNavigationNotifierProvider, (_, next) {
-      if (next != null && next.openSupplements) {
-        context.push(AppRoutes.dietSupplements);
-        ref.read(dietNavigationNotifierProvider.notifier).clear();
-      }
-    });
-
     final profileAsync = ref.watch(dietProfileNotifierProvider);
     final planAsync = ref.watch(dietPlanNotifierProvider);
     final lastMealAsync = ref.watch(lastMealLogNotifierProvider);

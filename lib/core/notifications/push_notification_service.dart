@@ -104,13 +104,19 @@ class PushNotificationService {
         _ref
             .read(dietNavigationNotifierProvider.notifier)
             .openMealReminder(day: day, slot: slot);
+      } else {
+        _ref.read(dietNavigationNotifierProvider.notifier).openWeeklyPlan();
       }
       return;
     }
 
     if (type == 'supplement_reminder') {
       _ref.read(dietNavigationNotifierProvider.notifier).openSupplements();
+      return;
     }
+
+    // Default action for other notifications
+    _ref.read(dietNavigationNotifierProvider.notifier).openWeeklyPlan();
   }
 
   void _handleForegroundMessage(RemoteMessage message) {
@@ -159,35 +165,36 @@ class _InAppNotification extends StatelessWidget {
           child: InkWell(
             onTap: onTap,
             child: Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
               decoration: BoxDecoration(
                 color: theme.colorScheme.surface,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
+                    color: Colors.black.withOpacity(0.08),
+                    blurRadius: 15,
+                    offset: const Offset(0, 5),
                   ),
                 ],
                 border: Border.all(
-                  color: theme.colorScheme.primary.withOpacity(0.2),
+                  color: theme.colorScheme.primary.withOpacity(0.1),
                 ),
               ),
               child: Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.primaryContainer,
+                      color: theme.colorScheme.primaryContainer.withOpacity(0.5),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
-                      Icons.notifications_active_rounded,
+                      Icons.restaurant_menu_rounded,
                       color: theme.colorScheme.primary,
+                      size: 32, // آیکون بزرگ‌تر
                     ),
                   ),
-                  Gap.h16(),
+                  Gap.h12(),
                   Expanded(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -195,19 +202,34 @@ class _InAppNotification extends StatelessWidget {
                       children: [
                         Text(
                           title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.titleSmall?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text(body, style: theme.textTheme.bodySmall),
+                        Text(
+                          body,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.bodySmall,
+                        ),
                       ],
                     ),
                   ),
-                  Text(
-                    'تیک زدن',
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      color: theme.colorScheme.primary,
-                      fontWeight: FontWeight.bold,
+                  Gap.h12(),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      'مشاهده',
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.colorScheme.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
