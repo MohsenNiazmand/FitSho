@@ -344,7 +344,7 @@ class LogMealNotifier extends _$LogMealNotifier {
         AsyncValue.data(tempLog);
 
     // 3. Update Compliance Stats
-    if (previousStats != null) {
+    if (previousStats != null && previousStats.totalPlanned > 0) {
       final newConsumed = previousStats.totalConsumed + 1;
       final newRate = (newConsumed / previousStats.totalPlanned) * 100;
       ref.read(complianceStatsNotifierProvider.notifier).state =
