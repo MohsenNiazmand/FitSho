@@ -393,7 +393,7 @@ class DietOnboardingForm extends HookConsumerWidget {
                           AppTextField(
                             controller: exerciseTypeController,
                             label: requiredLabel(context.tr.dietExerciseTypeLabel),
-                            inputFormatters: [createPersianTextFormatter()],
+                            inputFormatters: [createLettersOnlyFormatter()],
                             validator: (v) => v?.trim().isEmpty == true
                                 ? context.tr.dietFormValidationError
                                 : null,
@@ -404,7 +404,7 @@ class DietOnboardingForm extends HookConsumerWidget {
                             label: requiredLabel(context.tr.dietExerciseDaysLabel),
                             keyboardType: TextInputType.number,
                             inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
+                              FilteringTextInputFormatter.allow(RegExp(r'[1-7]')),
                               LengthLimitingTextInputFormatter(1),
                             ],
                             validator: validateExerciseDays,

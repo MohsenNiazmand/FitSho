@@ -5,6 +5,26 @@ const _persianTextPattern =
 
 final _latinLetterPattern = RegExp('[a-zA-Z]');
 
+/// Creates a formatter for text fields that should only contain Persian or
+/// English letters (no digits or special symbols except space and ZWNJ).
+TextInputFormatter createLettersOnlyFormatter({
+  VoidCallback? onRejected,
+}) {
+  // Pattern includes English letters, Persian letters (excluding digits),
+  // space, and ZWNJ.
+  final filter = FilteringTextInputFormatter.allow(
+    RegExp(r'[a-zA-Z\u0621-\u064A\u067E\u0686\u0698\u06AF\u06CC\u200c\s]'),
+  );
+
+  return TextInputFormatter.withFunction((oldValue, newValue) {
+    final result = filter.formatEditUpdate(oldValue, newValue);
+    if (result.text != newValue.text) {
+      onRejected?.call();
+    }
+    return result;
+  });
+}
+
 /// Creates a formatter for user-facing Persian text fields.
 /// Calls [onRejected] when the user enters disallowed characters.
 TextInputFormatter createPersianTextFormatter({
