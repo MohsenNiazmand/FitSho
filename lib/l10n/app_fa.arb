@@ -303,5 +303,27 @@
   "onboardingTitle3": "رسیدن به اندام ایده‌آل",
   "onboardingSubtitle3": "ما در هر قدم همراه شما هستیم تا به اهداف سلامتی خود برسید.",
   "aiGeneratingPlanTitle": "هوش مصنوعی در حال بررسی...",
-  "aiGeneratingPlanMessage": "لطفاً صبور باشید، هوش مصنوعی فیت‌شو در حال تدوین بهترین برنامه غذایی بر اساس فیزیک و اهداف شماست."
+  "aiGeneratingPlanMessage": "لطفاً صبور باشید، هوش مصنوعی فیت‌شو در حال تدوین بهترین برنامه غذایی بر اساس فیزیک و اهداف شماست.",
+  "dietCalorieGoalCompleted": "هدف کالری تکمیل شد 🎯",
+  "dietGeneratePlanAction": "تولید برنامه",
+  "dietChangePlanTitle": "تغییر رژیم غذایی",
+  "dietChangePlanLimit": "محدودیت ۳ بار در هفته",
+  "dietRemainingSwaps": "{value} بار باقی‌مانده",
+  "@dietRemainingSwaps": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "dietWeeklyLimitReached": "شما در این هفته ۳ بار رژیم خود را تغییر داده‌اید.",
+  "dietSwapMealTooltip": "جایگزین کن",
+  "dietRemainingMealSwaps": "{value} بار جایگزینی امروز باقی مانده",
+  "@dietRemainingMealSwaps": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  }
 }

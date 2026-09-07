@@ -720,4 +720,33 @@ class AppLocalizationsFa extends AppLocalizations {
   @override
   String get aiGeneratingPlanMessage =>
       'لطفاً صبور باشید، هوش مصنوعی فیت‌شو در حال تدوین بهترین برنامه غذایی بر اساس فیزیک و اهداف شماست.';
+
+  @override
+  String get dietCalorieGoalCompleted => 'هدف کالری تکمیل شد 🎯';
+
+  @override
+  String get dietGeneratePlanAction => 'تولید برنامه';
+
+  @override
+  String get dietChangePlanTitle => 'تغییر رژیم غذایی';
+
+  @override
+  String get dietChangePlanLimit => 'محدودیت ۳ بار در هفته';
+
+  @override
+  String dietRemainingSwaps(String value) {
+    return '$value بار باقی‌مانده';
+  }
+
+  @override
+  String get dietWeeklyLimitReached =>
+      'شما در این هفته ۳ بار رژیم خود را تغییر داده‌اید.';
+
+  @override
+  String get dietSwapMealTooltip => 'جایگزین کن';
+
+  @override
+  String dietRemainingMealSwaps(String value) {
+    return '$value بار جایگزینی امروز باقی مانده';
+  }
 }

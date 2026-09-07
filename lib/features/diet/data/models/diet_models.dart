@@ -245,6 +245,7 @@ class DietPlanModel {
     required this.createdAt,
     @JsonKey(defaultValue: false) this.shouldRegeneratePlan = false,
     this.remainingFullGenerations,
+    this.remainingMealSwaps,
   });
 
   factory DietPlanModel.fromJson(Map<String, dynamic> json) =>
@@ -258,6 +259,8 @@ class DietPlanModel {
   final bool shouldRegeneratePlan;
   @JsonKey(name: 'remaining_full_generations')
   final int? remainingFullGenerations;
+  @JsonKey(name: 'remaining_meal_swaps')
+  final int? remainingMealSwaps;
 
   Map<String, dynamic> toJson() => _$DietPlanModelToJson(this);
 }

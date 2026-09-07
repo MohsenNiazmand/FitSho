@@ -721,4 +721,33 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get aiGeneratingPlanMessage =>
       'Please be patient, FitSho\'s AI is formulating the best meal plan based on your physique and goals.';
+
+  @override
+  String get dietCalorieGoalCompleted => 'Calorie goal completed 🎯';
+
+  @override
+  String get dietGeneratePlanAction => 'Generate Plan';
+
+  @override
+  String get dietChangePlanTitle => 'Change Diet Plan';
+
+  @override
+  String get dietChangePlanLimit => 'Limit 3 times per week';
+
+  @override
+  String dietRemainingSwaps(String value) {
+    return '$value remaining';
+  }
+
+  @override
+  String get dietWeeklyLimitReached =>
+      'You have changed your diet 3 times this week.';
+
+  @override
+  String get dietSwapMealTooltip => 'Swap meal';
+
+  @override
+  String dietRemainingMealSwaps(String value) {
+    return '$value meal swaps remaining today';
+  }
 }

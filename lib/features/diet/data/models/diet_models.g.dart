@@ -225,6 +225,7 @@ DietPlanModel _$DietPlanModelFromJson(Map<String, dynamic> json) =>
       createdAt: DateTime.parse(json['createdAt'] as String),
       shouldRegeneratePlan: json['shouldRegeneratePlan'] as bool? ?? false,
       remainingFullGenerations: (json['remaining_full_generations'] as num?)?.toInt(),
+      remainingMealSwaps: (json['remaining_meal_swaps'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$DietPlanModelToJson(DietPlanModel instance) =>
@@ -236,6 +237,7 @@ Map<String, dynamic> _$DietPlanModelToJson(DietPlanModel instance) =>
       'createdAt': instance.createdAt.toIso8601String(),
       'shouldRegeneratePlan': instance.shouldRegeneratePlan,
       'remaining_full_generations': instance.remainingFullGenerations,
+      'remaining_meal_swaps': instance.remainingMealSwaps,
     };
 
 MealLogModel _$MealLogModelFromJson(Map<String, dynamic> json) => MealLogModel(

@@ -44,7 +44,9 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
         (failure) => showFailureToast(context, failure),
         (remaining) {
           showMessageToast(
-            '${PersianDigits.toPersian(remaining.toString())} بار جایگزینی امروز باقی مانده',
+            context.tr.dietRemainingMealSwaps(
+              PersianDigits.toPersian(remaining.toString()),
+            ),
           );
         },
       );

@@ -96,7 +96,7 @@ class DietMealCard extends StatelessWidget {
                                 child: CircularProgressIndicator(strokeWidth: 2),
                               )
                             : const Icon(Icons.swap_horiz, size: 20),
-                        tooltip: 'جایگزین کن',
+                        tooltip: context.tr.dietSwapMealTooltip,
                         constraints: const BoxConstraints(),
                         padding: EdgeInsets.zero,
                         color: cPrimary,

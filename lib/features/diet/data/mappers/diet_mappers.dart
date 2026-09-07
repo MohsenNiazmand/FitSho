@@ -95,6 +95,7 @@ extension DietPlanModelX on DietPlanModel {
       createdAt: createdAt,
       shouldRegeneratePlan: shouldRegeneratePlan,
       remainingFullGenerations: remainingFullGenerations,
+      remainingMealSwaps: remainingMealSwaps,
     );
   }
 }

@@ -94,6 +94,7 @@ class CalorieProgressRing extends StatelessWidget {
     final remaining = target - consumed;
     final progress = min(1.0, consumed / target);
     final theme = Theme.of(context);
+    final isCompleted = consumed >= (target - 10);
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -158,11 +159,13 @@ class CalorieProgressRing extends StatelessWidget {
                 ),
                 Gap.v8(),
                 Text(
-                  remaining > 0
-                      ? context.tr.dietCaloriesRemaining(PersianDigits.toPersian(remaining.toString()))
-                      : context.tr.dietOverConsumed,
+                  isCompleted
+                      ? context.tr.dietCalorieGoalCompleted
+                      : context.tr.dietCaloriesRemaining(
+                          PersianDigits.toPersian(remaining.toString()),
+                        ),
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: remaining > 0 ? cSuccess : cError,
+                    color: cSuccess,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

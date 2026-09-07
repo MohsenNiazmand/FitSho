@@ -240,13 +240,15 @@ class DietPlanAdapter extends TypeAdapter<DietPlan> {
       days: (fields[3] as List).cast<DietDay>(),
       createdAt: fields[4] as DateTime,
       shouldRegeneratePlan: fields[5] == null ? false : fields[5] as bool,
+      remainingFullGenerations: fields[6] as int?,
+      remainingMealSwaps: fields[7] as int?,
     );
   }
 
   @override
   void write(BinaryWriter writer, DietPlan obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -258,7 +260,11 @@ class DietPlanAdapter extends TypeAdapter<DietPlan> {
       ..writeByte(4)
       ..write(obj.createdAt)
       ..writeByte(5)
-      ..write(obj.shouldRegeneratePlan);
+      ..write(obj.shouldRegeneratePlan)
+      ..writeByte(6)
+      ..write(obj.remainingFullGenerations)
+      ..writeByte(7)
+      ..write(obj.remainingMealSwaps);
   }
 
   @override

@@ -317,5 +317,27 @@
   "onboardingTitle3": "Achieve Ideal Body",
   "onboardingSubtitle3": "We are with you every step of the way to achieve your health goals.",
   "aiGeneratingPlanTitle": "AI is analyzing...",
-  "aiGeneratingPlanMessage": "Please be patient, FitSho's AI is formulating the best meal plan based on your physique and goals."
+  "aiGeneratingPlanMessage": "Please be patient, FitSho's AI is formulating the best meal plan based on your physique and goals.",
+  "dietCalorieGoalCompleted": "Calorie goal completed 🎯",
+  "dietGeneratePlanAction": "Generate Plan",
+  "dietChangePlanTitle": "Change Diet Plan",
+  "dietChangePlanLimit": "Limit 3 times per week",
+  "dietRemainingSwaps": "{value} remaining",
+  "@dietRemainingSwaps": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "dietWeeklyLimitReached": "You have changed your diet 3 times this week.",
+  "dietSwapMealTooltip": "Swap meal",
+  "dietRemainingMealSwaps": "{value} meal swaps remaining today",
+  "@dietRemainingMealSwaps": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  }
 }

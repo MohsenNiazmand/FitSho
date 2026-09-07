@@ -1417,6 +1417,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please be patient, FitSho\'s AI is formulating the best meal plan based on your physique and goals.'**
   String get aiGeneratingPlanMessage;
+
+  /// No description provided for @dietCalorieGoalCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Calorie goal completed 🎯'**
+  String get dietCalorieGoalCompleted;
+
+  /// No description provided for @dietGeneratePlanAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate Plan'**
+  String get dietGeneratePlanAction;
+
+  /// No description provided for @dietChangePlanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Diet Plan'**
+  String get dietChangePlanTitle;
+
+  /// No description provided for @dietChangePlanLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Limit 3 times per week'**
+  String get dietChangePlanLimit;
+
+  /// No description provided for @dietRemainingSwaps.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} remaining'**
+  String dietRemainingSwaps(String value);
+
+  /// No description provided for @dietWeeklyLimitReached.
+  ///
+  /// In en, this message translates to:
+  /// **'You have changed your diet 3 times this week.'**
+  String get dietWeeklyLimitReached;
+
+  /// No description provided for @dietSwapMealTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Swap meal'**
+  String get dietSwapMealTooltip;
+
+  /// No description provided for @dietRemainingMealSwaps.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} meal swaps remaining today'**
+  String dietRemainingMealSwaps(String value);
 }
 
 class _AppLocalizationsDelegate
