@@ -163,6 +163,7 @@ class DietRepositoryImpl implements DietRepository {
     required double fatG,
     required String currentMealTitle,
     required String mealType,
+    List<String>? otherMealsOfDay,
   }) {
     return guard(() async {
       final response = await _dietApi.swapMeal(
@@ -173,6 +174,7 @@ class DietRepositoryImpl implements DietRepository {
           fatG: fatG,
           currentMealTitle: currentMealTitle,
           mealType: mealType,
+          otherMealsOfDay: otherMealsOfDay,
         ),
       );
       final meal = response.data.meal.toEntity();

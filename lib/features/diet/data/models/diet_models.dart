@@ -554,6 +554,7 @@ class SwapMealRequest {
     required this.fatG,
     required this.currentMealTitle,
     required this.mealType,
+    this.otherMealsOfDay,
   });
 
   factory SwapMealRequest.fromJson(Map<String, dynamic> json) =>
@@ -565,6 +566,8 @@ class SwapMealRequest {
   final num fatG;
   final String currentMealTitle;
   final String mealType;
+  @JsonKey(name: 'otherMealsOfDay', includeIfNull: false)
+  final List<String>? otherMealsOfDay;
 
   Map<String, dynamic> toJson() => _$SwapMealRequestToJson(this);
 }

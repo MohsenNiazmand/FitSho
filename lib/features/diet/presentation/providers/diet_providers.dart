@@ -160,13 +160,41 @@ class DietPlanNotifier extends _$DietPlanNotifier {
     required String slot,
     required DietMeal currentMeal,
   }) async {
+    final currentMealDesc = currentMeal.description?.trim();
+    final formattedCurrentMealTitle =
+        (currentMealDesc != null && currentMealDesc.isNotEmpty)
+            ? '${currentMeal.title} - $currentMealDesc'
+            : currentMeal.title;
+
+    List<String>? otherMealsOfDay;
+    final currentPlan = state.valueOrNull;
+    if (currentPlan != null) {
+      final dayObj = currentPlan.days.where((d) => d.day == day).firstOrNull;
+      if (dayObj != null) {
+        otherMealsOfDay = dayObj.meals.entries
+            .where((entry) =>
+                entry.key != slot &&
+                entry.value != null &&
+                entry.value!.title.trim().isNotEmpty)
+            .map((entry) {
+              final m = entry.value!;
+              final desc = m.description?.trim();
+              return (desc != null && desc.isNotEmpty)
+                  ? '${m.title} - $desc'
+                  : m.title;
+            })
+            .toList();
+      }
+    }
+
     final result = await getIt<DietRepository>().swapMeal(
       calories: currentMeal.calories,
       proteinG: currentMeal.proteinG,
       carbsG: currentMeal.carbsG,
       fatG: currentMeal.fatG,
-      currentMealTitle: currentMeal.title,
+      currentMealTitle: formattedCurrentMealTitle,
       mealType: slot,
+      otherMealsOfDay: otherMealsOfDay,
     );
 
     return result.fold(

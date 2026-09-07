@@ -458,17 +458,30 @@ SwapMealRequest _$SwapMealRequestFromJson(Map<String, dynamic> json) =>
       fatG: json['fatG'] as num,
       currentMealTitle: json['currentMealTitle'] as String,
       mealType: json['mealType'] as String,
+      otherMealsOfDay: (json['otherMealsOfDay'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
     );
 
-Map<String, dynamic> _$SwapMealRequestToJson(SwapMealRequest instance) =>
-    <String, dynamic>{
-      'calories': instance.calories,
-      'proteinG': instance.proteinG,
-      'carbsG': instance.carbsG,
-      'fatG': instance.fatG,
-      'currentMealTitle': instance.currentMealTitle,
-      'mealType': instance.mealType,
-    };
+Map<String, dynamic> _$SwapMealRequestToJson(SwapMealRequest instance) {
+  final val = <String, dynamic>{
+    'calories': instance.calories,
+    'proteinG': instance.proteinG,
+    'carbsG': instance.carbsG,
+    'fatG': instance.fatG,
+    'currentMealTitle': instance.currentMealTitle,
+    'mealType': instance.mealType,
+  };
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('otherMealsOfDay', instance.otherMealsOfDay);
+  return val;
+}
 
 SwapMealResponseModel _$SwapMealResponseModelFromJson(
   Map<String, dynamic> json,

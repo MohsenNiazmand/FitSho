@@ -43,6 +43,7 @@ abstract class DietRepository {
     required double fatG,
     required String currentMealTitle,
     required String mealType,
+    List<String>? otherMealsOfDay,
   });
 
   Future<Either<Failure, void>> deletePlan(String id);
