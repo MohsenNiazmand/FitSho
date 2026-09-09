@@ -1,10 +1,16 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:fitsho/core/error/failures.dart';
+import 'package:fitsho/core/extensions/context_extensions.dart';
 import 'package:fitsho/core/injection_container.dart';
+import 'package:fitsho/core/notifications/notification_service.dart';
 import 'package:fitsho/features/diet/domain/constants/diet_constants.dart';
 import 'package:fitsho/features/diet/domain/entities/diet_entities.dart';
 import 'package:fitsho/features/diet/domain/repositories/diet_repository.dart';
+import 'package:fitsho/features/diet/domain/utils/meal_time_utils.dart';
+import 'package:fitsho/features/diet/domain/utils/meal_time_validator.dart';
+import 'package:fitsho/features/diet/presentation/utils/diet_labels.dart';
 
 part 'diet_providers.g.dart';
 
@@ -474,15 +480,70 @@ class MealSlotsNotifier extends _$MealSlotsNotifier {
   }
 
   Future<Failure?> save(Map<String, MealSlotConfig> slots) async {
+    // ── 1. Validation ────────────────────────────────────────────────────────
+    // Delegate entirely to the canonical domain validator so that ordering and
+    // gap rules live in exactly one place (MealTimeValidator / MealTimeUtils).
+    final tr = currentAppLocalizations();
+    final validationResult = MealTimeValidator.validate(
+      slots: slots,
+      orderedKeys: DietConstants.mealSlotKeys,
+      tr: tr,
+    );
+
+    if (validationResult case MealTimesInvalid(:final message)) {
+      BotToast.showText(text: message);
+      return ValidationFailure(message);
+    }
+
+    // ── 2. Persist to Backend ─────────────────────────────────────────────────
     final result = await getIt<DietRepository>().saveMealSlots(slots);
     return result.fold(
       (failure) => failure,
       (saved) {
+        // ── 3. Sync local notifications ─────────────────────────────────────
+        _updateLocalNotifications(saved);
+
         state = AsyncValue.data(saved);
         ref.invalidate(dietProfileNotifierProvider);
         return null;
       },
     );
+  }
+
+  /// Schedules (or cancels) a daily local notification for every slot.
+  ///
+  /// A notification is (re-)scheduled only when the slot is [enabled] and
+  /// [notificationsEnabled]; otherwise any previously scheduled notification
+  /// is cancelled so stale reminders never linger.
+  void _updateLocalNotifications(Map<String, MealSlotConfig> slots) {
+    final notificationService = getIt<NotificationService>();
+    final tr = currentAppLocalizations();
+
+    for (final entry in slots.entries) {
+      final key    = entry.key;
+      final config = entry.value;
+      // Each slot gets a stable integer ID derived from its position in the
+      // canonical key list — stable across app restarts.
+      final id = DietConstants.mealSlotKeys.indexOf(key);
+
+      if (config.enabled && config.notificationsEnabled) {
+        // Use MealTimeUtils so time parsing is never duplicated.
+        final time = MealTimeUtils.parseTimeOfDay(config.time);
+        final label = dietMealSlotLabelTr(tr, key);
+
+        notificationService.scheduleMealReminder(
+          id: id,
+          title: tr.dietMealReminderTitle(label),
+          body: tr.dietMealReminderBody(label),
+          hour: time.hour,
+          minute: time.minute,
+          payload: key,
+        );
+      } else {
+        // Slot disabled or reminder toggled off — cancel any active reminder.
+        notificationService.cancelNotification(id);
+      }
+    }
   }
 }
 

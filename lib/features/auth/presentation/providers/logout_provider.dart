@@ -20,7 +20,11 @@ class LogoutNotifier extends _$LogoutNotifier {
     state = const AsyncValue.loading();
 
     try {
-      await ref.read(pushNotificationServiceProvider).unregisterToken();
+      try {
+        await ref.read(pushNotificationServiceProvider).unregisterToken();
+      } on Object catch (_) {
+        // FCM unregistration is best-effort and must not block logout.
+      }
       final result = await getIt<LogoutUseCase>()(const NoParams());
 
       return await result.fold(

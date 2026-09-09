@@ -7,6 +7,7 @@ import 'package:fitsho/core/app_config/data/repositories/app_config_repository_i
 import 'package:fitsho/core/app_config/data/services/app_config_api.dart';
 import 'package:fitsho/core/app_config/domain/repositories/app_config_repository.dart';
 import 'package:fitsho/core/network/dio_client.dart';
+import 'package:fitsho/core/notifications/notification_service.dart';
 import 'package:fitsho/core/storage/device_id_service.dart';
 import 'package:fitsho/core/storage/hive_initializer.dart';
 import 'package:fitsho/core/storage/secure_token_storage.dart';
@@ -69,6 +70,9 @@ Future<void> initializeDependencies() async {
     )
     ..registerLazySingleton<DeviceIdService>(
       () => DeviceIdService(getIt()),
+    )
+    ..registerLazySingleton<NotificationService>(
+      () => NotificationService(),
     )
     ..registerLazySingleton<Dio>(
       () => createDio(

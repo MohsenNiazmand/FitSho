@@ -749,4 +749,29 @@ class AppLocalizationsFa extends AppLocalizations {
   String dietRemainingMealSwaps(String value) {
     return '$value بار جایگزینی امروز باقی مانده';
   }
+
+  @override
+  String dietMealTimeSameError(String meal1, String meal2) {
+    return 'ساعت وعده «$meal1» و «$meal2» نمی‌تواند یکسان باشد.';
+  }
+
+  @override
+  String dietMealTimeOrderError(String laterMeal, String earlierMeal) {
+    return 'ساعت وعده «$laterMeal» باید بعد از «$earlierMeal» باشد.';
+  }
+
+  @override
+  String dietMealTimeGapError(String meal1, String meal2) {
+    return 'فاصله زمانی بین وعده «$meal1» و «$meal2» باید حداقل ۶۰ دقیقه باشد.';
+  }
+
+  @override
+  String dietMealReminderTitle(String meal) {
+    return 'زمان $meal 🥗';
+  }
+
+  @override
+  String dietMealReminderBody(String meal) {
+    return 'نوبت میل کردن وعده $meal فرا رسیده است.';
+  }
 }

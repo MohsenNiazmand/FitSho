@@ -1,12 +1,16 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:fitsho/shared/presentation/utils/failure_message.dart';
+
 import 'package:fitsho/core/extensions/context_extensions.dart';
 import 'package:fitsho/features/diet/domain/constants/diet_constants.dart';
 import 'package:fitsho/features/diet/domain/entities/diet_entities.dart';
+import 'package:fitsho/features/diet/domain/utils/meal_time_utils.dart';
+import 'package:fitsho/features/diet/domain/utils/meal_time_validator.dart';
 import 'package:fitsho/features/diet/presentation/providers/diet_providers.dart';
 import 'package:fitsho/features/diet/presentation/utils/diet_labels.dart';
+import 'package:fitsho/shared/presentation/utils/failure_message.dart';
 import 'package:fitsho/shared/presentation/utils/toast_utils.dart';
 import 'package:fitsho/shared/presentation/widgets/app_loading_indicator.dart';
 import 'package:fitsho/shared/presentation/widgets/app_primary_button.dart';
@@ -79,9 +83,10 @@ class DietMealSlotsScreen extends HookConsumerWidget {
         initialTime: initial,
       );
       if (picked == null) return;
-      final formatted =
-          '${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}';
-      localSlots.value = {
+      if (!context.mounted) return;
+      final formatted = MealTimeUtils.formatTimeOfDay(picked);
+
+      final updatedCandidate = {
         ...localSlots.value,
         slotKey: MealSlotConfig(
           enabled: current.enabled,
@@ -89,6 +94,19 @@ class DietMealSlotsScreen extends HookConsumerWidget {
           notificationsEnabled: current.notificationsEnabled,
         ),
       };
+
+      final validation = MealTimeValidator.validate(
+        slots: updatedCandidate,
+        orderedKeys: DietConstants.mealSlotKeys,
+        tr: context.tr,
+      );
+
+      if (validation case MealTimesInvalid(:final message)) {
+        BotToast.showText(text: message);
+        return;
+      }
+
+      localSlots.value = updatedCandidate;
     }
 
     Future<void> save() async {
@@ -145,7 +163,7 @@ class DietMealSlotsScreen extends HookConsumerWidget {
                             final current =
                                 localSlots.value[slotKey] ??
                                 DietConstants.defaultMealSlots()[slotKey]!;
-                            localSlots.value = {
+                            final updatedCandidate = {
                               ...localSlots.value,
                               slotKey: MealSlotConfig(
                                 enabled: enabled,
@@ -154,6 +172,22 @@ class DietMealSlotsScreen extends HookConsumerWidget {
                                     current.notificationsEnabled,
                               ),
                             };
+
+                            if (enabled) {
+                              final validation = MealTimeValidator.validate(
+                                slots: updatedCandidate,
+                                orderedKeys: DietConstants.mealSlotKeys,
+                                tr: context.tr,
+                              );
+
+                              if (validation
+                                  case MealTimesInvalid(:final message)) {
+                                BotToast.showText(text: message);
+                                return;
+                              }
+                            }
+
+                            localSlots.value = updatedCandidate;
                           },
                           onToggleNotifications: (enabled) {
                             if (!hasActivePlan) return;

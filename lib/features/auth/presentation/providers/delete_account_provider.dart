@@ -20,7 +20,11 @@ class DeleteAccountNotifier extends _$DeleteAccountNotifier {
     state = const AsyncValue.loading();
 
     try {
-      await ref.read(pushNotificationServiceProvider).unregisterToken();
+      try {
+        await ref.read(pushNotificationServiceProvider).unregisterToken();
+      } on Object catch (_) {
+        // FCM unregistration is best-effort and must not block deletion.
+      }
       final result = await getIt<DeleteAccountUseCase>()(const NoParams());
 
       return await result.fold(

@@ -750,4 +750,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String dietRemainingMealSwaps(String value) {
     return '$value meal swaps remaining today';
   }
+
+  @override
+  String dietMealTimeSameError(String meal1, String meal2) {
+    return 'Meal times for \"$meal1\" and \"$meal2\" cannot be the same.';
+  }
+
+  @override
+  String dietMealTimeOrderError(String laterMeal, String earlierMeal) {
+    return '\"$laterMeal\" must be scheduled after \"$earlierMeal\".';
+  }
+
+  @override
+  String dietMealTimeGapError(String meal1, String meal2) {
+    return 'Leave at least 60 minutes between \"$meal1\" and \"$meal2\".';
+  }
+
+  @override
+  String dietMealReminderTitle(String meal) {
+    return '$meal time 🥗';
+  }
+
+  @override
+  String dietMealReminderBody(String meal) {
+    return 'It\'s time for your $meal.';
+  }
 }

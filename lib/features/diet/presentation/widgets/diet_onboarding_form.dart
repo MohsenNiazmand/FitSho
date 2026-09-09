@@ -1,18 +1,23 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
 import 'package:fitsho/config/router/routes.dart';
-import 'package:fitsho/shared/presentation/utils/failure_message.dart';
 import 'package:fitsho/config/theme/app_radius.dart';
 import 'package:fitsho/core/constants/colors.dart';
 import 'package:fitsho/core/error/failures.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
 import 'package:fitsho/core/utils/persian_input.dart';
+import 'package:fitsho/features/diet/domain/constants/diet_constants.dart';
 import 'package:fitsho/features/diet/domain/entities/diet_entities.dart';
+import 'package:fitsho/features/diet/domain/utils/meal_time_utils.dart';
+import 'package:fitsho/features/diet/domain/utils/meal_time_validator.dart';
 import 'package:fitsho/features/diet/presentation/providers/diet_providers.dart';
 import 'package:fitsho/features/diet/presentation/utils/diet_labels.dart';
+import 'package:fitsho/shared/presentation/utils/failure_message.dart';
 import 'package:fitsho/shared/presentation/utils/toast_utils.dart';
 import 'package:fitsho/features/diet/presentation/widgets/ai_loading_dialog.dart';
 import 'package:fitsho/shared/presentation/widgets/app_primary_button.dart';
@@ -144,6 +149,18 @@ class DietOnboardingForm extends HookConsumerWidget {
         return;
       }
 
+      // Meal slots time sequence validation
+      final mealTimeValidation = MealTimeValidator.validate(
+        slots: mealSlots.value,
+        orderedKeys: DietConstants.mealSlotKeys,
+        tr: context.tr,
+      );
+
+      if (mealTimeValidation case MealTimesInvalid(:final message)) {
+        BotToast.showText(text: message);
+        return;
+      }
+
       isSaving.value = true;
       try {
         final profileResult =
@@ -214,7 +231,8 @@ class DietOnboardingForm extends HookConsumerWidget {
     }
 
     Future<void> pickTime(String slotKey) async {
-      final current = mealSlots.value[slotKey]!;
+      final current = mealSlots.value[slotKey] ??
+          DietConstants.defaultMealSlots()[slotKey]!;
       final parts = current.time.split(':');
       final initial = TimeOfDay(
         hour: int.tryParse(parts.first) ?? 8,
@@ -223,10 +241,10 @@ class DietOnboardingForm extends HookConsumerWidget {
       final picked =
           await showTimePicker(context: context, initialTime: initial);
       if (picked == null) return;
+      if (!context.mounted) return;
 
-      final formatted =
-          '${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}';
-      mealSlots.value = {
+      final formatted = MealTimeUtils.formatTimeOfDay(picked);
+      final candidateSlots = {
         ...mealSlots.value,
         slotKey: MealSlotConfig(
           enabled: current.enabled,
@@ -234,6 +252,19 @@ class DietOnboardingForm extends HookConsumerWidget {
           notificationsEnabled: current.notificationsEnabled,
         ),
       };
+
+      final validation = MealTimeValidator.validate(
+        slots: candidateSlots,
+        orderedKeys: DietConstants.mealSlotKeys,
+        tr: context.tr,
+      );
+
+      if (validation case MealTimesInvalid(:final message)) {
+        BotToast.showText(text: message);
+        return;
+      }
+
+      mealSlots.value = candidateSlots;
     }
 
     void goToStep(int step) {
@@ -457,29 +488,43 @@ class DietOnboardingForm extends HookConsumerWidget {
                               ?.copyWith(fontWeight: FontWeight.bold),
                         ),
                         Gap.v12(),
-                        ...mealSlots.value.entries.map((entry) {
-                          final slotKey = entry.key;
-                          final config = entry.value;
-                          final icon = dietSlotIcon(slotKey);
+                        for (final slotKey in DietConstants.mealSlotKeys) ...[
+                          if (mealSlots.value[slotKey] case final config?) ...[
+                            _MealSlotInput(
+                              title: dietMealSlotLabel(context, slotKey),
+                              icon: dietSlotIcon(slotKey),
+                              config: config,
+                              onToggle: (enabled) {
+                                final candidateSlots = {
+                                  ...mealSlots.value,
+                                  slotKey: MealSlotConfig(
+                                    enabled: enabled,
+                                    time: config.time,
+                                    notificationsEnabled:
+                                        config.notificationsEnabled,
+                                  ),
+                                };
 
-                          return _MealSlotInput(
-                            title: dietMealSlotLabel(context, slotKey),
-                            icon: icon,
-                            config: config,
-                            onToggle: (enabled) {
-                              mealSlots.value = {
-                                ...mealSlots.value,
-                                slotKey: MealSlotConfig(
-                                  enabled: enabled,
-                                  time: config.time,
-                                  notificationsEnabled:
-                                      config.notificationsEnabled,
-                                ),
-                              };
-                            },
-                            onPickTime: () => pickTime(slotKey),
-                          );
-                        }),
+                                if (enabled) {
+                                  final validation = MealTimeValidator.validate(
+                                    slots: candidateSlots,
+                                    orderedKeys: DietConstants.mealSlotKeys,
+                                    tr: context.tr,
+                                  );
+
+                                  if (validation
+                                      case MealTimesInvalid(:final message)) {
+                                    BotToast.showText(text: message);
+                                    return;
+                                  }
+                                }
+
+                                mealSlots.value = candidateSlots;
+                              },
+                              onPickTime: () => pickTime(slotKey),
+                            ),
+                          ],
+                        ],
                       ],
                     ),
                   ],

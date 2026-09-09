@@ -27,11 +27,20 @@ class PushNotificationService {
     }
     _initialized = true;
 
-    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
-    FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
-    final initialMessage = await FirebaseMessaging.instance.getInitialMessage();
-    if (initialMessage != null) {
-      _handleMessage(initialMessage);
+    try {
+      FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
+      FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
+      final initialMessage =
+          await FirebaseMessaging.instance.getInitialMessage();
+      if (initialMessage != null) {
+        _handleMessage(initialMessage);
+      }
+    } on Object catch (e, stack) {
+      getIt<Logger>().w(
+        'Failed to initialize push notifications: $e',
+        error: e,
+        stackTrace: stack,
+      );
     }
   }
 
@@ -44,18 +53,27 @@ class PushNotificationService {
       return true;
     }
 
-    final settings = await FirebaseMessaging.instance.requestPermission();
-    final authorized =
-        settings.authorizationStatus == AuthorizationStatus.authorized ||
-        settings.authorizationStatus == AuthorizationStatus.provisional;
+    try {
+      final settings = await FirebaseMessaging.instance.requestPermission();
+      final authorized =
+          settings.authorizationStatus == AuthorizationStatus.authorized ||
+          settings.authorizationStatus == AuthorizationStatus.provisional;
 
-    if (!authorized) {
+      if (!authorized) {
+        return false;
+      }
+
+      await registerTokenIfPossible();
+      _tokenRegisteredThisSession = true;
+      return true;
+    } on Object catch (e, stack) {
+      getIt<Logger>().w(
+        'Failed to request notification permission: $e',
+        error: e,
+        stackTrace: stack,
+      );
       return false;
     }
-
-    await registerTokenIfPossible();
-    _tokenRegisteredThisSession = true;
-    return true;
   }
 
   Future<void> registerTokenIfPossible() async {
@@ -63,23 +81,31 @@ class PushNotificationService {
       return;
     }
 
-    final token = await FirebaseMessaging.instance.getToken();
-    if (token == null || token.isEmpty) {
-      return;
+    try {
+      final token = await FirebaseMessaging.instance.getToken();
+      if (token == null || token.isEmpty) {
+        return;
+      }
+
+      getIt<Logger>().i('FCM token: $token');
+
+      final deviceId = await getIt<DeviceIdService>().getDeviceId();
+      final platform = Platform.isIOS ? 'ios' : 'android';
+
+      await getIt<DietRepository>().registerFcmToken(
+        FcmTokenRegistration(
+          token: token,
+          deviceId: deviceId,
+          platform: platform,
+        ),
+      );
+    } on Object catch (e, stack) {
+      getIt<Logger>().w(
+        'Failed to register FCM token (Play Services unavailable): $e',
+        error: e,
+        stackTrace: stack,
+      );
     }
-
-    getIt<Logger>().i('FCM token: $token');
-
-    final deviceId = await getIt<DeviceIdService>().getDeviceId();
-    final platform = Platform.isIOS ? 'ios' : 'android';
-
-    await getIt<DietRepository>().registerFcmToken(
-      FcmTokenRegistration(
-        token: token,
-        deviceId: deviceId,
-        platform: platform,
-      ),
-    );
   }
 
   Future<void> unregisterToken() async {
@@ -87,13 +113,20 @@ class PushNotificationService {
       return;
     }
 
-    final token = await FirebaseMessaging.instance.getToken();
-    if (token == null || token.isEmpty) {
-      return;
+    try {
+      final token = await FirebaseMessaging.instance.getToken();
+      if (token != null && token.isNotEmpty) {
+        await getIt<DietRepository>().unregisterFcmToken(token);
+      }
+    } on Object catch (e, stack) {
+      getIt<Logger>().w(
+        'Failed to unregister FCM token (Play Services unavailable): $e',
+        error: e,
+        stackTrace: stack,
+      );
+    } finally {
+      _tokenRegisteredThisSession = false;
     }
-
-    await getIt<DietRepository>().unregisterFcmToken(token);
-    _tokenRegisteredThisSession = false;
   }
 
   void _handleMessage(RemoteMessage message) {

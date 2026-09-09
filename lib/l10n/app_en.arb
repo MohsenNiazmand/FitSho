@@ -339,5 +339,54 @@
         "type": "String"
       }
     }
+  },
+  "dietMealTimeSameError": "Meal times for \"{meal1}\" and \"{meal2}\" cannot be the same.",
+  "@dietMealTimeSameError": {
+    "placeholders": {
+      "meal1": {
+        "type": "String"
+      },
+      "meal2": {
+        "type": "String"
+      }
+    }
+  },
+  "dietMealTimeOrderError": "\"{laterMeal}\" must be scheduled after \"{earlierMeal}\".",
+  "@dietMealTimeOrderError": {
+    "placeholders": {
+      "laterMeal": {
+        "type": "String"
+      },
+      "earlierMeal": {
+        "type": "String"
+      }
+    }
+  },
+  "dietMealTimeGapError": "Leave at least 60 minutes between \"{meal1}\" and \"{meal2}\".",
+  "@dietMealTimeGapError": {
+    "placeholders": {
+      "meal1": {
+        "type": "String"
+      },
+      "meal2": {
+        "type": "String"
+      }
+    }
+  },
+  "dietMealReminderTitle": "{meal} time 🥗",
+  "@dietMealReminderTitle": {
+    "placeholders": {
+      "meal": {
+        "type": "String"
+      }
+    }
+  },
+  "dietMealReminderBody": "It's time for your {meal}.",
+  "@dietMealReminderBody": {
+    "placeholders": {
+      "meal": {
+        "type": "String"
+      }
+    }
   }
 }

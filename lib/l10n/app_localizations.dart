@@ -1465,6 +1465,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{value} meal swaps remaining today'**
   String dietRemainingMealSwaps(String value);
+
+  /// No description provided for @dietMealTimeSameError.
+  ///
+  /// In en, this message translates to:
+  /// **'Meal times for \"{meal1}\" and \"{meal2}\" cannot be the same.'**
+  String dietMealTimeSameError(String meal1, String meal2);
+
+  /// No description provided for @dietMealTimeOrderError.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{laterMeal}\" must be scheduled after \"{earlierMeal}\".'**
+  String dietMealTimeOrderError(String laterMeal, String earlierMeal);
+
+  /// No description provided for @dietMealTimeGapError.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave at least 60 minutes between \"{meal1}\" and \"{meal2}\".'**
+  String dietMealTimeGapError(String meal1, String meal2);
+
+  /// No description provided for @dietMealReminderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{meal} time 🥗'**
+  String dietMealReminderTitle(String meal);
+
+  /// No description provided for @dietMealReminderBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It\'s time for your {meal}.'**
+  String dietMealReminderBody(String meal);
 }
 
 class _AppLocalizationsDelegate

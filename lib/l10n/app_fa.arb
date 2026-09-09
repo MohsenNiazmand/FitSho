@@ -325,5 +325,54 @@
         "type": "String"
       }
     }
+  },
+  "dietMealTimeSameError": "ساعت وعده «{meal1}» و «{meal2}» نمی‌تواند یکسان باشد.",
+  "@dietMealTimeSameError": {
+    "placeholders": {
+      "meal1": {
+        "type": "String"
+      },
+      "meal2": {
+        "type": "String"
+      }
+    }
+  },
+  "dietMealTimeOrderError": "ساعت وعده «{laterMeal}» باید بعد از «{earlierMeal}» باشد.",
+  "@dietMealTimeOrderError": {
+    "placeholders": {
+      "laterMeal": {
+        "type": "String"
+      },
+      "earlierMeal": {
+        "type": "String"
+      }
+    }
+  },
+  "dietMealTimeGapError": "فاصله زمانی بین وعده «{meal1}» و «{meal2}» باید حداقل ۶۰ دقیقه باشد.",
+  "@dietMealTimeGapError": {
+    "placeholders": {
+      "meal1": {
+        "type": "String"
+      },
+      "meal2": {
+        "type": "String"
+      }
+    }
+  },
+  "dietMealReminderTitle": "زمان {meal} 🥗",
+  "@dietMealReminderTitle": {
+    "placeholders": {
+      "meal": {
+        "type": "String"
+      }
+    }
+  },
+  "dietMealReminderBody": "نوبت میل کردن وعده {meal} فرا رسیده است.",
+  "@dietMealReminderBody": {
+    "placeholders": {
+      "meal": {
+        "type": "String"
+      }
+    }
   }
 }

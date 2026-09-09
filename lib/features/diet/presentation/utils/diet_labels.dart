@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:fitsho/core/extensions/context_extensions.dart';
 import 'package:fitsho/features/diet/domain/constants/diet_constants.dart';
+import 'package:fitsho/l10n/app_localizations.dart';
 
 String dietDayLabel(BuildContext context, String dayKey) {
   final tr = context.tr;
@@ -16,8 +18,7 @@ String dietDayLabel(BuildContext context, String dayKey) {
   };
 }
 
-String dietMealSlotLabel(BuildContext context, String slotKey) {
-  final tr = context.tr;
+String dietMealSlotLabelTr(AppLocalizations tr, String slotKey) {
   return switch (slotKey) {
     'breakfast' => tr.dietSlotBreakfast,
     'morning_snack' => tr.dietSlotMorningSnack,
@@ -26,6 +27,10 @@ String dietMealSlotLabel(BuildContext context, String slotKey) {
     'dinner' => tr.dietSlotDinner,
     _ => slotKey,
   };
+}
+
+String dietMealSlotLabel(BuildContext context, String slotKey) {
+  return dietMealSlotLabelTr(context.tr, slotKey);
 }
 
 IconData dietSlotIcon(String slotKey) {
