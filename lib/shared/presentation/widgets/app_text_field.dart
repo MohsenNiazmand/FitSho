@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 class AppTextField extends StatelessWidget {
   const AppTextField({
     this.controller,
+    this.focusNode,
     this.initialValue,
     this.labelText,
     this.label,
@@ -25,6 +26,7 @@ class AppTextField extends StatelessWidget {
   });
 
   final TextEditingController? controller;
+  final FocusNode? focusNode;
   final String? initialValue;
   final String? labelText;
   final Widget? label;
@@ -57,6 +59,7 @@ class AppTextField extends StatelessWidget {
     if (validator != null || controller != null) {
       return TextFormField(
         controller: controller,
+        focusNode: focusNode,
         initialValue: controller == null ? initialValue : null,
         keyboardType: keyboardType,
         textInputAction: textInputAction,
@@ -74,6 +77,7 @@ class AppTextField extends StatelessWidget {
 
     return TextField(
       controller: controller,
+      focusNode: focusNode,
       keyboardType: keyboardType,
       textInputAction: textInputAction,
       textDirection: textDirection,

@@ -41,6 +41,14 @@ class DietOnboardingForm extends HookConsumerWidget {
     final exerciseTypeController = useTextEditingController();
     final allergiesController = useTextEditingController();
     final exerciseDaysController = useTextEditingController();
+    final ageFocus = useFocusNode();
+    final heightFocus = useFocusNode();
+    final weightFocus = useFocusNode();
+    final jobFocus = useFocusNode();
+    final goalNotesFocus = useFocusNode();
+    final exerciseTypeFocus = useFocusNode();
+    final exerciseDaysFocus = useFocusNode();
+    final allergiesFocus = useFocusNode();
     final gender = useState<String?>(null);
     final goal = useState<String?>(null);
     final activityLevel = useState<String?>(null);
@@ -330,6 +338,9 @@ class DietOnboardingForm extends HookConsumerWidget {
                       children: [
                         AppTextField(
                           controller: ageController,
+                          focusNode: ageFocus,
+                          textInputAction: TextInputAction.next,
+                          onFieldSubmitted: (_) => heightFocus.requestFocus(),
                           label: requiredLabel(context.tr.dietAgeLabel),
                           keyboardType: TextInputType.number,
                           inputFormatters: [
@@ -341,6 +352,9 @@ class DietOnboardingForm extends HookConsumerWidget {
                         Gap.v12(),
                         AppTextField(
                           controller: heightController,
+                          focusNode: heightFocus,
+                          textInputAction: TextInputAction.next,
+                          onFieldSubmitted: (_) => weightFocus.requestFocus(),
                           label: requiredLabel(context.tr.dietHeightLabel),
                           keyboardType: TextInputType.number,
                           inputFormatters: [
@@ -352,6 +366,10 @@ class DietOnboardingForm extends HookConsumerWidget {
                         Gap.v12(),
                         AppTextField(
                           controller: weightController,
+                          focusNode: weightFocus,
+                          textInputAction: TextInputAction.done,
+                          onFieldSubmitted: (_) =>
+                              FocusScope.of(context).unfocus(),
                           label: requiredLabel(context.tr.dietWeightLabel),
                           keyboardType: const TextInputType.numberWithOptions(
                             decimal: true,
@@ -379,6 +397,10 @@ class DietOnboardingForm extends HookConsumerWidget {
                       children: [
                         AppTextField(
                           controller: jobController,
+                          focusNode: jobFocus,
+                          textInputAction: TextInputAction.next,
+                          onFieldSubmitted: (_) =>
+                              goalNotesFocus.requestFocus(),
                           labelText: context.tr.dietJobLabel,
                           inputFormatters: [createPersianTextFormatter()],
                         ),
@@ -395,13 +417,19 @@ class DietOnboardingForm extends HookConsumerWidget {
                         Gap.v12(),
                         AppTextField(
                           controller: goalNotesController,
+                          focusNode: goalNotesFocus,
+                          textInputAction: TextInputAction.done,
+                          onFieldSubmitted: (_) =>
+                              FocusScope.of(context).unfocus(),
                           labelText: context.tr.dietGoalNotesLabel,
                           maxLines: 2,
                           inputFormatters: [createPersianTextFormatter()],
                         ),
                         Gap.v12(),
                         _DropdownField(
-                          label: requiredLabel(context.tr.dietActivityLevelLabel),
+                          label: requiredLabel(
+                            context.tr.dietActivityLevelLabel,
+                          ),
                           value: activityLevel.value,
                           items: options.activityLevels,
                           onChanged: (value) => activityLevel.value = value,
@@ -423,7 +451,12 @@ class DietOnboardingForm extends HookConsumerWidget {
                           Gap.v8(),
                           AppTextField(
                             controller: exerciseTypeController,
-                            label: requiredLabel(context.tr.dietExerciseTypeLabel),
+                            focusNode: exerciseTypeFocus,
+                            textInputAction: TextInputAction.next,
+                            onFieldSubmitted: (_) =>
+                                exerciseDaysFocus.requestFocus(),
+                            label:
+                                requiredLabel(context.tr.dietExerciseTypeLabel),
                             inputFormatters: [createLettersOnlyFormatter()],
                             validator: (v) => v?.trim().isEmpty == true
                                 ? context.tr.dietFormValidationError
@@ -432,10 +465,17 @@ class DietOnboardingForm extends HookConsumerWidget {
                           Gap.v12(),
                           AppTextField(
                             controller: exerciseDaysController,
-                            label: requiredLabel(context.tr.dietExerciseDaysLabel),
+                            focusNode: exerciseDaysFocus,
+                            textInputAction: TextInputAction.next,
+                            onFieldSubmitted: (_) =>
+                                allergiesFocus.requestFocus(),
+                            label:
+                                requiredLabel(context.tr.dietExerciseDaysLabel),
                             keyboardType: TextInputType.number,
                             inputFormatters: [
-                              FilteringTextInputFormatter.allow(RegExp(r'[1-7]')),
+                              FilteringTextInputFormatter.allow(
+                                RegExp(r'[1-7]'),
+                              ),
                               LengthLimitingTextInputFormatter(1),
                             ],
                             validator: validateExerciseDays,
@@ -474,6 +514,10 @@ class DietOnboardingForm extends HookConsumerWidget {
                         Gap.v12(),
                         AppTextField(
                           controller: allergiesController,
+                          focusNode: allergiesFocus,
+                          textInputAction: TextInputAction.done,
+                          onFieldSubmitted: (_) =>
+                              FocusScope.of(context).unfocus(),
                           labelText: context.tr.dietAllergiesLabel,
                           maxLines: 2,
                           inputFormatters: [createPersianTextFormatter()],
@@ -785,7 +829,10 @@ class _MealSlotInput extends StatelessWidget {
               onTap: onPickTime,
               borderRadius: BorderRadius.circular(8),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.grey.shade200,
                   borderRadius: BorderRadius.circular(8),
