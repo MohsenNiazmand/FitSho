@@ -8,9 +8,7 @@ import 'package:fitsho/core/notifications/notification_service.dart';
 import 'package:fitsho/features/diet/domain/constants/diet_constants.dart';
 import 'package:fitsho/features/diet/domain/entities/diet_entities.dart';
 import 'package:fitsho/features/diet/domain/repositories/diet_repository.dart';
-import 'package:fitsho/features/diet/domain/utils/meal_time_utils.dart';
 import 'package:fitsho/features/diet/domain/utils/meal_time_validator.dart';
-import 'package:fitsho/features/diet/presentation/utils/diet_labels.dart';
 
 part 'diet_providers.g.dart';
 
