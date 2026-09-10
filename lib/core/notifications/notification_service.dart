@@ -155,8 +155,12 @@ class NotificationService {
     if (!Platform.isAndroid) return true;
 
     final status = await Permission.scheduleExactAlarm.status;
+    debugPrint('NotificationService: Exact alarm permission status: $status');
     if (!status.isGranted) {
       final result = await Permission.scheduleExactAlarm.request();
+      debugPrint(
+        'NotificationService: Exact alarm permission requested result: $result',
+      );
       return result.isGranted;
     }
     return true;
@@ -172,6 +176,10 @@ class NotificationService {
   Future<bool> requestAllPermissions() async {
     final notificationGranted = await requestNotificationPermission();
     final exactAlarmGranted = await checkAndRequestExactAlarmPermission();
+    debugPrint(
+      'NotificationService: requestAllPermissions: '
+      'notif=$notificationGranted, exactAlarm=$exactAlarmGranted',
+    );
     return notificationGranted && exactAlarmGranted;
   }
 
@@ -343,6 +351,20 @@ class NotificationService {
           'Scheduled [$title] for $scheduledDateTime with body:\n$body',
         );
       }
+    }
+
+    // ── Diagnostic: verify pending notifications & permissions ──
+    final pending = await _notifications.pendingNotificationRequests();
+    debugPrint('📋 Pending notifications after scheduling: ${pending.length}');
+    for (final p in pending) {
+      debugPrint('  → id=${p.id}  title=${p.title}');
+    }
+
+    if (Platform.isAndroid) {
+      final notifPerm = await Permission.notification.status;
+      final alarmPerm = await Permission.scheduleExactAlarm.status;
+      debugPrint('🔔 Notification permission: $notifPerm');
+      debugPrint('⏰ Exact alarm permission: $alarmPerm');
     }
   }
 

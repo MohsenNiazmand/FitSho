@@ -5,6 +5,8 @@ import 'package:fitsho/config/theme/app_radius.dart';
 import 'package:fitsho/config/theme/app_shadows.dart';
 import 'package:fitsho/core/constants/colors.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
+import 'package:fitsho/core/injection_container.dart';
+import 'package:fitsho/core/notifications/notification_service.dart';
 import 'package:fitsho/core/notifications/push_notification_service.dart';
 import 'package:fitsho/core/utils/persian_digits.dart';
 import 'package:fitsho/features/diet/domain/constants/diet_constants.dart';
@@ -48,6 +50,8 @@ class DashboardScreen extends HookConsumerWidget {
         await ref
             .read(pushNotificationServiceProvider)
             .requestPermissionAndRegisterToken();
+        await getIt<NotificationService>()
+            .checkAndRequestExactAlarmPermission();
       });
       return null;
     }, const []);
