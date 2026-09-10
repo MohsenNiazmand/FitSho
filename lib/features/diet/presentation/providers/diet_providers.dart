@@ -517,32 +517,16 @@ class MealSlotsNotifier extends _$MealSlotsNotifier {
   /// is cancelled so stale reminders never linger.
   void _updateLocalNotifications(Map<String, MealSlotConfig> slots) {
     final notificationService = getIt<NotificationService>();
-    final tr = currentAppLocalizations();
+    final plan = ref.read(dietPlanNotifierProvider).asData?.value;
+    final supplements =
+        ref.read(supplementsNotifierProvider).asData?.value ?? [];
 
-    for (final entry in slots.entries) {
-      final key    = entry.key;
-      final config = entry.value;
-      // Each slot gets a stable integer ID derived from its position in the
-      // canonical key list — stable across app restarts.
-      final id = DietConstants.mealSlotKeys.indexOf(key);
-
-      if (config.enabled && config.notificationsEnabled) {
-        // Use MealTimeUtils so time parsing is never duplicated.
-        final time = MealTimeUtils.parseTimeOfDay(config.time);
-        final label = dietMealSlotLabelTr(tr, key);
-
-        notificationService.scheduleMealReminder(
-          id: id,
-          title: tr.dietMealReminderTitle(label),
-          body: tr.dietMealReminderBody(label),
-          hour: time.hour,
-          minute: time.minute,
-          payload: key,
-        );
-      } else {
-        // Slot disabled or reminder toggled off — cancel any active reminder.
-        notificationService.cancelNotification(id);
-      }
+    if (plan != null) {
+      notificationService.scheduleWeeklyDietNotifications(
+        weeklyPlan: plan,
+        supplements: supplements,
+        mealTimes: slots,
+      );
     }
   }
 }
