@@ -231,7 +231,7 @@ class NotificationService {
         final time = MealTimeUtils.parseTimeOfDay(config.time);
 
         // 1. Calculate the exact tz.TZDateTime for that specific day and time
-        final scheduledDateTime = tz.TZDateTime(
+        var scheduledDateTime = tz.TZDateTime(
           tz.local,
           targetDate.year,
           targetDate.month,
@@ -240,9 +240,10 @@ class NotificationService {
           time.minute,
         );
 
-        // Skip if the time has already passed
+        // If the scheduled time has already passed for this week,
+        // roll over to next week so all 7 days stay continuously scheduled.
         if (scheduledDateTime.isBefore(now)) {
-          continue;
+          scheduledDateTime = scheduledDateTime.add(const Duration(days: 7));
         }
 
         // 2. Construct localized Title
@@ -318,7 +319,8 @@ class NotificationService {
           tr.notificationMealChannelName,
           channelDescription: tr.notificationMealChannelDesc,
           importance: Importance.max,
-          priority: Priority.high,
+          priority: Priority.max,
+          visibility: NotificationVisibility.public,
           ticker: tr.notificationMealTicker,
           icon: 'ic_stat_notification',
           styleInformation: bigTextStyle,
@@ -335,21 +337,29 @@ class NotificationService {
           iOS: iosDetails,
         );
 
-        await _notifications.zonedSchedule(
-          notificationId,
-          title,
-          body,
-          scheduledDateTime,
-          details,
-          payload: payload,
-          androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-          uiLocalNotificationDateInterpretation:
-              UILocalNotificationDateInterpretation.absoluteTime,
-        );
+        try {
+          await _notifications.zonedSchedule(
+            notificationId,
+            title,
+            body,
+            scheduledDateTime,
+            details,
+            payload: payload,
+            androidScheduleMode: AndroidScheduleMode.alarmClock,
+            matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
+            uiLocalNotificationDateInterpretation:
+                UILocalNotificationDateInterpretation.absoluteTime,
+          );
 
-        debugPrint(
-          'Scheduled [$title] for $scheduledDateTime with body:\n$body',
-        );
+          debugPrint(
+            'Scheduled [$title] for $scheduledDateTime with body:\n$body',
+          );
+        } on Object catch (e, stack) {
+          debugPrint(
+            'NotificationService: Failed to schedule [$title] '
+            '(id=$notificationId, time=$scheduledDateTime): $e\n$stack',
+          );
+        }
       }
     }
 
