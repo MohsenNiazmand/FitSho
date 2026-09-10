@@ -1495,6 +1495,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'It\'s time for your {meal}.'**
   String dietMealReminderBody(String meal);
+
+  /// No description provided for @notificationMealReminderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{slot} Reminder'**
+  String notificationMealReminderTitle(String slot);
+
+  /// No description provided for @notificationMealTimeForSlot.
+  ///
+  /// In en, this message translates to:
+  /// **'It\'s time for {slot}.'**
+  String notificationMealTimeForSlot(String slot);
+
+  /// No description provided for @notificationDietPlanSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Diet Plan'**
+  String get notificationDietPlanSummary;
+
+  /// No description provided for @notificationMealTicker.
+  ///
+  /// In en, this message translates to:
+  /// **'Meal Reminder'**
+  String get notificationMealTicker;
+
+  /// No description provided for @notificationMealChannelName.
+  ///
+  /// In en, this message translates to:
+  /// **'Meal Reminders'**
+  String get notificationMealChannelName;
+
+  /// No description provided for @notificationMealChannelDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications for scheduled meal times'**
+  String get notificationMealChannelDesc;
 }
 
 class _AppLocalizationsDelegate

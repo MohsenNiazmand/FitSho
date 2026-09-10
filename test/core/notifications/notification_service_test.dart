@@ -31,35 +31,40 @@ String formatNotificationBody({
   required String slotKey,
   required String slotLabel,
 }) {
-  final linkedSupplements = supplements.where(
-    (s) =>
-        s.linkedMealSlot != null &&
-        s.linkedMealSlot!.toLowerCase().trim() == slotKey,
-  ).toList();
+  final linkedSupplements = supplements.where((s) {
+    final rawSlot = (s.linkedMeal ?? s.linkedMealSlot)
+        ?.trim()
+        .toLowerCase()
+        .replaceAll('-', '_')
+        .replaceAll(' ', '_');
+    if (rawSlot == null || rawSlot.isEmpty) return false;
+    return rawSlot == slotKey.trim().toLowerCase();
+  }).toList();
 
   final bodyBuffer = StringBuffer();
   if (foodName.isNotEmpty) {
     bodyBuffer.write(foodName);
+  } else {
+    bodyBuffer.write('زمان صرف $slotLabel است.');
   }
 
   if (linkedSupplements.isNotEmpty) {
-    final supplementItems = linkedSupplements.map((s) {
-      if (s.dosageNote != null && s.dosageNote!.trim().isNotEmpty) {
-        return '${s.name} (${s.dosageNote!.trim()})';
+    final supplementParts = linkedSupplements.map((s) {
+      final dosage = s.dosageNote?.trim();
+      if (dosage != null && dosage.isNotEmpty) {
+        return '${s.name} ($dosage)';
       }
       return s.name;
     }).join('، ');
 
     if (bodyBuffer.isNotEmpty) {
-      bodyBuffer.write('\n');
+      bodyBuffer.write('\n - $supplementParts');
+    } else {
+      bodyBuffer.write(supplementParts);
     }
-    final label = linkedSupplements.length > 1 ? 'مکمل‌ها' : 'مکمل';
-    bodyBuffer.write('$label: $supplementItems');
   }
 
-  return bodyBuffer.isNotEmpty
-      ? bodyBuffer.toString()
-      : 'زمان صرف $slotLabel است.';
+  return bodyBuffer.toString();
 }
 
 void main() {
@@ -131,7 +136,7 @@ void main() {
           slotLabel: 'صبحانه',
         );
 
-        expect(body, equals('املت\nمکمل: کراتین (یک اسکوپ)'));
+        expect(body, equals('املت\n - کراتین (یک اسکوپ)'));
       },
     );
 
@@ -152,7 +157,7 @@ void main() {
       ];
 
       final body = formatNotificationBody(
-        foodName: 'چلو جوجه‌کباب',
+        foodName: 'جوجه کباب با برنج',
         supplements: supplements,
         slotKey: 'lunch',
         slotLabel: 'ناهار',
@@ -160,7 +165,10 @@ void main() {
 
       expect(
         body,
-        equals('چلو جوجه‌کباب\nمکمل‌ها: کراتین (یک اسکوپ)، امگا ۳ (یک کپسول)'),
+        equals(
+          'جوجه کباب با برنج\n'
+          ' - کراتین (یک اسکوپ)، امگا ۳ (یک کپسول)',
+        ),
       );
     });
 

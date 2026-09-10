@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:fitsho/shared/presentation/utils/failure_message.dart';
+import 'dart:async';
 import 'package:fitsho/core/constants/app_assets.dart';
 import 'package:fitsho/core/constants/colors.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
@@ -10,21 +8,52 @@ import 'package:fitsho/features/diet/presentation/providers/diet_navigation_prov
 import 'package:fitsho/features/diet/presentation/providers/diet_providers.dart';
 import 'package:fitsho/features/diet/presentation/widgets/ai_loading_dialog.dart';
 import 'package:fitsho/features/diet/presentation/widgets/diet_plan_section.dart';
+import 'package:fitsho/shared/presentation/utils/failure_message.dart';
 import 'package:fitsho/shared/presentation/utils/toast_utils.dart';
 import 'package:fitsho/shared/presentation/widgets/app_loading_indicator.dart';
 import 'package:fitsho/shared/presentation/widgets/app_primary_button.dart';
 import 'package:fitsho/shared/presentation/widgets/empty_state_view.dart';
 import 'package:fitsho/shared/presentation/widgets/error_retry_view.dart';
 import 'package:fitsho/shared/presentation/widgets/gap.dart';
+import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class WeeklyPlanScreen extends ConsumerStatefulWidget {
-  const WeeklyPlanScreen({super.key});
+  const WeeklyPlanScreen({
+    this.initialDay,
+    this.initialSlot,
+    super.key,
+  });
+
+  final String? initialDay;
+  final String? initialSlot;
 
   @override
   ConsumerState<WeeklyPlanScreen> createState() => _WeeklyPlanScreenState();
 }
 
 class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
+  String? _activeHighlightDay;
+  String? _activeHighlightSlot;
+
+  @override
+  void initState() {
+    super.initState();
+    _activeHighlightDay = widget.initialDay;
+    _activeHighlightSlot = widget.initialSlot;
+  }
+
+  @override
+  void didUpdateWidget(WeeklyPlanScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialDay != oldWidget.initialDay ||
+        widget.initialSlot != oldWidget.initialSlot) {
+      setState(() {
+        _activeHighlightDay = widget.initialDay;
+        _activeHighlightSlot = widget.initialSlot;
+      });
+    }
+  }
   Future<void> _logMeal(String day, String slot) async {
     final failure = await ref
         .read(logMealNotifierProvider.notifier)
@@ -129,7 +158,9 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
                                   onPressed: isGenerating
                                       ? null
                                       : () async {
-                                          AiLoadingDialog.show(context);
+                                          unawaited(
+                                            AiLoadingDialog.show(context),
+                                          );
                                           final failure = await ref
                                               .read(dietPlanNotifierProvider
                                                   .notifier)
@@ -149,16 +180,25 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
                         );
                       }
 
+                      final targetDay =
+                          _activeHighlightDay ?? navigationTarget?.highlightDay;
+                      final targetSlot = _activeHighlightSlot ??
+                          navigationTarget?.highlightSlot;
+
                       return SliverPadding(
                         padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
                         sliver: SliverToBoxAdapter(
                           child: DietPlanSection(
                             plan: plan,
-                            highlightDay: navigationTarget?.highlightDay,
-                            highlightSlot: navigationTarget?.highlightSlot,
+                            highlightDay: targetDay,
+                            highlightSlot: targetSlot,
                             onLogMeal: _logMeal,
                             onSwapMeal: _swapMeal,
                             onHighlightHandled: () {
+                              setState(() {
+                                _activeHighlightDay = null;
+                                _activeHighlightSlot = null;
+                              });
                               ref
                                   .read(dietNavigationNotifierProvider.notifier)
                                   .clear();

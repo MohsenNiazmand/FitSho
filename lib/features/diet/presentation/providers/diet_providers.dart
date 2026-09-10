@@ -517,9 +517,12 @@ class MealSlotsNotifier extends _$MealSlotsNotifier {
   /// is cancelled so stale reminders never linger.
   void _updateLocalNotifications(Map<String, MealSlotConfig> slots) {
     final notificationService = getIt<NotificationService>();
-    final plan = ref.read(dietPlanNotifierProvider).asData?.value;
+    final plan = ref.read(dietPlanNotifierProvider).asData?.value ??
+        getIt<DietRepository>().peekCachedPlan();
     final supplements =
-        ref.read(supplementsNotifierProvider).asData?.value ?? [];
+        ref.read(supplementsNotifierProvider).asData?.value ??
+        getIt<DietRepository>().peekCachedSupplements() ??
+        [];
 
     if (plan != null) {
       notificationService.scheduleWeeklyDietNotifications(
@@ -566,6 +569,22 @@ class SupplementsNotifier extends _$SupplementsNotifier {
     await future;
   }
 
+  void _resyncDietNotifications() {
+    final notificationService = getIt<NotificationService>();
+    final plan = getIt<DietRepository>().peekCachedPlan();
+    final profile = getIt<DietRepository>().peekCachedProfile();
+    final mealSlots = profile?.mealSlots ?? DietConstants.defaultMealSlots();
+    final supplements = getIt<DietRepository>().peekCachedSupplements() ?? [];
+
+    if (plan != null) {
+      notificationService.scheduleWeeklyDietNotifications(
+        weeklyPlan: plan,
+        supplements: supplements,
+        mealTimes: mealSlots,
+      );
+    }
+  }
+
   Future<Failure?> create({
     required String name,
     String? dosageNote,
@@ -583,6 +602,7 @@ class SupplementsNotifier extends _$SupplementsNotifier {
       (failure) => failure,
       (_) {
         ref.invalidateSelf();
+        _resyncDietNotifications();
         return null;
       },
     );
@@ -607,6 +627,7 @@ class SupplementsNotifier extends _$SupplementsNotifier {
       (failure) => failure,
       (_) {
         ref.invalidateSelf();
+        _resyncDietNotifications();
         return null;
       },
     );
@@ -618,6 +639,7 @@ class SupplementsNotifier extends _$SupplementsNotifier {
       (failure) => failure,
       (_) {
         ref.invalidateSelf();
+        _resyncDietNotifications();
         return null;
       },
     );

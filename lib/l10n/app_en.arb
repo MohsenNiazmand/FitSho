@@ -388,5 +388,25 @@
         "type": "String"
       }
     }
-  }
+  },
+  "notificationMealReminderTitle": "{slot} Reminder",
+  "@notificationMealReminderTitle": {
+    "placeholders": {
+      "slot": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationMealTimeForSlot": "It's time for {slot}.",
+  "@notificationMealTimeForSlot": {
+    "placeholders": {
+      "slot": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationDietPlanSummary": "Diet Plan",
+  "notificationMealTicker": "Meal Reminder",
+  "notificationMealChannelName": "Meal Reminders",
+  "notificationMealChannelDesc": "Notifications for scheduled meal times"
 }

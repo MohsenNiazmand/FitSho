@@ -252,6 +252,9 @@ class Supplement {
   final List<String> times;
   @HiveField(4)
   final String? linkedMealSlot;
+
+  /// Alias for [linkedMealSlot] to match notification mapping requirements.
+  String? get linkedMeal => linkedMealSlot;
 }
 
 class FcmTokenRegistration {

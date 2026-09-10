@@ -775,4 +775,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String dietMealReminderBody(String meal) {
     return 'It\'s time for your $meal.';
   }
+
+  @override
+  String notificationMealReminderTitle(String slot) {
+    return '$slot Reminder';
+  }
+
+  @override
+  String notificationMealTimeForSlot(String slot) {
+    return 'It\'s time for $slot.';
+  }
+
+  @override
+  String get notificationDietPlanSummary => 'Diet Plan';
+
+  @override
+  String get notificationMealTicker => 'Meal Reminder';
+
+  @override
+  String get notificationMealChannelName => 'Meal Reminders';
+
+  @override
+  String get notificationMealChannelDesc =>
+      'Notifications for scheduled meal times';
 }

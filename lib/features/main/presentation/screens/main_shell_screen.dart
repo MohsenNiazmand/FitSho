@@ -1,4 +1,6 @@
 import 'package:fitsho/core/extensions/context_extensions.dart';
+import 'package:fitsho/core/injection_container.dart';
+import 'package:fitsho/core/notifications/notification_service.dart';
 import 'package:fitsho/features/diet/presentation/providers/diet_navigation_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -67,17 +69,21 @@ class MainShellScreen extends HookConsumerWidget {
         SchedulerBinding.instance.addPostFrameCallback((_) {
           if (target.openSupplements) {
             navigationShell.goBranch(2);
+            ref.read(dietNavigationNotifierProvider.notifier).clear();
           } else if (target.openWeeklyPlan) {
             navigationShell.goBranch(1);
+            if (target.highlightDay == null && target.highlightSlot == null) {
+              ref.read(dietNavigationNotifierProvider.notifier).clear();
+            }
           }
-
-          // Clear navigation state after handling
-          ref.read(dietNavigationNotifierProvider.notifier).clear();
         });
       }
 
       // Check immediately on build
       handleNavigation(ref.read(dietNavigationNotifierProvider));
+
+      // Handle cold-start notification tap
+      getIt<NotificationService>().checkAndHandleInitialNotification();
 
       // Listen for changes
       final subscription = ref.listenManual(

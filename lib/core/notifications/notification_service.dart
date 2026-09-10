@@ -1,10 +1,16 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:fitsho/config/router/go_router_provider.dart';
+import 'package:fitsho/config/router/routes.dart';
+import 'package:fitsho/core/extensions/context_extensions.dart';
 import 'package:fitsho/features/diet/domain/constants/diet_constants.dart';
 import 'package:fitsho/features/diet/domain/entities/diet_entities.dart';
 import 'package:fitsho/features/diet/domain/utils/meal_time_utils.dart';
+import 'package:fitsho/features/diet/presentation/utils/diet_labels.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/timezone.dart' as tz;
 
@@ -15,21 +21,16 @@ class NotificationService {
       FlutterLocalNotificationsPlugin();
 
   static const String mealChannelId = 'meal_reminders';
-  static const String mealChannelName = 'Meal Reminders';
-  static const String mealChannelDescription =
-      'Notifications for scheduled meal times';
 
-  /// Standard Persian labels for each canonical meal slot.
-  static const Map<String, String> _slotLabelsFa = {
-    'breakfast': 'صبحانه',
-    'morning_snack': 'میان‌وعده صبح',
-    'lunch': 'ناهار',
-    'afternoon_snack': 'میان‌وعده عصر',
-    'dinner': 'شام',
-  };
+  /// Cached payload if the app was launched by tapping a notification from
+  /// a terminated state.
+  String? _initialPayload;
 
-  /// Initializes the local notifications plugin, sets up channels,
-  /// and configures the local device timezone.
+  /// Optional external listener for notification taps.
+  void Function(String day, String meal)? onNotificationTapped;
+
+  /// Initializes the local notifications plugin with the custom icon,
+  /// configures the channel, timezone data, and tap handlers.
   Future<void> initialize() async {
     // 1. Configure device local timezone location
     await configureLocalTimeZone();
@@ -52,16 +53,20 @@ class NotificationService {
     await _notifications.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse details) {
-        debugPrint('Notification clicked with payload: ${details.payload}');
+        debugPrint(
+          'NotificationService: tapped with payload: ${details.payload}',
+        );
+        handleNotificationPayload(details.payload);
       },
     );
 
     // 3. Create Android Notification Channel upfront with MAX importance
     if (Platform.isAndroid) {
-      const androidChannel = AndroidNotificationChannel(
+      final tr = currentAppLocalizations();
+      final androidChannel = AndroidNotificationChannel(
         mealChannelId,
-        mealChannelName,
-        description: mealChannelDescription,
+        tr.notificationMealChannelName,
+        description: tr.notificationMealChannelDesc,
         importance: Importance.max,
       );
 
@@ -69,6 +74,63 @@ class NotificationService {
           .resolvePlatformSpecificImplementation<
               AndroidFlutterLocalNotificationsPlugin>()
           ?.createNotificationChannel(androidChannel);
+    }
+
+    // 4. Capture cold-start launch notification if tapped when terminated
+    final launchDetails =
+        await _notifications.getNotificationAppLaunchDetails();
+    if (launchDetails?.didNotificationLaunchApp ?? false) {
+      _initialPayload = launchDetails?.notificationResponse?.payload;
+      debugPrint(
+        'NotificationService: app launched from notification with payload: '
+        '$_initialPayload',
+      );
+    }
+  }
+
+  /// Checks and navigates to the cold-start notification target once
+  /// the router / main shell is ready.
+  void checkAndHandleInitialNotification() {
+    if (_initialPayload != null) {
+      final payload = _initialPayload;
+      _initialPayload = null;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        handleNotificationPayload(payload);
+      });
+    }
+  }
+
+  /// Parses the notification payload and navigates to the Weekly Plan screen
+  /// with the target day and meal slot.
+  void handleNotificationPayload(String? payload) {
+    if (payload == null || payload.trim().isEmpty) return;
+
+    try {
+      final Map<String, dynamic> data;
+      if (payload.trim().startsWith('{')) {
+        data = jsonDecode(payload) as Map<String, dynamic>;
+      } else {
+        // Fallback for legacy pipe-separated format: 'slot|day'
+        final parts = payload.split('|');
+        data = {
+          'slot': parts[0],
+          'day': parts.length > 1 ? parts[1] : '',
+        };
+      }
+
+      final day = data['day'] as String?;
+      final meal = (data['meal'] ?? data['slot']) as String?;
+
+      if (day != null && meal != null) {
+        onNotificationTapped?.call(day, meal);
+
+        final context = rootNavigatorKey.currentContext;
+        if (context != null && context.mounted) {
+          context.go('${AppRoutes.weeklyPlan}?day=$day&meal=$meal');
+        }
+      }
+    } on Object catch (e) {
+      debugPrint('NotificationService: Error handling payload: $e');
     }
   }
 
@@ -82,15 +144,13 @@ class NotificationService {
     }
   }
 
-  /// Requests notification permissions for Android 13+ (POST_NOTIFICATIONS)
-  /// and iOS.
+  /// Requests notification permissions for Android 13+ and iOS.
   Future<bool> requestNotificationPermission() async {
     final status = await Permission.notification.request();
     return status.isGranted;
   }
 
-  /// Checks and requests permission for exact alarms on Android 12+
-  /// (SCHEDULE_EXACT_ALARM).
+  /// Checks and requests permission for exact alarms on Android 12+.
   Future<bool> checkAndRequestExactAlarmPermission() async {
     if (!Platform.isAndroid) return true;
 
@@ -108,8 +168,7 @@ class NotificationService {
     return Permission.scheduleExactAlarm.isGranted;
   }
 
-  /// Comprehensive permission request helper for both notifications
-  /// and exact alarms.
+  /// Requests both notifications and exact alarm permissions.
   Future<bool> requestAllPermissions() async {
     final notificationGranted = await requestNotificationPermission();
     final exactAlarmGranted = await checkAndRequestExactAlarmPermission();
@@ -119,7 +178,10 @@ class NotificationService {
   /// Schedules specific, dynamic notifications for each day of the current
   /// weekly plan and each enabled meal slot.
   ///
-  /// - Includes dynamic Persian food names and linked supplements.
+  /// - All texts, channel names, summaries and titles are fully
+  ///   localized via l10n.
+  /// - Includes JSON payload with target day and meal slot for tap navigation.
+  /// - Includes dynamic food names and linked supplements with dosage.
   /// - Skips slots whose scheduled time has already passed.
   /// - Generates unique integer IDs per (day, slot) to prevent collisions.
   Future<void> scheduleWeeklyDietNotifications({
@@ -127,10 +189,12 @@ class NotificationService {
     required List<Supplement> supplements,
     required Map<String, MealSlotConfig> mealTimes,
   }) async {
-    // 0. Cancel any previously scheduled weekly diet notifications
+    // 0. Cancel previously scheduled weekly diet notifications to
+    // prevent stale alarms
     await cancelWeeklyDietNotifications();
 
     final now = tz.TZDateTime.now(tz.local);
+    final tr = currentAppLocalizations();
 
     // Calculate Saturday (start of current week in the Persian calendar)
     // DateTime.weekday: Monday=1 ... Saturday=6, Sunday=7
@@ -173,58 +237,83 @@ class NotificationService {
           continue;
         }
 
-        // 2. Construct the Title (Persian)
-        final slotLabel = _slotLabelsFa[slotKey] ?? slotKey;
-        final title = 'یادآوری $slotLabel';
+        // 2. Construct localized Title
+        final slotLabel = dietMealSlotLabelTr(tr, slotKey);
+        final title = tr.notificationMealReminderTitle(slotLabel);
 
-        // 3. Construct the Body with dynamic food name and linked supplements
+        // 3. Construct localized Body with dynamic food and linked supplements
         final meal = dayPlan.meals[slotKey];
         final foodName = meal?.title.trim() ?? '';
 
-        // Check if any supplements are linked to this specific meal slot
-        final linkedSupplements = supplements.where(
-          (s) =>
-              s.linkedMealSlot != null &&
-              s.linkedMealSlot!.toLowerCase().trim() == slotKey,
-        ).toList();
+        // Filter supplements where linkedMeal matches current meal slot
+        final linkedSupplements = supplements.where((s) {
+          final rawSlot = (s.linkedMeal ?? s.linkedMealSlot)
+              ?.trim()
+              .toLowerCase()
+              .replaceAll('-', '_')
+              .replaceAll(' ', '_');
+          if (rawSlot == null || rawSlot.isEmpty) return false;
+
+          final normalizedKey = slotKey.trim().toLowerCase();
+          final localizedLabel = slotLabel.trim().toLowerCase();
+
+          return rawSlot == normalizedKey || rawSlot == localizedLabel;
+        }).toList();
 
         final bodyBuffer = StringBuffer();
         if (foodName.isNotEmpty) {
           bodyBuffer.write(foodName);
+        } else {
+          bodyBuffer.write(tr.notificationMealTimeForSlot(slotLabel));
         }
 
         if (linkedSupplements.isNotEmpty) {
-          final supplementItems = linkedSupplements.map((s) {
-            if (s.dosageNote != null && s.dosageNote!.trim().isNotEmpty) {
-              return '${s.name} (${s.dosageNote!.trim()})';
+          final supplementParts = linkedSupplements.map((s) {
+            final dosage = s.dosageNote?.trim();
+            if (dosage != null && dosage.isNotEmpty) {
+              return '${s.name} ($dosage)';
             }
             return s.name;
           }).join('، ');
 
           if (bodyBuffer.isNotEmpty) {
-            bodyBuffer.write('\n');
+            bodyBuffer.write('\n - $supplementParts');
+          } else {
+            bodyBuffer.write(supplementParts);
           }
-          final label = linkedSupplements.length > 1 ? 'مکمل‌ها' : 'مکمل';
-          bodyBuffer.write('$label: $supplementItems');
         }
 
-        final body = bodyBuffer.isNotEmpty
-            ? bodyBuffer.toString()
-            : 'زمان صرف $slotLabel است.';
+        final body = bodyBuffer.toString();
 
         // 4. Unique ID: 1000 + (dayIndex * 10) + slotIndex
         final slotIndex = DietConstants.mealSlotKeys.indexOf(slotKey);
         final notificationId = 1000 + (dayIndex * 10) + slotIndex;
 
-        // 5. Schedule via zonedSchedule
-        const androidDetails = AndroidNotificationDetails(
+        // 5. Build JSON payload containing target day and meal slot
+        final payload = jsonEncode({
+          'type': 'meal_reminder',
+          'day': dayKey,
+          'meal': slotKey,
+          'slot': slotKey,
+        });
+
+        // 6. Multi-line expanded style for Android with localized summary
+        final bigTextStyle = BigTextStyleInformation(
+          body,
+          contentTitle: title,
+          summaryText: tr.notificationDietPlanSummary,
+        );
+
+        // 7. Schedule via zonedSchedule with localized channel & ticker
+        final androidDetails = AndroidNotificationDetails(
           mealChannelId,
-          mealChannelName,
-          channelDescription: mealChannelDescription,
+          tr.notificationMealChannelName,
+          channelDescription: tr.notificationMealChannelDesc,
           importance: Importance.max,
           priority: Priority.high,
-          ticker: 'یادآور وعده غذایی',
+          ticker: tr.notificationMealTicker,
           icon: 'ic_stat_notification',
+          styleInformation: bigTextStyle,
         );
 
         const iosDetails = DarwinNotificationDetails(
@@ -233,7 +322,7 @@ class NotificationService {
           presentSound: true,
         );
 
-        const details = NotificationDetails(
+        final details = NotificationDetails(
           android: androidDetails,
           iOS: iosDetails,
         );
@@ -244,14 +333,14 @@ class NotificationService {
           body,
           scheduledDateTime,
           details,
-          payload: '$slotKey|$dayKey',
+          payload: payload,
           androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
           uiLocalNotificationDateInterpretation:
               UILocalNotificationDateInterpretation.absoluteTime,
         );
 
         debugPrint(
-          'Scheduled [$title] for $scheduledDateTime (#$notificationId)',
+          'Scheduled [$title] for $scheduledDateTime with body:\n$body',
         );
       }
     }

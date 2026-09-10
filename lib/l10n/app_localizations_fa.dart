@@ -774,4 +774,27 @@ class AppLocalizationsFa extends AppLocalizations {
   String dietMealReminderBody(String meal) {
     return 'نوبت میل کردن وعده $meal فرا رسیده است.';
   }
+
+  @override
+  String notificationMealReminderTitle(String slot) {
+    return 'یادآوری $slot';
+  }
+
+  @override
+  String notificationMealTimeForSlot(String slot) {
+    return 'زمان صرف $slot است.';
+  }
+
+  @override
+  String get notificationDietPlanSummary => 'برنامه غذایی';
+
+  @override
+  String get notificationMealTicker => 'یادآور وعده غذایی';
+
+  @override
+  String get notificationMealChannelName => 'یادآور وعده‌های غذایی';
+
+  @override
+  String get notificationMealChannelDesc =>
+      'اعلان‌های زمان‌بندی‌شده برای وعده‌های غذایی';
 }

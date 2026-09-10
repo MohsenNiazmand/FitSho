@@ -374,5 +374,25 @@
         "type": "String"
       }
     }
-  }
+  },
+  "notificationMealReminderTitle": "یادآوری {slot}",
+  "@notificationMealReminderTitle": {
+    "placeholders": {
+      "slot": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationMealTimeForSlot": "زمان صرف {slot} است.",
+  "@notificationMealTimeForSlot": {
+    "placeholders": {
+      "slot": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationDietPlanSummary": "برنامه غذایی",
+  "notificationMealTicker": "یادآور وعده غذایی",
+  "notificationMealChannelName": "یادآور وعده‌های غذایی",
+  "notificationMealChannelDesc": "اعلان‌های زمان‌بندی‌شده برای وعده‌های غذایی"
 }

@@ -1,6 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:fitsho/config/router/routes.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
 import 'package:fitsho/features/auth/domain/enums/auth_status.dart';
@@ -12,13 +9,16 @@ import 'package:fitsho/features/diet/presentation/screens/diet_history_screen.da
 import 'package:fitsho/features/diet/presentation/screens/diet_meal_slots_screen.dart';
 import 'package:fitsho/features/diet/presentation/screens/diet_profile_edit_screen.dart';
 import 'package:fitsho/features/diet/presentation/screens/onboarding_screen.dart' as diet;
-import 'package:fitsho/features/intro/presentation/providers/intro_provider.dart';
-import 'package:fitsho/features/intro/presentation/screens/intro_screen.dart';
 import 'package:fitsho/features/diet/presentation/screens/supplements_screen.dart';
 import 'package:fitsho/features/diet/presentation/screens/weekly_plan_screen.dart';
+import 'package:fitsho/features/intro/presentation/providers/intro_provider.dart';
+import 'package:fitsho/features/intro/presentation/screens/intro_screen.dart';
 import 'package:fitsho/features/main/presentation/screens/main_shell_screen.dart';
 import 'package:fitsho/features/profile/presentation/screens/profile_screen.dart';
 import 'package:fitsho/features/splash/presentation/screens/splash_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'go_router_provider.g.dart';
 
@@ -128,7 +128,21 @@ GoRouter goRouter(GoRouterRef ref) {
             routes: [
               GoRoute(
                 path: AppRoutes.weeklyPlan,
-                builder: (context, state) => const WeeklyPlanScreen(),
+                builder: (context, state) {
+                  final queryParams = state.uri.queryParameters;
+                  final extra = state.extra as Map<String, dynamic>?;
+
+                  final day = queryParams['day'] ?? extra?['day'] as String?;
+                  final meal = queryParams['meal'] ??
+                      queryParams['slot'] ??
+                      extra?['meal'] as String? ??
+                      extra?['slot'] as String?;
+
+                  return WeeklyPlanScreen(
+                    initialDay: day,
+                    initialSlot: meal,
+                  );
+                },
               ),
             ],
           ),
