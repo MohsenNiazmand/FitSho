@@ -109,10 +109,15 @@ class DietPlanNotifier extends _$DietPlanNotifier {
     ref.onDispose(() => _disposed = true);
     final cached = getIt<DietRepository>().peekCachedPlan();
     if (cached != null) {
+      _scheduleNotificationsForPlan(cached);
       _revalidate();
       return cached;
     }
-    return _fetch();
+    final plan = await _fetch();
+    if (plan != null) {
+      _scheduleNotificationsForPlan(plan);
+    }
+    return plan;
   }
 
   Future<DietPlan?> _fetch() async {
@@ -141,9 +146,31 @@ class DietPlanNotifier extends _$DietPlanNotifier {
             state = const AsyncValue.data(null);
           }
         },
-        (plan) => state = AsyncValue.data(plan),
+        (plan) {
+          state = AsyncValue.data(plan);
+          _scheduleNotificationsForPlan(plan);
+        },
       );
     });
+  }
+
+  void _scheduleNotificationsForPlan(DietPlan plan) {
+    final notificationService = getIt<NotificationService>();
+    final profile = ref.read(dietProfileNotifierProvider).valueOrNull ??
+        getIt<DietRepository>().peekCachedProfile();
+    final mealSlots = (profile?.mealSlots != null && profile!.mealSlots.isNotEmpty)
+        ? profile.mealSlots
+        : DietConstants.defaultMealSlots();
+    final supplements =
+        ref.read(supplementsNotifierProvider).valueOrNull ??
+        getIt<DietRepository>().peekCachedSupplements() ??
+        [];
+
+    notificationService.scheduleWeeklyDietNotifications(
+      weeklyPlan: plan,
+      supplements: supplements,
+      mealTimes: mealSlots,
+    );
   }
 
   Future<Failure?> generate() async {
@@ -156,6 +183,7 @@ class DietPlanNotifier extends _$DietPlanNotifier {
       },
       (plan) {
         state = AsyncValue.data(plan);
+        _scheduleNotificationsForPlan(plan);
         return null;
       },
     );
@@ -220,12 +248,12 @@ class DietPlanNotifier extends _$DietPlanNotifier {
             return d;
           }).toList();
 
-          state = AsyncValue.data(
-            currentPlan.copyWith(
-              days: newDays,
-              remainingMealSwaps: remaining,
-            ),
+          final updatedPlan = currentPlan.copyWith(
+            days: newDays,
+            remainingMealSwaps: remaining,
           );
+          state = AsyncValue.data(updatedPlan);
+          _scheduleNotificationsForPlan(updatedPlan);
         }
 
         return Right(remaining);
@@ -243,8 +271,10 @@ class DietPlanNotifier extends _$DietPlanNotifier {
     return result.fold(
       (failure) => failure,
       (_) {
-        ref.invalidateSelf();
-        ref.invalidate(dietPlanHistoryNotifierProvider);
+        getIt<NotificationService>().cancelWeeklyDietNotifications();
+        ref
+          ..invalidateSelf()
+          ..invalidate(dietPlanHistoryNotifierProvider);
         return null;
       },
     );
