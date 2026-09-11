@@ -1,14 +1,15 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:fitsho/core/app_config/presentation/providers/app_config_provider.dart';
 import 'package:fitsho/core/app_config/presentation/widgets/update_dialogs.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
+import 'package:fitsho/core/utils/persian_digits.dart';
 import 'package:fitsho/features/auth/presentation/providers/auth_state_provider.dart';
 import 'package:fitsho/shared/presentation/widgets/app_icon_badge.dart';
 import 'package:fitsho/shared/presentation/widgets/app_loading_indicator.dart';
 import 'package:fitsho/shared/presentation/widgets/gap.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class SplashScreen extends HookConsumerWidget {
   const SplashScreen({super.key});
@@ -16,6 +17,7 @@ class SplashScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final versionCheck = ref.watch(appVersionCheckProvider);
+    final versionAsync = ref.watch(appVersionProvider);
 
     useEffect(
       () {
@@ -33,7 +35,8 @@ class SplashScreen extends HookConsumerWidget {
             SchedulerBinding.instance.addPostFrameCallback((_) async {
               await showDialog<void>(
                 context: context,
-                builder: (_) => OptionalUpdateDialog(updateUrl: info.updateUrl!),
+                builder: (_) =>
+                    OptionalUpdateDialog(updateUrl: info.updateUrl!),
               );
               if (context.mounted) {
                 await ref.read(authStateProvider.notifier).checkSession();
@@ -59,27 +62,56 @@ class SplashScreen extends HookConsumerWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const AppIconBadge(icon: Icons.restaurant_menu_rounded, size: 96),
-            Gap.v24(),
-            Text(
-              context.tr.appNamePersian,
-              style: theme.textTheme.headlineMedium,
+      body: Stack(
+        children: [
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const AppIconBadge(
+                  icon: Icons.restaurant_menu_rounded,
+                  size: 96,
+                ),
+                Gap.v24(),
+                Text(
+                  context.tr.appNamePersian,
+                  style: theme.textTheme.headlineMedium,
+                ),
+                Gap.v8(),
+                Text(
+                  context.tr.appName,
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                Gap.v32(),
+                const AppLoadingIndicator(),
+              ],
             ),
-            Gap.v8(),
-            Text(
-              context.tr.appName,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
+          ),
+          SafeArea(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 24),
+                child: versionAsync.when(
+                  data: (version) => Text(
+                    context.tr.appVersion(
+                      PersianDigits.toPersian(version),
+                    ),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant
+                          .withValues(alpha: 0.6),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  loading: () => const SizedBox.shrink(),
+                  error: (_, __) => const SizedBox.shrink(),
+                ),
               ),
             ),
-            Gap.v32(),
-            const AppLoadingIndicator(),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

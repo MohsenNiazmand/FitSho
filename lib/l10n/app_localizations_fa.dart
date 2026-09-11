@@ -810,4 +810,9 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get autostartPromptLater => 'بعداً';
+
+  @override
+  String appVersion(String version) {
+    return 'نسخه $version';
+  }
 }

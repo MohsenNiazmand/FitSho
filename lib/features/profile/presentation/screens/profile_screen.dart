@@ -1,12 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:fitsho/config/router/routes.dart';
-import 'package:fitsho/config/theme/app_radius.dart';
+import 'package:fitsho/core/app_config/presentation/providers/app_config_provider.dart';
 import 'package:fitsho/core/constants/app_assets.dart';
 import 'package:fitsho/core/constants/colors.dart';
 import 'package:fitsho/core/constants/constants.dart';
@@ -19,8 +12,14 @@ import 'package:fitsho/features/profile/presentation/providers/profile_providers
 import 'package:fitsho/shared/presentation/utils/toast_utils.dart';
 import 'package:fitsho/shared/presentation/widgets/app_image_cover.dart';
 import 'package:fitsho/shared/presentation/widgets/app_loading_indicator.dart';
-import 'package:fitsho/shared/presentation/widgets/app_primary_button.dart';
 import 'package:fitsho/shared/presentation/widgets/gap.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreen extends HookConsumerWidget {
   const ProfileScreen({super.key});
@@ -35,6 +34,7 @@ class ProfileScreen extends HookConsumerWidget {
     final updateState = ref.watch(updateProfileNotifierProvider);
     final logoutState = ref.watch(logoutNotifierProvider);
     final deleteAccountState = ref.watch(deleteAccountNotifierProvider);
+    final versionAsync = ref.watch(appVersionProvider);
     final formKey = useMemoized(GlobalKey<FormState>.new);
     final nameController = useTextEditingController(text: user?.name ?? '');
     final isEditingName = useState(false);
@@ -226,7 +226,8 @@ class ProfileScreen extends HookConsumerWidget {
                                   focusNode: nameFocusNode,
                                   textAlign: TextAlign.center,
                                   autofocus: true,
-                                  style: theme.textTheme.headlineSmall?.copyWith(
+                                  style:
+                                      theme.textTheme.headlineSmall?.copyWith(
                                     fontWeight: FontWeight.w800,
                                   ),
                                   decoration: const InputDecoration(
@@ -293,6 +294,21 @@ class ProfileScreen extends HookConsumerWidget {
                           onDeleteAccount: confirmDeleteAccount,
                         ),
                       ),
+                      Gap.v24(),
+                      versionAsync.when(
+                        data: (version) => Text(
+                          context.tr.appVersion(
+                            PersianDigits.toPersian(version),
+                          ),
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: cTextHint,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        loading: () => const SizedBox.shrink(),
+                        error: (_, __) => const SizedBox.shrink(),
+                      ),
                       Gap.v16(),
                     ],
                   ),
@@ -314,15 +330,14 @@ class _SettingsActionsCard extends StatelessWidget {
   });
 
   final bool isBusy;
-  final AsyncValue logoutState;
-  final AsyncValue deleteAccountState;
+  final AsyncValue<void> logoutState;
+  final AsyncValue<void> deleteAccountState;
   final VoidCallback onContactSupport;
   final VoidCallback onLogout;
   final VoidCallback onDeleteAccount;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final destructiveColor = Colors.red.shade600;
 
     return Card(
@@ -413,7 +428,6 @@ class _ProfileCoverHeader extends StatelessWidget {
               children: [
                 const AppImageCover(
                   assetPath: AppAssets.profileBg,
-                  fit: BoxFit.cover,
                   overlayOpacity: 0.12,
                 ),
                 Positioned(

@@ -811,4 +811,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get autostartPromptLater => 'Later';
+
+  @override
+  String appVersion(String version) {
+    return 'Version $version';
+  }
 }

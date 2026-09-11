@@ -1,8 +1,8 @@
+import 'package:fitsho/core/app_config/domain/repositories/app_config_repository.dart';
+import 'package:fitsho/core/injection_container.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:fitsho/core/app_config/domain/repositories/app_config_repository.dart';
-import 'package:fitsho/core/injection_container.dart';
 
 part 'app_config_provider.g.dart';
 
@@ -57,3 +57,9 @@ class AppVersionCheck extends _$AppVersionCheck {
     );
   }
 }
+
+/// Provides the current app version string (e.g., '1.0.0').
+final appVersionProvider = FutureProvider<String>((ref) async {
+  final packageInfo = await PackageInfo.fromPlatform();
+  return packageInfo.version;
+});
