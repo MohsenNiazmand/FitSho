@@ -797,4 +797,17 @@ class AppLocalizationsFa extends AppLocalizations {
   @override
   String get notificationMealChannelDesc =>
       'اعلان‌های زمان‌بندی‌شده برای وعده‌های غذایی';
+
+  @override
+  String get autostartPromptTitle => 'یادآور دقیق وعده‌ها';
+
+  @override
+  String get autostartPromptBody =>
+      'برای اینکه یادآورهای رژیم شما حتی در زمان بسته بودن اپلیکیشن دقیق کار کنند، لطفاً با زدن دکمه زیر، اجازه فعالیت در پس‌زمینه (AutoStart) را به فیت‌شو بدهید.';
+
+  @override
+  String get autostartPromptEnable => 'فعالسازی';
+
+  @override
+  String get autostartPromptLater => 'بعداً';
 }

@@ -798,4 +798,17 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get notificationMealChannelDesc =>
       'Notifications for scheduled meal times';
+
+  @override
+  String get autostartPromptTitle => 'Accurate Meal Reminders';
+
+  @override
+  String get autostartPromptBody =>
+      'To ensure your diet reminders work accurately even when the app is closed, please grant background activity (AutoStart) permission to FitSho.';
+
+  @override
+  String get autostartPromptEnable => 'Enable';
+
+  @override
+  String get autostartPromptLater => 'Later';
 }

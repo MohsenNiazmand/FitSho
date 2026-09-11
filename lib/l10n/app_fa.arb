@@ -394,5 +394,9 @@
   "notificationDietPlanSummary": "برنامه غذایی",
   "notificationMealTicker": "یادآور وعده غذایی",
   "notificationMealChannelName": "یادآور وعده‌های غذایی",
-  "notificationMealChannelDesc": "اعلان‌های زمان‌بندی‌شده برای وعده‌های غذایی"
+  "notificationMealChannelDesc": "اعلان‌های زمان‌بندی‌شده برای وعده‌های غذایی",
+  "autostartPromptTitle": "یادآور دقیق وعده‌ها",
+  "autostartPromptBody": "برای اینکه یادآورهای رژیم شما حتی در زمان بسته بودن اپلیکیشن دقیق کار کنند، لطفاً با زدن دکمه زیر، اجازه فعالیت در پس‌زمینه (AutoStart) را به فیت‌شو بدهید.",
+  "autostartPromptEnable": "فعالسازی",
+  "autostartPromptLater": "بعداً"
 }

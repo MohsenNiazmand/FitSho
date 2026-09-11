@@ -1531,6 +1531,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Notifications for scheduled meal times'**
   String get notificationMealChannelDesc;
+
+  /// No description provided for @autostartPromptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Accurate Meal Reminders'**
+  String get autostartPromptTitle;
+
+  /// No description provided for @autostartPromptBody.
+  ///
+  /// In en, this message translates to:
+  /// **'To ensure your diet reminders work accurately even when the app is closed, please grant background activity (AutoStart) permission to FitSho.'**
+  String get autostartPromptBody;
+
+  /// No description provided for @autostartPromptEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable'**
+  String get autostartPromptEnable;
+
+  /// No description provided for @autostartPromptLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get autostartPromptLater;
 }
 
 class _AppLocalizationsDelegate

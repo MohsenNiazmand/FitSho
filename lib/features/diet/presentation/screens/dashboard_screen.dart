@@ -8,10 +8,12 @@ import 'package:fitsho/core/extensions/context_extensions.dart';
 import 'package:fitsho/core/injection_container.dart';
 import 'package:fitsho/core/notifications/notification_service.dart';
 import 'package:fitsho/core/notifications/push_notification_service.dart';
+import 'package:fitsho/core/utils/autostart_helper.dart';
 import 'package:fitsho/core/utils/persian_digits.dart';
 import 'package:fitsho/features/diet/domain/constants/diet_constants.dart';
 import 'package:fitsho/features/diet/presentation/providers/diet_providers.dart';
 import 'package:fitsho/features/diet/presentation/widgets/ai_loading_dialog.dart';
+import 'package:fitsho/features/diet/presentation/widgets/autostart_prompt_dialog.dart';
 import 'package:fitsho/features/diet/presentation/widgets/diet_summary_widgets.dart';
 import 'package:fitsho/features/diet/presentation/widgets/last_meal_card.dart';
 import 'package:fitsho/shared/presentation/utils/failure_message.dart';
@@ -52,6 +54,13 @@ class DashboardScreen extends HookConsumerWidget {
             .requestPermissionAndRegisterToken();
         await getIt<NotificationService>()
             .checkAndRequestExactAlarmPermission();
+
+        // Prompt user once for AutoStart permission on aggressive OEM devices
+        final isRestrictedOem = await AutoStartHelper.isRestrictedOem();
+        final hasShownPrompt = await AutoStartHelper.hasPromptBeenShown();
+        if (isRestrictedOem && !hasShownPrompt && context.mounted) {
+          await AutoStartPromptDialog.show(context);
+        }
       });
       return null;
     }, const []);

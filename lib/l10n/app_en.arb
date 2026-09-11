@@ -408,5 +408,9 @@
   "notificationDietPlanSummary": "Diet Plan",
   "notificationMealTicker": "Meal Reminder",
   "notificationMealChannelName": "Meal Reminders",
-  "notificationMealChannelDesc": "Notifications for scheduled meal times"
+  "notificationMealChannelDesc": "Notifications for scheduled meal times",
+  "autostartPromptTitle": "Accurate Meal Reminders",
+  "autostartPromptBody": "To ensure your diet reminders work accurately even when the app is closed, please grant background activity (AutoStart) permission to FitSho.",
+  "autostartPromptEnable": "Enable",
+  "autostartPromptLater": "Later"
 }
