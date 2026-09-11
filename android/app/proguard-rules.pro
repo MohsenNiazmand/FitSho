@@ -1,3 +1,8 @@
+# Disable aggressive R8 optimizations (method inlining, class merging)
+# that break BroadcastReceivers invoked by AlarmManager after app is killed.
+# Required because Gradle 9.1+ forces proguard-android-optimize.txt.
+-dontoptimize
+
 # Flutter Wrapper
 -keep class io.flutter.app.** { *; }
 -keep class io.flutter.plugin.**  { *; }
