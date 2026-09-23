@@ -77,7 +77,15 @@ class AuthRepositoryImpl implements AuthRepository {
         RefreshTokenBody(refreshToken: refreshToken, deviceId: deviceId),
       );
 
-      await _tokenStorage.saveAccessToken(response.accessToken);
+      final rotatedRefreshToken = response.refreshToken;
+      if (rotatedRefreshToken != null && rotatedRefreshToken.isNotEmpty) {
+        await _tokenStorage.saveTokens(
+          accessToken: response.accessToken,
+          refreshToken: rotatedRefreshToken,
+        );
+      } else {
+        await _tokenStorage.saveAccessToken(response.accessToken);
+      }
     });
   }
 

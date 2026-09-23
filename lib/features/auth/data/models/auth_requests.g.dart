@@ -66,8 +66,14 @@ Map<String, dynamic> _$AuthTokenResponseToJson(AuthTokenResponse instance) =>
 
 RefreshTokenResponse _$RefreshTokenResponseFromJson(
   Map<String, dynamic> json,
-) => RefreshTokenResponse(accessToken: json['accessToken'] as String);
+) => RefreshTokenResponse(
+  accessToken: json['accessToken'] as String,
+  refreshToken: json['refreshToken'] as String?,
+);
 
 Map<String, dynamic> _$RefreshTokenResponseToJson(
   RefreshTokenResponse instance,
-) => <String, dynamic>{'accessToken': instance.accessToken};
+) => <String, dynamic>{
+  'accessToken': instance.accessToken,
+  'refreshToken': instance.refreshToken,
+};

@@ -1,5 +1,5 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'package:fitsho/features/auth/data/models/user_model.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'auth_requests.g.dart';
 
@@ -85,12 +85,13 @@ class AuthTokenResponse {
 
 @JsonSerializable()
 class RefreshTokenResponse {
-  const RefreshTokenResponse({required this.accessToken});
+  const RefreshTokenResponse({required this.accessToken, this.refreshToken});
 
   factory RefreshTokenResponse.fromJson(Map<String, dynamic> json) =>
       _$RefreshTokenResponseFromJson(json);
 
   final String accessToken;
+  final String? refreshToken;
 
   Map<String, dynamic> toJson() => _$RefreshTokenResponseToJson(this);
 }

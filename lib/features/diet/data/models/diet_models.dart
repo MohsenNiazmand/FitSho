@@ -1,5 +1,5 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'package:fitsho/shared/data/models/ingredient_model.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'diet_models.g.dart';
 
@@ -456,8 +456,21 @@ class DietPlanListEnvelope {
     required this.data,
   });
 
-  factory DietPlanListEnvelope.fromJson(Map<String, dynamic> json) =>
-      _$DietPlanListEnvelopeFromJson(json);
+  /// The history endpoint wraps plans as `{ items, pagination }`; a bare
+  /// list is still accepted for backward compatibility.
+  factory DietPlanListEnvelope.fromJson(Map<String, dynamic> json) {
+    final rawData = json['data'];
+    final rawItems = rawData is Map<String, dynamic>
+        ? rawData['items'] as List<dynamic>? ?? const []
+        : rawData as List<dynamic>? ?? const [];
+
+    return DietPlanListEnvelope(
+      success: json['success'] as bool,
+      data: rawItems
+          .map((e) => DietPlanModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+  }
 
   final bool success;
   final List<DietPlanModel> data;

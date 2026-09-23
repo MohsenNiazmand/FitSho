@@ -129,7 +129,7 @@ class AuthInterceptor extends QueuedInterceptor {
     try {
       final deviceId = await _deviceIdService.getDeviceId();
       final response = await _refreshDio.post<Map<String, dynamic>>(
-        '/api/auth/refresh',
+        'auth/refresh',
         data: {
           'refreshToken': refreshToken,
           'deviceId': deviceId,
@@ -141,7 +141,17 @@ class AuthInterceptor extends QueuedInterceptor {
         return false;
       }
 
-      await _tokenStorage.saveAccessToken(accessToken);
+      // The backend rotates the refresh token on every refresh; older
+      // servers omit it, in which case the stored one stays valid.
+      final rotatedRefreshToken = response.data?['refreshToken'] as String?;
+      if (rotatedRefreshToken != null && rotatedRefreshToken.isNotEmpty) {
+        await _tokenStorage.saveTokens(
+          accessToken: accessToken,
+          refreshToken: rotatedRefreshToken,
+        );
+      } else {
+        await _tokenStorage.saveAccessToken(accessToken);
+      }
       return true;
     } on DioException {
       return false;
