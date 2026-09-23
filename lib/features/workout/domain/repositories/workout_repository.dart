@@ -3,6 +3,10 @@ import 'package:fitsho/core/error/failures.dart';
 import 'package:fitsho/features/workout/domain/entities/workout_entities.dart';
 
 abstract class WorkoutRepository {
+  WorkoutProfile? peekCachedProfile();
+
+  Future<WorkoutOptions?> peekCachedProfileOptions();
+
   Future<Either<Failure, WorkoutOptions>> getProfileOptions();
 
   Future<Either<Failure, WorkoutProfile?>> getProfile();

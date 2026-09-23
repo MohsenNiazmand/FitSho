@@ -420,5 +420,39 @@
         "type": "String"
       }
     }
+  },
+  "workoutOnboardingTitle": "Workout Profile Setup",
+  "workoutStepDisciplines": "Select Disciplines",
+  "workoutStepStyleLevel": "Level & Style",
+  "workoutStepGoal": "Workout Goal",
+  "workoutStepConditions": "Conditions & Equipment",
+  "workoutStepInjuries": "Injuries & Health",
+  "workoutMaxDisciplinesWarning": "You can select a maximum of 2 disciplines.",
+  "workoutMedicalReferralWarning": "Due to severe pain or injury, please consult a physician before starting exercise.",
+  "workoutNoInjuries": "No injuries",
+  "workoutPainLevel": "Pain level (0 to 10):",
+  "workoutInjuryNotes": "Injury notes (optional)",
+  "workoutDaysPerWeek": "Days per week:",
+  "workoutSessionMinutes": "Session minutes:",
+  "workoutLocation": "Workout location:",
+  "workoutEquipment": "Available equipment:",
+  "workoutSaveProfile": "Save & Continue",
+  "workoutTabTitle": "Workout",
+  "workoutGeneratePlan": "Generate Workout Plan",
+  "workoutRemainingGenerations": "{count} generations left this week",
+  "@workoutRemainingGenerations": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutRemainingSwaps": "{count} swaps left today",
+  "@workoutRemainingSwaps": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

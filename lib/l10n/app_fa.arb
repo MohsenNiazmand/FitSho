@@ -406,5 +406,39 @@
         "type": "String"
       }
     }
+  },
+  "workoutOnboardingTitle": "ساخت پروفایل تمرینی",
+  "workoutStepDisciplines": "انتخاب رشته",
+  "workoutStepStyleLevel": "سطح و سبک",
+  "workoutStepGoal": "هدف تمرینی",
+  "workoutStepConditions": "شرایط و تجهیزات",
+  "workoutStepInjuries": "آسیب‌دیدگی و سلامت",
+  "workoutMaxDisciplinesWarning": "حداکثر می‌توانید ۲ رشته انتخاب کنید.",
+  "workoutMedicalReferralWarning": "با توجه به شرایط آسیب یا درد شدید، لطفاً پیش از شروع تمرین با پزشک یا فیزیوتراپیست مشورت کنید.",
+  "workoutNoInjuries": "آسیب‌دیدگی ندارم",
+  "workoutPainLevel": "سطح درد (۰ تا ۱۰):",
+  "workoutInjuryNotes": "توضیحات تکمیلی آسیب (اختیاری)",
+  "workoutDaysPerWeek": "روزهای تمرین در هفته:",
+  "workoutSessionMinutes": "مدت زمان جلسه (دقیقه):",
+  "workoutLocation": "مکان تمرین:",
+  "workoutEquipment": "تجهیزات در دسترس:",
+  "workoutSaveProfile": "ذخیره و ادامه",
+  "workoutTabTitle": "تمرین",
+  "workoutGeneratePlan": "ساخت برنامه تمرینی",
+  "workoutRemainingGenerations": "{count} بار تا پایان هفته",
+  "@workoutRemainingGenerations": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutRemainingSwaps": "{count} تعویض باقی‌مانده امروز",
+  "@workoutRemainingSwaps": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

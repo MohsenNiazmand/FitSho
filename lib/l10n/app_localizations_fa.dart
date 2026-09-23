@@ -815,4 +815,70 @@ class AppLocalizationsFa extends AppLocalizations {
   String appVersion(String version) {
     return 'نسخه $version';
   }
+
+  @override
+  String get workoutOnboardingTitle => 'ساخت پروفایل تمرینی';
+
+  @override
+  String get workoutStepDisciplines => 'انتخاب رشته';
+
+  @override
+  String get workoutStepStyleLevel => 'سطح و سبک';
+
+  @override
+  String get workoutStepGoal => 'هدف تمرینی';
+
+  @override
+  String get workoutStepConditions => 'شرایط و تجهیزات';
+
+  @override
+  String get workoutStepInjuries => 'آسیب‌دیدگی و سلامت';
+
+  @override
+  String get workoutMaxDisciplinesWarning =>
+      'حداکثر می‌توانید ۲ رشته انتخاب کنید.';
+
+  @override
+  String get workoutMedicalReferralWarning =>
+      'با توجه به شرایط آسیب یا درد شدید، لطفاً پیش از شروع تمرین با پزشک یا فیزیوتراپیست مشورت کنید.';
+
+  @override
+  String get workoutNoInjuries => 'آسیب‌دیدگی ندارم';
+
+  @override
+  String get workoutPainLevel => 'سطح درد (۰ تا ۱۰):';
+
+  @override
+  String get workoutInjuryNotes => 'توضیحات تکمیلی آسیب (اختیاری)';
+
+  @override
+  String get workoutDaysPerWeek => 'روزهای تمرین در هفته:';
+
+  @override
+  String get workoutSessionMinutes => 'مدت زمان جلسه (دقیقه):';
+
+  @override
+  String get workoutLocation => 'مکان تمرین:';
+
+  @override
+  String get workoutEquipment => 'تجهیزات در دسترس:';
+
+  @override
+  String get workoutSaveProfile => 'ذخیره و ادامه';
+
+  @override
+  String get workoutTabTitle => 'تمرین';
+
+  @override
+  String get workoutGeneratePlan => 'ساخت برنامه تمرینی';
+
+  @override
+  String workoutRemainingGenerations(int count) {
+    return '$count بار تا پایان هفته';
+  }
+
+  @override
+  String workoutRemainingSwaps(int count) {
+    return '$count تعویض باقی‌مانده امروز';
+  }
 }

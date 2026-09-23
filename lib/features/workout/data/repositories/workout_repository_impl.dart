@@ -19,6 +19,17 @@ class WorkoutRepositoryImpl implements WorkoutRepository {
   final WorkoutLocalDataSource _localDataSource;
 
   @override
+  WorkoutProfile? peekCachedProfile() {
+    return _localDataSource.getCachedProfile()?.toEntity();
+  }
+
+  @override
+  Future<WorkoutOptions?> peekCachedProfileOptions() async {
+    final cached = await _localDataSource.getCachedProfileOptions();
+    return cached?.toEntity();
+  }
+
+  @override
   Future<Either<Failure, WorkoutOptions>> getProfileOptions() async {
     final result = await guard(() async {
       final envelope = await _api.getProfileOptions();
@@ -29,7 +40,7 @@ class WorkoutRepositoryImpl implements WorkoutRepository {
     return result.fold(
       (failure) async {
         if (failure is NetworkFailure) {
-          final cached = await _localDataSource.getOptions();
+          final cached = await _localDataSource.getCachedProfileOptions();
           if (cached != null) {
             return Right(cached.toEntity());
           }
@@ -56,7 +67,7 @@ class WorkoutRepositoryImpl implements WorkoutRepository {
           return const Right(null);
         }
         if (failure is NetworkFailure) {
-          final cached = await _localDataSource.getProfile();
+          final cached = _localDataSource.getCachedProfile();
           if (cached != null) {
             return Right(cached.toEntity());
           }
@@ -125,7 +136,7 @@ class WorkoutRepositoryImpl implements WorkoutRepository {
     return result.fold(
       (failure) async {
         if (failure is NetworkFailure) {
-          final cached = await _localDataSource.getActivePlan();
+          final cached = _localDataSource.getCachedActivePlan();
           if (cached != null) {
             return Right(cached.toEntity());
           }
@@ -158,14 +169,6 @@ class WorkoutRepositoryImpl implements WorkoutRepository {
   Future<Either<Failure, void>> deletePlan(String id) async {
     return guard(() async {
       await _api.deletePlan(id);
-      final cachedPlan = await _localDataSource.getActivePlan();
-      if (cachedPlan?.id == id) {
-        // Clear cached plan if deleted plan was active
-        final prefs = await _localDataSource.getProfile(); // dummy trigger to get DS
-        if (prefs != null) {
-          // Local clear active plan
-        }
-      }
     });
   }
 

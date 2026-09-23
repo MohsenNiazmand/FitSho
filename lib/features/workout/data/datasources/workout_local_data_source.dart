@@ -3,13 +3,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fitsho/features/workout/data/models/workout_models.dart';
 
 abstract class WorkoutLocalDataSource {
-  Future<WorkoutOptionsModel?> getOptions();
+  Future<WorkoutOptionsModel?> getCachedProfileOptions();
   Future<void> saveOptions(WorkoutOptionsModel options);
 
-  Future<WorkoutProfileModel?> getProfile();
+  WorkoutProfileModel? getCachedProfile();
   Future<void> saveProfile(WorkoutProfileModel profile);
 
-  Future<WorkoutPlanModel?> getActivePlan();
+  WorkoutPlanModel? getCachedActivePlan();
   Future<void> saveActivePlan(WorkoutPlanModel plan);
 
   Future<void> clear();
@@ -25,7 +25,7 @@ class WorkoutLocalDataSourceImpl implements WorkoutLocalDataSource {
   static const String _activePlanKey = 'workout_active_plan';
 
   @override
-  Future<WorkoutOptionsModel?> getOptions() async {
+  Future<WorkoutOptionsModel?> getCachedProfileOptions() async {
     final raw = _prefs.getString(_optionsKey);
     if (raw == null) return null;
     try {
@@ -43,7 +43,7 @@ class WorkoutLocalDataSourceImpl implements WorkoutLocalDataSource {
   }
 
   @override
-  Future<WorkoutProfileModel?> getProfile() async {
+  WorkoutProfileModel? getCachedProfile() {
     final raw = _prefs.getString(_profileKey);
     if (raw == null) return null;
     try {
@@ -61,7 +61,7 @@ class WorkoutLocalDataSourceImpl implements WorkoutLocalDataSource {
   }
 
   @override
-  Future<WorkoutPlanModel?> getActivePlan() async {
+  WorkoutPlanModel? getCachedActivePlan() {
     final raw = _prefs.getString(_activePlanKey);
     if (raw == null) return null;
     try {

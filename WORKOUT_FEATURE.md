@@ -7,13 +7,13 @@
 | Phase | Title | Depends on backend | Status |
 |-------|-------|--------------------|--------|
 | F1 | Data layer (models, API, repository, cache, DI) | B1–B5 contract | ☑ |
-| F2 | Workout profile wizard | B1, B2 | ⬜ |
+| F2 | Workout profile wizard | B1, B2 | ☑ |
 | F3 | Workout tab + plan screen + generation | B3, B4 | ⬜ |
 | F4 | Exercise swap | B5 | ⬜ |
 | F5 | Workout history | B4 | ⬜ |
 | F6 | Profile edit, regenerate prompt, polish, tests | all | ⬜ |
 
-Last completed phase: **F1** · Next phase: **F2**
+Last completed phase: **F2** · Next phase: **F3**
 
 ---
 
@@ -83,14 +83,9 @@ Deliverables: [ ] models+codegen [ ] API [ ] repository + cache [ ] failures map
 
 ---
 
-## Phase F2 — Wizard ⬜
+## Phase F2 — Wizard ☑
 
-- Providers (`presentation/providers/workout_providers.dart`): `WorkoutOptionsNotifier`, `WorkoutProfileNotifier` (null on 404, `save()`).
-- `WorkoutProfileForm` widget (5 steps, progress line, next/back like `DietOnboardingForm`), used by `WorkoutOnboardingScreen` and `WorkoutProfileEditScreen`.
-- Client-side validation mirrors backend (max 2 disciplines, one style per discipline, level allowed by style, goal compatibility, days range, pain 0 when no injury); still show server errors via `showFailureToast`.
-- Routes: `AppRoutes.workoutOnboarding = '/workout/onboarding'`, `workoutProfileEdit = '/workout/profile-edit'`.
-- l10n keys for all static texts (step titles, hints, warnings).
-Deliverables: [ ] providers [ ] form + 2 screens [ ] routes [ ] l10n fa/en [ ] widget test for max-2 disciplines rule.
+Deliverables: [x] providers [x] form + 2 screens [x] routes [x] l10n fa/en [x] widget test for max-2 disciplines rule.
 
 ---
 

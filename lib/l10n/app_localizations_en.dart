@@ -816,4 +816,70 @@ class AppLocalizationsEn extends AppLocalizations {
   String appVersion(String version) {
     return 'Version $version';
   }
+
+  @override
+  String get workoutOnboardingTitle => 'Workout Profile Setup';
+
+  @override
+  String get workoutStepDisciplines => 'Select Disciplines';
+
+  @override
+  String get workoutStepStyleLevel => 'Level & Style';
+
+  @override
+  String get workoutStepGoal => 'Workout Goal';
+
+  @override
+  String get workoutStepConditions => 'Conditions & Equipment';
+
+  @override
+  String get workoutStepInjuries => 'Injuries & Health';
+
+  @override
+  String get workoutMaxDisciplinesWarning =>
+      'You can select a maximum of 2 disciplines.';
+
+  @override
+  String get workoutMedicalReferralWarning =>
+      'Due to severe pain or injury, please consult a physician before starting exercise.';
+
+  @override
+  String get workoutNoInjuries => 'No injuries';
+
+  @override
+  String get workoutPainLevel => 'Pain level (0 to 10):';
+
+  @override
+  String get workoutInjuryNotes => 'Injury notes (optional)';
+
+  @override
+  String get workoutDaysPerWeek => 'Days per week:';
+
+  @override
+  String get workoutSessionMinutes => 'Session minutes:';
+
+  @override
+  String get workoutLocation => 'Workout location:';
+
+  @override
+  String get workoutEquipment => 'Available equipment:';
+
+  @override
+  String get workoutSaveProfile => 'Save & Continue';
+
+  @override
+  String get workoutTabTitle => 'Workout';
+
+  @override
+  String get workoutGeneratePlan => 'Generate Workout Plan';
+
+  @override
+  String workoutRemainingGenerations(int count) {
+    return '$count generations left this week';
+  }
+
+  @override
+  String workoutRemainingSwaps(int count) {
+    return '$count swaps left today';
+  }
 }

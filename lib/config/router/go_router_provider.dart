@@ -11,6 +11,8 @@ import 'package:fitsho/features/diet/presentation/screens/diet_profile_edit_scre
 import 'package:fitsho/features/diet/presentation/screens/onboarding_screen.dart' as diet;
 import 'package:fitsho/features/diet/presentation/screens/supplements_screen.dart';
 import 'package:fitsho/features/diet/presentation/screens/weekly_plan_screen.dart';
+import 'package:fitsho/features/workout/presentation/screens/workout_onboarding_screen.dart';
+import 'package:fitsho/features/workout/presentation/screens/workout_profile_edit_screen.dart';
 import 'package:fitsho/features/intro/presentation/providers/intro_provider.dart';
 import 'package:fitsho/features/intro/presentation/screens/intro_screen.dart';
 import 'package:fitsho/features/main/presentation/screens/main_shell_screen.dart';
@@ -106,6 +108,15 @@ GoRouter goRouter(GoRouterRef ref) {
         path: AppRoutes.dietOnboarding,
         parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const diet.OnboardingScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.workoutOnboarding,
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) => const WorkoutOnboardingScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.workoutProfileEdit,
+        builder: (context, state) => const WorkoutProfileEditScreen(),
       ),
       GoRoute(
         path: AppRoutes.intro,

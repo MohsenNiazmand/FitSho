@@ -1561,6 +1561,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Version {version}'**
   String appVersion(String version);
+
+  /// No description provided for @workoutOnboardingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout Profile Setup'**
+  String get workoutOnboardingTitle;
+
+  /// No description provided for @workoutStepDisciplines.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Disciplines'**
+  String get workoutStepDisciplines;
+
+  /// No description provided for @workoutStepStyleLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Level & Style'**
+  String get workoutStepStyleLevel;
+
+  /// No description provided for @workoutStepGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout Goal'**
+  String get workoutStepGoal;
+
+  /// No description provided for @workoutStepConditions.
+  ///
+  /// In en, this message translates to:
+  /// **'Conditions & Equipment'**
+  String get workoutStepConditions;
+
+  /// No description provided for @workoutStepInjuries.
+  ///
+  /// In en, this message translates to:
+  /// **'Injuries & Health'**
+  String get workoutStepInjuries;
+
+  /// No description provided for @workoutMaxDisciplinesWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'You can select a maximum of 2 disciplines.'**
+  String get workoutMaxDisciplinesWarning;
+
+  /// No description provided for @workoutMedicalReferralWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Due to severe pain or injury, please consult a physician before starting exercise.'**
+  String get workoutMedicalReferralWarning;
+
+  /// No description provided for @workoutNoInjuries.
+  ///
+  /// In en, this message translates to:
+  /// **'No injuries'**
+  String get workoutNoInjuries;
+
+  /// No description provided for @workoutPainLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Pain level (0 to 10):'**
+  String get workoutPainLevel;
+
+  /// No description provided for @workoutInjuryNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Injury notes (optional)'**
+  String get workoutInjuryNotes;
+
+  /// No description provided for @workoutDaysPerWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Days per week:'**
+  String get workoutDaysPerWeek;
+
+  /// No description provided for @workoutSessionMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Session minutes:'**
+  String get workoutSessionMinutes;
+
+  /// No description provided for @workoutLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout location:'**
+  String get workoutLocation;
+
+  /// No description provided for @workoutEquipment.
+  ///
+  /// In en, this message translates to:
+  /// **'Available equipment:'**
+  String get workoutEquipment;
+
+  /// No description provided for @workoutSaveProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Save & Continue'**
+  String get workoutSaveProfile;
+
+  /// No description provided for @workoutTabTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout'**
+  String get workoutTabTitle;
+
+  /// No description provided for @workoutGeneratePlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate Workout Plan'**
+  String get workoutGeneratePlan;
+
+  /// No description provided for @workoutRemainingGenerations.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} generations left this week'**
+  String workoutRemainingGenerations(int count);
+
+  /// No description provided for @workoutRemainingSwaps.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} swaps left today'**
+  String workoutRemainingSwaps(int count);
 }
 
 class _AppLocalizationsDelegate
