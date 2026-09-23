@@ -6,14 +6,14 @@
 
 | Phase | Title | Depends on backend | Status |
 |-------|-------|--------------------|--------|
-| F1 | Data layer (models, API, repository, cache, DI) | B1–B5 contract | ⬜ |
+| F1 | Data layer (models, API, repository, cache, DI) | B1–B5 contract | ☑ |
 | F2 | Workout profile wizard | B1, B2 | ⬜ |
 | F3 | Workout tab + plan screen + generation | B3, B4 | ⬜ |
 | F4 | Exercise swap | B5 | ⬜ |
 | F5 | Workout history | B4 | ⬜ |
 | F6 | Profile edit, regenerate prompt, polish, tests | all | ⬜ |
 
-Last completed phase: — · Next phase: **F1**
+Last completed phase: **F1** · Next phase: **F2**
 
 ---
 

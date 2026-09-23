@@ -6,7 +6,7 @@ part of 'logout_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$logoutNotifierHash() => r'ea808e99a319ed8e3fef46ef5bf9d2bb8be6bd21';
+String _$logoutNotifierHash() => r'5b592a3cdba91ffb09a0039868c17aeeba3190ee';
 
 /// See also [LogoutNotifier].
 @ProviderFor(LogoutNotifier)

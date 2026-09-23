@@ -51,6 +51,18 @@ class ExceptionMapper {
 
   static Failure _mapStatusCode(int? statusCode, dynamic data) {
     final message = _extractMessage(data);
+    final code = _extractCode(data);
+
+    if (code == 'MEDICAL_REFERRAL_REQUIRED') {
+      return MedicalReferralFailure(
+        message ?? 'Consult a doctor/physiotherapist first',
+      );
+    }
+    if (code == 'NO_ALTERNATIVE_EXERCISE') {
+      return ValidationFailure(
+        message ?? 'No alternative exercise found',
+      );
+    }
 
     if (statusCode == 400) {
       return ValidationFailure(message ?? 'Invalid request');
@@ -80,6 +92,14 @@ class ExceptionMapper {
     if (data is Map<String, dynamic>) {
       final message = data['message'];
       if (message is String) return message;
+    }
+    return null;
+  }
+
+  static String? _extractCode(dynamic data) {
+    if (data is Map<String, dynamic>) {
+      final code = data['code'];
+      if (code is String) return code;
     }
     return null;
   }

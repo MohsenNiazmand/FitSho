@@ -224,7 +224,8 @@ DietPlanModel _$DietPlanModelFromJson(Map<String, dynamic> json) =>
           .toList(),
       createdAt: DateTime.parse(json['createdAt'] as String),
       shouldRegeneratePlan: json['shouldRegeneratePlan'] as bool? ?? false,
-      remainingFullGenerations: (json['remaining_full_generations'] as num?)?.toInt(),
+      remainingFullGenerations: (json['remaining_full_generations'] as num?)
+          ?.toInt(),
       remainingMealSwaps: (json['remaining_meal_swaps'] as num?)?.toInt(),
     );
 
@@ -463,25 +464,16 @@ SwapMealRequest _$SwapMealRequestFromJson(Map<String, dynamic> json) =>
           .toList(),
     );
 
-Map<String, dynamic> _$SwapMealRequestToJson(SwapMealRequest instance) {
-  final val = <String, dynamic>{
-    'calories': instance.calories,
-    'proteinG': instance.proteinG,
-    'carbsG': instance.carbsG,
-    'fatG': instance.fatG,
-    'currentMealTitle': instance.currentMealTitle,
-    'mealType': instance.mealType,
-  };
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('otherMealsOfDay', instance.otherMealsOfDay);
-  return val;
-}
+Map<String, dynamic> _$SwapMealRequestToJson(SwapMealRequest instance) =>
+    <String, dynamic>{
+      'calories': instance.calories,
+      'proteinG': instance.proteinG,
+      'carbsG': instance.carbsG,
+      'fatG': instance.fatG,
+      'currentMealTitle': instance.currentMealTitle,
+      'mealType': instance.mealType,
+      if (instance.otherMealsOfDay case final value?) 'otherMealsOfDay': value,
+    };
 
 SwapMealResponseModel _$SwapMealResponseModelFromJson(
   Map<String, dynamic> json,
@@ -500,7 +492,9 @@ Map<String, dynamic> _$SwapMealResponseModelToJson(
 SwapMealEnvelope _$SwapMealEnvelopeFromJson(Map<String, dynamic> json) =>
     SwapMealEnvelope(
       success: json['success'] as bool,
-      data: SwapMealResponseModel.fromJson(json['data'] as Map<String, dynamic>),
+      data: SwapMealResponseModel.fromJson(
+        json['data'] as Map<String, dynamic>,
+      ),
     );
 
 Map<String, dynamic> _$SwapMealEnvelopeToJson(SwapMealEnvelope instance) =>
