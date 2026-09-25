@@ -12,6 +12,7 @@ import 'package:fitsho/features/diet/presentation/screens/onboarding_screen.dart
 import 'package:fitsho/features/diet/presentation/screens/supplements_screen.dart';
 import 'package:fitsho/features/diet/presentation/screens/weekly_plan_screen.dart';
 import 'package:fitsho/features/workout/presentation/screens/workout_onboarding_screen.dart';
+import 'package:fitsho/features/workout/presentation/screens/workout_plan_screen.dart';
 import 'package:fitsho/features/workout/presentation/screens/workout_profile_edit_screen.dart';
 import 'package:fitsho/features/intro/presentation/providers/intro_provider.dart';
 import 'package:fitsho/features/intro/presentation/screens/intro_screen.dart';
@@ -154,6 +155,14 @@ GoRouter goRouter(GoRouterRef ref) {
                     initialSlot: meal,
                   );
                 },
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.workoutPlan,
+                builder: (context, state) => const WorkoutPlanScreen(),
               ),
             ],
           ),

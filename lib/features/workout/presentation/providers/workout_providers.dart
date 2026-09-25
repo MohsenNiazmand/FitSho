@@ -1,4 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
 import 'package:fitsho/core/error/failures.dart';
 import 'package:fitsho/core/injection_container.dart';
 import 'package:fitsho/features/workout/domain/entities/workout_entities.dart';
@@ -89,8 +90,8 @@ class WorkoutProfileNotifier extends _$WorkoutProfileNotifier {
     required String location,
     required List<String> equipment,
     required List<String> injuries,
-    String? injuryNotes,
     required int painLevel,
+    String? injuryNotes,
   }) async {
     final result = await getIt<WorkoutRepository>().upsertProfile(
       disciplines: disciplines,
@@ -115,3 +116,82 @@ class WorkoutProfileNotifier extends _$WorkoutProfileNotifier {
     );
   }
 }
+
+@riverpod
+class WorkoutPlanNotifier extends _$WorkoutPlanNotifier {
+  bool _disposed = false;
+
+  @override
+  Future<WorkoutPlan?> build() async {
+    ref.onDispose(() => _disposed = true);
+    final cached = getIt<WorkoutRepository>().peekCachedActivePlan();
+    if (cached != null) {
+      _revalidate();
+      return cached;
+    }
+    return _fetch();
+  }
+
+  Future<WorkoutPlan?> _fetch() async {
+    final result = await getIt<WorkoutRepository>().getActivePlan();
+    return result.fold(
+      (failure) {
+        if (failure is NotFoundFailure) {
+          return null;
+        }
+        throw StateError(failure.message);
+      },
+      (plan) => plan,
+    );
+  }
+
+  void _revalidate() {
+    getIt<WorkoutRepository>().getActivePlan().then((result) {
+      if (_disposed) return;
+      result.fold(
+        (failure) {
+          if (failure is NotFoundFailure) {
+            state = const AsyncValue.data(null);
+          }
+        },
+        (plan) {
+          state = AsyncValue.data(plan);
+        },
+      );
+    });
+  }
+
+  Future<Failure?> generate() async {
+    final previousPlan = state.valueOrNull;
+    state = AsyncLoading<WorkoutPlan?>().copyWithPrevious(state);
+    final result = await getIt<WorkoutRepository>().generatePlan();
+    return result.fold(
+      (failure) {
+        state = AsyncValue.data(previousPlan);
+        return failure;
+      },
+      (plan) {
+        state = AsyncValue.data(plan);
+        return null;
+      },
+    );
+  }
+
+  Future<void> refreshPlan() async {
+    ref.invalidateSelf();
+    await future;
+  }
+
+  Future<Failure?> delete(String id) async {
+    final result = await getIt<WorkoutRepository>().deletePlan(id);
+    return result.fold(
+      (failure) => failure,
+      (_) {
+        ref.invalidateSelf();
+        return null;
+      },
+    );
+  }
+}
+
+

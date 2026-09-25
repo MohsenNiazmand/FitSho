@@ -86,7 +86,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
 
         void nextStep() {
           if (!canProceed()) {
-            showFailureToast(context, context.tr.dietFormValidationError);
+            showMessageToast(context.tr.dietFormValidationError);
             return;
           }
           if (currentStep.value < _stepCount - 1) {
@@ -132,10 +132,12 @@ class WorkoutProfileForm extends HookConsumerWidget {
           if (!context.mounted) return;
 
           if (failure != null) {
-            showFailureToast(context, failure.message);
+            showFailureToast(context, failure);
           } else {
-            showSuccessToast(context, 'پروفایل تمرینی با موفقیت ذخیره شد');
-            context.pop(true);
+            showSuccessToast(context.tr.workoutProfileSaved);
+            if (context.canPop()) {
+              context.pop(true);
+            }
           }
         }
 
@@ -231,7 +233,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
         ),
         Gap.v8(),
         Text(
-          'لطفاً ۱ یا ۲ رشته ورزشی مورد علاقه خود را انتخاب کنید:',
+          context.tr.workoutSelectDisciplinesHint,
           style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
         ),
         Gap.v16(),
@@ -309,7 +311,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         Gap.v12(),
-        const Text('سطح آمادگی جسمانی:', style: TextStyle(fontWeight: FontWeight.w600)),
+        Text(context.tr.workoutFitnessLevelLabel, style: const TextStyle(fontWeight: FontWeight.w600)),
         Gap.v8(),
         Row(
           children: options.levels.map((lvl) {
@@ -348,7 +350,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'سبک ${discipline.label}:',
+                context.tr.workoutDisciplineStyleLabel(discipline.label),
                 style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               Gap.v8(),
@@ -394,7 +396,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
         ),
         Gap.v8(),
         Text(
-          'هدف اصلی خود را انتخاب کنید:',
+          context.tr.workoutSelectGoalHint,
           style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
         ),
         Gap.v16(),
@@ -482,7 +484,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
                   borderRadius: AppRadius.button,
                 ),
                 child: Text(
-                  '$day روز',
+                  context.tr.workoutDaysCount(day),
                   style: TextStyle(
                     color: isSelected ? Colors.white : Colors.black87,
                     fontWeight: FontWeight.bold,
@@ -500,7 +502,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
           children: options.sessionMinutes.map((min) {
             final isSelected = sessionMinutes.value == min;
             return ChoiceChip(
-              label: Text('$min دقیقه'),
+              label: Text(context.tr.workoutMinutesCount(min)),
               selected: isSelected,
               onSelected: (_) => sessionMinutes.value = min,
             );
@@ -600,7 +602,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
         ),
         if (!hasNoInjuries.value) ...[
           Gap.v16(),
-          const Text('آسیب‌ها یا نواحی دردناک:', style: TextStyle(fontWeight: FontWeight.w600)),
+          Text(context.tr.workoutInjuriesLabel, style: const TextStyle(fontWeight: FontWeight.w600)),
           Gap.v8(),
           Wrap(
             spacing: 8,

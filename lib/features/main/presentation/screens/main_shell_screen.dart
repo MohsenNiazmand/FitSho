@@ -68,7 +68,7 @@ class MainShellScreen extends HookConsumerWidget {
 
         SchedulerBinding.instance.addPostFrameCallback((_) {
           if (target.openSupplements) {
-            navigationShell.goBranch(2);
+            navigationShell.goBranch(3);
             ref.read(dietNavigationNotifierProvider.notifier).clear();
           } else if (target.openWeeklyPlan) {
             navigationShell.goBranch(1);
@@ -115,6 +115,11 @@ class MainShellScreen extends HookConsumerWidget {
               icon: const Icon(Icons.calendar_month_outlined),
               selectedIcon: const Icon(Icons.calendar_month),
               label: context.tr.navWeeklyPlan,
+            ),
+            NavigationDestination(
+              icon: const Icon(Icons.fitness_center_outlined),
+              selectedIcon: const Icon(Icons.fitness_center),
+              label: context.tr.workoutTabTitle,
             ),
             NavigationDestination(
               icon: const Icon(Icons.medication_outlined),

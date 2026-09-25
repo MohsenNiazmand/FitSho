@@ -882,4 +882,138 @@ class AppLocalizationsEn extends AppLocalizations {
   String workoutRemainingSwaps(int count) {
     return '$count swaps left today';
   }
+
+  @override
+  String get workoutNeedDietFirst =>
+      'Please complete your diet profile first to access workout features.';
+
+  @override
+  String get workoutGoToDietOnboarding => 'Complete Diet Profile';
+
+  @override
+  String get workoutNoPlanYet => 'No workout plan yet';
+
+  @override
+  String get workoutNoPlanYetSubtitle =>
+      'Generate a personalized workout plan tailored to your fitness goals.';
+
+  @override
+  String get workoutNewPlan => 'New Plan';
+
+  @override
+  String get workoutProgressionNotes => 'Progression Notes';
+
+  @override
+  String get workoutSafetyNotes => 'Safety Notes';
+
+  @override
+  String get workoutWarmup => 'Warm-up';
+
+  @override
+  String get workoutMain => 'Main Workout';
+
+  @override
+  String get workoutCooldown => 'Cool-down';
+
+  @override
+  String get workoutRestDay => 'Rest & Recovery Day';
+
+  @override
+  String get workoutRestDayDesc =>
+      'Today is dedicated to muscle recovery. Ensure adequate rest, sleep, and hydration.';
+
+  @override
+  String workoutSetsReps(int sets, String reps) {
+    return '$sets sets × $reps reps';
+  }
+
+  @override
+  String workoutSetsDuration(int sets, int sec) {
+    return '$sets sets × ${sec}s';
+  }
+
+  @override
+  String workoutRest(int sec) {
+    return 'Rest: ${sec}s';
+  }
+
+  @override
+  String workoutRpe(String rpe) {
+    return 'RPE: $rpe';
+  }
+
+  @override
+  String get workoutSwapExercise => 'Swap Exercise';
+
+  @override
+  String get workoutMedicalReferralTitle => 'Medical Referral Required';
+
+  @override
+  String get workoutMedicalReferralDialogGotIt => 'I Understand';
+
+  @override
+  String get workoutGeneratingPlanTitle => 'Generating Workout Plan...';
+
+  @override
+  String get workoutGeneratingPlanMessage =>
+      'Your customized workout plan is being prepared based on your health and goals.';
+
+  @override
+  String get workoutToday => 'Today';
+
+  @override
+  String get workoutFocusMuscles => 'Focus Muscles:';
+
+  @override
+  String workoutDuration(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String get workoutEditProfile => 'Edit Workout Profile';
+
+  @override
+  String get workoutProfileSaved => 'Workout profile saved successfully';
+
+  @override
+  String get workoutRestShort => 'Rest';
+
+  @override
+  String workoutSetsOnly(int sets) {
+    return '$sets sets';
+  }
+
+  @override
+  String get workoutWeeklyGenerationsTitle => 'Weekly Generations';
+
+  @override
+  String get workoutDailySwapsTitle => 'Daily Swaps';
+
+  @override
+  String get workoutSelectDisciplinesHint =>
+      'Please select 1 or 2 disciplines you prefer:';
+
+  @override
+  String get workoutFitnessLevelLabel => 'Fitness level:';
+
+  @override
+  String workoutDisciplineStyleLabel(String discipline) {
+    return '$discipline style:';
+  }
+
+  @override
+  String get workoutSelectGoalHint => 'Select your primary goal:';
+
+  @override
+  String workoutDaysCount(int count) {
+    return '$count days';
+  }
+
+  @override
+  String workoutMinutesCount(int count) {
+    return '$count min';
+  }
+
+  @override
+  String get workoutInjuriesLabel => 'Injuries or painful areas:';
 }

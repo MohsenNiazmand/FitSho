@@ -881,4 +881,139 @@ class AppLocalizationsFa extends AppLocalizations {
   String workoutRemainingSwaps(int count) {
     return '$count تعویض باقی‌مانده امروز';
   }
+
+  @override
+  String get workoutNeedDietFirst =>
+      'برای دسترسی به برنامه تمرینی، ابتدا باید پروفایل تغذیه خود را تکمیل کنید.';
+
+  @override
+  String get workoutGoToDietOnboarding => 'تکمیل پروفایل تغذیه';
+
+  @override
+  String get workoutNoPlanYet => 'هنوز برنامه تمرینی ثبت نشده است';
+
+  @override
+  String get workoutNoPlanYetSubtitle =>
+      'با ثبت اطلاعات و سوابق تمرینی خود، برنامه تمرینی اختصاصی هوشمند دریافت کنید.';
+
+  @override
+  String get workoutNewPlan => 'برنامه جدید';
+
+  @override
+  String get workoutProgressionNotes => 'نکات پیشرفت';
+
+  @override
+  String get workoutSafetyNotes => 'نکات ایمنی';
+
+  @override
+  String get workoutWarmup => 'گرم کردن';
+
+  @override
+  String get workoutMain => 'تمرین اصلی';
+
+  @override
+  String get workoutCooldown => 'سرد کردن';
+
+  @override
+  String get workoutRestDay => 'روز استراحت و ریکاوری';
+
+  @override
+  String get workoutRestDayDesc =>
+      'امروز روز ریکاوری و بازسازی عضلات است. استراحت کافی، خواب مناسب و آب‌رسانی به بدن را جدی بگیرید.';
+
+  @override
+  String workoutSetsReps(int sets, String reps) {
+    return '$sets ست × $reps تکرار';
+  }
+
+  @override
+  String workoutSetsDuration(int sets, int sec) {
+    return '$sets ست × $sec ثانیه';
+  }
+
+  @override
+  String workoutRest(int sec) {
+    return 'استراحت: $sec ثانیه';
+  }
+
+  @override
+  String workoutRpe(String rpe) {
+    return 'فشار (RPE): $rpe';
+  }
+
+  @override
+  String get workoutSwapExercise => 'تعویض حرکت';
+
+  @override
+  String get workoutMedicalReferralTitle => 'نیاز به ارجاع پزشکی';
+
+  @override
+  String get workoutMedicalReferralDialogGotIt => 'متوجه شدم';
+
+  @override
+  String get workoutGeneratingPlanTitle =>
+      'در حال ساخت برنامه تمرینی هوشمند...';
+
+  @override
+  String get workoutGeneratingPlanMessage =>
+      'برنامه تمرینی اختصاصی شما بر اساس سطح، اهداف و شرایط بدنی در حال تنظیم است.';
+
+  @override
+  String get workoutToday => 'امروز';
+
+  @override
+  String get workoutFocusMuscles => 'عضلات هدف:';
+
+  @override
+  String workoutDuration(int minutes) {
+    return '$minutes دقیقه';
+  }
+
+  @override
+  String get workoutEditProfile => 'ویرایش پروفایل تمرینی';
+
+  @override
+  String get workoutProfileSaved => 'پروفایل تمرینی با موفقیت ذخیره شد';
+
+  @override
+  String get workoutRestShort => 'استراحت';
+
+  @override
+  String workoutSetsOnly(int sets) {
+    return '$sets ست';
+  }
+
+  @override
+  String get workoutWeeklyGenerationsTitle => 'تولید هفتگی';
+
+  @override
+  String get workoutDailySwapsTitle => 'تعویض روزانه';
+
+  @override
+  String get workoutSelectDisciplinesHint =>
+      'لطفاً ۱ یا ۲ رشته ورزشی مورد علاقه خود را انتخاب کنید:';
+
+  @override
+  String get workoutFitnessLevelLabel => 'سطح آمادگی جسمانی:';
+
+  @override
+  String workoutDisciplineStyleLabel(String discipline) {
+    return 'سبک $discipline:';
+  }
+
+  @override
+  String get workoutSelectGoalHint => 'هدف اصلی خود را انتخاب کنید:';
+
+  @override
+  String workoutDaysCount(int count) {
+    return '$count روز';
+  }
+
+  @override
+  String workoutMinutesCount(int count) {
+    return '$count دقیقه';
+  }
+
+  @override
+  String get workoutInjuriesLabel => 'آسیب‌ها یا نواحی دردناک:';
 }

@@ -8,12 +8,12 @@
 |-------|-------|--------------------|--------|
 | F1 | Data layer (models, API, repository, cache, DI) | B1–B5 contract | ☑ |
 | F2 | Workout profile wizard | B1, B2 | ☑ |
-| F3 | Workout tab + plan screen + generation | B3, B4 | ⬜ |
+| F3 | Workout tab + plan screen + generation | B3, B4 | ☑ |
 | F4 | Exercise swap | B5 | ⬜ |
 | F5 | Workout history | B4 | ⬜ |
 | F6 | Profile edit, regenerate prompt, polish, tests | all | ⬜ |
 
-Last completed phase: **F2** · Next phase: **F3**
+Last completed phase: **F3** · Next phase: **F4**
 
 ---
 
@@ -89,13 +89,13 @@ Deliverables: [x] providers [x] form + 2 screens [x] routes [x] l10n fa/en [x] w
 
 ---
 
-## Phase F3 — Tab + plan screen + generate ⬜
+## Phase F3 — Tab + plan screen + generate ☑
 
 - Add `StatefulShellBranch` for `AppRoutes.workoutPlan = '/workout/plan'` in `go_router_provider.dart` at index 2; **shift supplements/profile indexes** and update `MainShellScreen` (`goBranch(2)` for supplements in navigation handling must become 3).
 - `WorkoutPlanNotifier`: build (cache → revalidate), `generate()`, `refreshPlan()`, `delete(id)`, later `swap()`.
 - Screens/widgets: `WorkoutPlanScreen`, `WorkoutDaySection` (day chips + sections), `WorkoutExerciseCard`, `WorkoutRestDayView`, `WorkoutPlanHeader` (limits + generate button + notes), `MedicalReferralDialog`.
 - State routing inside the tab as described in Scenario §2.
-Deliverables: [ ] branch + nav [ ] notifier [ ] screen & widgets [ ] generate flow with all error cases [ ] l10n.
+Deliverables: [x] branch + nav [x] notifier [x] screen & widgets [x] generate flow with all error cases [x] l10n.
 
 ---
 

@@ -454,5 +454,111 @@
         "type": "int"
       }
     }
-  }
+  },
+  "workoutNeedDietFirst": "Please complete your diet profile first to access workout features.",
+  "workoutGoToDietOnboarding": "Complete Diet Profile",
+  "workoutNoPlanYet": "No workout plan yet",
+  "workoutNoPlanYetSubtitle": "Generate a personalized workout plan tailored to your fitness goals.",
+  "workoutNewPlan": "New Plan",
+  "workoutProgressionNotes": "Progression Notes",
+  "workoutSafetyNotes": "Safety Notes",
+  "workoutWarmup": "Warm-up",
+  "workoutMain": "Main Workout",
+  "workoutCooldown": "Cool-down",
+  "workoutRestDay": "Rest & Recovery Day",
+  "workoutRestDayDesc": "Today is dedicated to muscle recovery. Ensure adequate rest, sleep, and hydration.",
+  "workoutSetsReps": "{sets} sets × {reps} reps",
+  "@workoutSetsReps": {
+    "placeholders": {
+      "sets": {
+        "type": "int"
+      },
+      "reps": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutSetsDuration": "{sets} sets × {sec}s",
+  "@workoutSetsDuration": {
+    "placeholders": {
+      "sets": {
+        "type": "int"
+      },
+      "sec": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutRest": "Rest: {sec}s",
+  "@workoutRest": {
+    "placeholders": {
+      "sec": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutRpe": "RPE: {rpe}",
+  "@workoutRpe": {
+    "placeholders": {
+      "rpe": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutSwapExercise": "Swap Exercise",
+  "workoutMedicalReferralTitle": "Medical Referral Required",
+  "workoutMedicalReferralDialogGotIt": "I Understand",
+  "workoutGeneratingPlanTitle": "Generating Workout Plan...",
+  "workoutGeneratingPlanMessage": "Your customized workout plan is being prepared based on your health and goals.",
+  "workoutToday": "Today",
+  "workoutFocusMuscles": "Focus Muscles:",
+  "workoutDuration": "{minutes} min",
+  "@workoutDuration": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutEditProfile": "Edit Workout Profile",
+  "workoutProfileSaved": "Workout profile saved successfully",
+  "workoutRestShort": "Rest",
+  "workoutSetsOnly": "{sets} sets",
+  "@workoutSetsOnly": {
+    "placeholders": {
+      "sets": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutWeeklyGenerationsTitle": "Weekly Generations",
+  "workoutDailySwapsTitle": "Daily Swaps",
+  "workoutSelectDisciplinesHint": "Please select 1 or 2 disciplines you prefer:",
+  "workoutFitnessLevelLabel": "Fitness level:",
+  "workoutDisciplineStyleLabel": "{discipline} style:",
+  "@workoutDisciplineStyleLabel": {
+    "placeholders": {
+      "discipline": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutSelectGoalHint": "Select your primary goal:",
+  "workoutDaysCount": "{count} days",
+  "@workoutDaysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutMinutesCount": "{count} min",
+  "@workoutMinutesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutInjuriesLabel": "Injuries or painful areas:"
 }

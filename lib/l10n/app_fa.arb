@@ -440,5 +440,111 @@
         "type": "int"
       }
     }
-  }
+  },
+  "workoutNeedDietFirst": "برای دسترسی به برنامه تمرینی، ابتدا باید پروفایل تغذیه خود را تکمیل کنید.",
+  "workoutGoToDietOnboarding": "تکمیل پروفایل تغذیه",
+  "workoutNoPlanYet": "هنوز برنامه تمرینی ثبت نشده است",
+  "workoutNoPlanYetSubtitle": "با ثبت اطلاعات و سوابق تمرینی خود، برنامه تمرینی اختصاصی هوشمند دریافت کنید.",
+  "workoutNewPlan": "برنامه جدید",
+  "workoutProgressionNotes": "نکات پیشرفت",
+  "workoutSafetyNotes": "نکات ایمنی",
+  "workoutWarmup": "گرم کردن",
+  "workoutMain": "تمرین اصلی",
+  "workoutCooldown": "سرد کردن",
+  "workoutRestDay": "روز استراحت و ریکاوری",
+  "workoutRestDayDesc": "امروز روز ریکاوری و بازسازی عضلات است. استراحت کافی، خواب مناسب و آب‌رسانی به بدن را جدی بگیرید.",
+  "workoutSetsReps": "{sets} ست × {reps} تکرار",
+  "@workoutSetsReps": {
+    "placeholders": {
+      "sets": {
+        "type": "int"
+      },
+      "reps": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutSetsDuration": "{sets} ست × {sec} ثانیه",
+  "@workoutSetsDuration": {
+    "placeholders": {
+      "sets": {
+        "type": "int"
+      },
+      "sec": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutRest": "استراحت: {sec} ثانیه",
+  "@workoutRest": {
+    "placeholders": {
+      "sec": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutRpe": "فشار (RPE): {rpe}",
+  "@workoutRpe": {
+    "placeholders": {
+      "rpe": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutSwapExercise": "تعویض حرکت",
+  "workoutMedicalReferralTitle": "نیاز به ارجاع پزشکی",
+  "workoutMedicalReferralDialogGotIt": "متوجه شدم",
+  "workoutGeneratingPlanTitle": "در حال ساخت برنامه تمرینی هوشمند...",
+  "workoutGeneratingPlanMessage": "برنامه تمرینی اختصاصی شما بر اساس سطح، اهداف و شرایط بدنی در حال تنظیم است.",
+  "workoutToday": "امروز",
+  "workoutFocusMuscles": "عضلات هدف:",
+  "workoutDuration": "{minutes} دقیقه",
+  "@workoutDuration": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutEditProfile": "ویرایش پروفایل تمرینی",
+  "workoutProfileSaved": "پروفایل تمرینی با موفقیت ذخیره شد",
+  "workoutRestShort": "استراحت",
+  "workoutSetsOnly": "{sets} ست",
+  "@workoutSetsOnly": {
+    "placeholders": {
+      "sets": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutWeeklyGenerationsTitle": "تولید هفتگی",
+  "workoutDailySwapsTitle": "تعویض روزانه",
+  "workoutSelectDisciplinesHint": "لطفاً ۱ یا ۲ رشته ورزشی مورد علاقه خود را انتخاب کنید:",
+  "workoutFitnessLevelLabel": "سطح آمادگی جسمانی:",
+  "workoutDisciplineStyleLabel": "سبک {discipline}:",
+  "@workoutDisciplineStyleLabel": {
+    "placeholders": {
+      "discipline": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutSelectGoalHint": "هدف اصلی خود را انتخاب کنید:",
+  "workoutDaysCount": "{count} روز",
+  "@workoutDaysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutMinutesCount": "{count} دقیقه",
+  "@workoutMinutesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutInjuriesLabel": "آسیب‌ها یا نواحی دردناک:"
 }

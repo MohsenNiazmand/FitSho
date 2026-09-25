@@ -30,6 +30,11 @@ class WorkoutRepositoryImpl implements WorkoutRepository {
   }
 
   @override
+  WorkoutPlan? peekCachedActivePlan() {
+    return _localDataSource.getCachedActivePlan()?.toEntity();
+  }
+
+  @override
   Future<Either<Failure, WorkoutOptions>> getProfileOptions() async {
     final result = await guard(() async {
       final envelope = await _api.getProfileOptions();

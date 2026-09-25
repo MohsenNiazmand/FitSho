@@ -7,6 +7,8 @@ abstract class WorkoutRepository {
 
   Future<WorkoutOptions?> peekCachedProfileOptions();
 
+  WorkoutPlan? peekCachedActivePlan();
+
   Future<Either<Failure, WorkoutOptions>> getProfileOptions();
 
   Future<Either<Failure, WorkoutProfile?>> getProfile();
