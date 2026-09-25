@@ -576,5 +576,10 @@
   "workoutHistoryDeleteConfirmConfirm": "Delete",
   "workoutHistoryDeleteConfirmCancel": "Cancel",
   "workoutHistoryDeleteSuccess": "Plan deleted successfully",
-  "workoutPlanDetailTitle": "Workout Plan Details"
+  "workoutPlanDetailTitle": "Workout Plan Details",
+  "workoutRegeneratePromptTitle": "Update your workout plan?",
+  "workoutRegeneratePromptBody": "Your details have changed. Would you like to regenerate your workout plan based on the new information?",
+  "workoutRegenerateConfirm": "Yes, regenerate",
+  "workoutRegenerateDismiss": "Not now",
+  "workoutPlanRegenerated": "A new workout plan was generated successfully"
 }

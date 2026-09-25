@@ -5,10 +5,15 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:fitsho/config/theme/app_radius.dart';
+import 'package:fitsho/core/constants/colors.dart';
+import 'package:fitsho/core/error/failures.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
 import 'package:fitsho/core/utils/persian_input.dart';
+import 'package:fitsho/features/diet/presentation/widgets/ai_loading_dialog.dart';
 import 'package:fitsho/features/workout/domain/entities/workout_entities.dart';
 import 'package:fitsho/features/workout/presentation/providers/workout_providers.dart';
+import 'package:fitsho/features/workout/presentation/widgets/medical_referral_dialog.dart';
+import 'package:fitsho/shared/presentation/utils/failure_message.dart';
 import 'package:fitsho/shared/presentation/utils/toast_utils.dart';
 import 'package:fitsho/shared/presentation/widgets/app_primary_button.dart';
 import 'package:fitsho/shared/presentation/widgets/app_text_field.dart';
@@ -112,7 +117,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
 
         Future<void> saveProfile() async {
           isSaving.value = true;
-          final failure = await ref.read(workoutProfileNotifierProvider.notifier).save(
+          final (failure, saved) = await ref.read(workoutProfileNotifierProvider.notifier).save(
                 disciplines: selectedDisciplines.value,
                 styles: selectedStyles.value,
                 goal: selectedGoal.value ?? options.goals.first.id,
@@ -135,6 +140,9 @@ class WorkoutProfileForm extends HookConsumerWidget {
             showFailureToast(context, failure);
           } else {
             showSuccessToast(context.tr.workoutProfileSaved);
+            if (saved?.shouldRegeneratePlan == true) {
+              await _maybePromptRegenerate(context, ref);
+            }
             if (context.canPop()) {
               context.pop(true);
             }
@@ -666,6 +674,84 @@ class WorkoutProfileForm extends HookConsumerWidget {
           ),
         ],
       ],
+    );
+  }
+}
+
+Future<void> _maybePromptRegenerate(BuildContext context, WidgetRef ref) async {
+  final confirmed = await showModalBottomSheet<bool>(
+    context: context,
+    isScrollControlled: true,
+    builder: (sheetContext) => const _RegeneratePlanSheet(),
+  );
+
+  if (confirmed != true || !context.mounted) return;
+  await _generatePlanAfterProfileSave(context, ref);
+}
+
+Future<void> _generatePlanAfterProfileSave(
+  BuildContext context,
+  WidgetRef ref,
+) async {
+  AiLoadingDialog.show(
+    context,
+    title: context.tr.workoutGeneratingPlanTitle,
+    message: context.tr.workoutGeneratingPlanMessage,
+  );
+  final failure = await ref.read(workoutPlanNotifierProvider.notifier).generate();
+  if (!context.mounted) return;
+  AiLoadingDialog.hide(context);
+
+  if (failure != null) {
+    if (failure is MedicalReferralFailure) {
+      await MedicalReferralDialog.show(context, failure.message);
+    } else if (failure is RateLimitFailure) {
+      showMessageToast(failure.message);
+    } else {
+      showFailureToast(context, failure);
+    }
+    return;
+  }
+
+  showMessageToast(context.tr.workoutPlanRegenerated);
+}
+
+class _RegeneratePlanSheet extends StatelessWidget {
+  const _RegeneratePlanSheet();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            context.tr.workoutRegeneratePromptTitle,
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+          ),
+          Gap.v8(),
+          Text(
+            context.tr.workoutRegeneratePromptBody,
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: cTextSecondary),
+          ),
+          Gap.v24(),
+          AppPrimaryButton(
+            label: context.tr.workoutRegenerateConfirm,
+            onPressed: () => Navigator.of(context).pop(true),
+          ),
+          Gap.v8(),
+          OutlinedButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(context.tr.workoutRegenerateDismiss),
+          ),
+        ],
+      ),
     );
   }
 }

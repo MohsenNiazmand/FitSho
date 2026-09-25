@@ -82,7 +82,7 @@ class WorkoutProfileNotifier extends _$WorkoutProfileNotifier {
     });
   }
 
-  Future<Failure?> save({
+  Future<(Failure?, WorkoutProfile?)> save({
     required List<String> disciplines,
     required Map<String, String> styles,
     required String goal,
@@ -110,10 +110,10 @@ class WorkoutProfileNotifier extends _$WorkoutProfileNotifier {
     );
 
     return result.fold(
-      (failure) => failure,
+      (failure) => (failure, null),
       (saved) {
         state = AsyncValue.data(saved);
-        return null;
+        return (null, saved);
       },
     );
   }

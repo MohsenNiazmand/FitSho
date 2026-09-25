@@ -1046,4 +1046,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workoutPlanDetailTitle => 'Workout Plan Details';
+
+  @override
+  String get workoutRegeneratePromptTitle => 'Update your workout plan?';
+
+  @override
+  String get workoutRegeneratePromptBody =>
+      'Your details have changed. Would you like to regenerate your workout plan based on the new information?';
+
+  @override
+  String get workoutRegenerateConfirm => 'Yes, regenerate';
+
+  @override
+  String get workoutRegenerateDismiss => 'Not now';
+
+  @override
+  String get workoutPlanRegenerated =>
+      'A new workout plan was generated successfully';
 }

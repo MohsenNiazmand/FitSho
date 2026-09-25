@@ -1957,6 +1957,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Workout Plan Details'**
   String get workoutPlanDetailTitle;
+
+  /// No description provided for @workoutRegeneratePromptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update your workout plan?'**
+  String get workoutRegeneratePromptTitle;
+
+  /// No description provided for @workoutRegeneratePromptBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your details have changed. Would you like to regenerate your workout plan based on the new information?'**
+  String get workoutRegeneratePromptBody;
+
+  /// No description provided for @workoutRegenerateConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, regenerate'**
+  String get workoutRegenerateConfirm;
+
+  /// No description provided for @workoutRegenerateDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get workoutRegenerateDismiss;
+
+  /// No description provided for @workoutPlanRegenerated.
+  ///
+  /// In en, this message translates to:
+  /// **'A new workout plan was generated successfully'**
+  String get workoutPlanRegenerated;
 }
 
 class _AppLocalizationsDelegate

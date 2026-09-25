@@ -11,9 +11,9 @@
 | F3 | Workout tab + plan screen + generation | B3, B4 | ☑ |
 | F4 | Exercise swap | B5 | ☑ |
 | F5 | Workout history | B4 | ☑ |
-| F6 | Profile edit, regenerate prompt, polish, tests | all | ⬜ |
+| F6 | Profile edit, regenerate prompt, polish, tests | all | ☑ |
 
-Last completed phase: **F5** · Next phase: **F6**
+Last completed phase: **F6** · All phases completed!
 
 ---
 
@@ -114,9 +114,10 @@ Deliverables: [x] notifier [x] screens [x] delete flow.
 
 ---
 
-## Phase F6 — Polish ⬜
+## Phase F6 — Polish ☑
 - Edit profile entry point + `shouldRegeneratePlan` bottom sheet → generate.
 - Empty/loading/error states on every screen; pull-to-refresh.
 - Reset workout providers on logout/delete account.
 - Tests: mappers, notifier swap logic, wizard validation.
 - Update README «Development Progress» section with the workout feature.
+Deliverables: [x] edit profile + regenerate prompt [x] empty/loading/error states & refresh [x] auth cache reset [x] unit tests [x] docs.

@@ -1046,4 +1046,20 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get workoutPlanDetailTitle => 'جزئیات برنامه تمرینی';
+
+  @override
+  String get workoutRegeneratePromptTitle => 'برنامه تمرینی به‌روزرسانی شود؟';
+
+  @override
+  String get workoutRegeneratePromptBody =>
+      'مشخصات شما تغییر کرد. می‌خواهید برنامه تمرینی بر اساس اطلاعات جدید دوباره ساخته شود؟';
+
+  @override
+  String get workoutRegenerateConfirm => 'بله، بازتولید کن';
+
+  @override
+  String get workoutRegenerateDismiss => 'فعلاً نه';
+
+  @override
+  String get workoutPlanRegenerated => 'برنامه تمرینی جدید با موفقیت ساخته شد';
 }

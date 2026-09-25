@@ -562,5 +562,10 @@
   "workoutHistoryDeleteConfirmConfirm": "حذف",
   "workoutHistoryDeleteConfirmCancel": "انصراف",
   "workoutHistoryDeleteSuccess": "برنامه با موفقیت حذف شد",
-  "workoutPlanDetailTitle": "جزئیات برنامه تمرینی"
+  "workoutPlanDetailTitle": "جزئیات برنامه تمرینی",
+  "workoutRegeneratePromptTitle": "برنامه تمرینی به‌روزرسانی شود؟",
+  "workoutRegeneratePromptBody": "مشخصات شما تغییر کرد. می‌خواهید برنامه تمرینی بر اساس اطلاعات جدید دوباره ساخته شود؟",
+  "workoutRegenerateConfirm": "بله، بازتولید کن",
+  "workoutRegenerateDismiss": "فعلاً نه",
+  "workoutPlanRegenerated": "برنامه تمرینی جدید با موفقیت ساخته شد"
 }
