@@ -1016,4 +1016,34 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get workoutInjuriesLabel => 'آسیب‌ها یا نواحی دردناک:';
+
+  @override
+  String workoutExerciseSwappedSuccess(int remaining) {
+    return 'حرکت با موفقیت تعویض شد. $remaining تعویض دیگر باقی مانده است.';
+  }
+
+  @override
+  String get workoutHistoryTitle => 'تاریخچه برنامه‌های تمرینی';
+
+  @override
+  String get workoutHistoryEmpty => 'تاریخچه‌ای یافت نشد';
+
+  @override
+  String get workoutHistoryDeleteConfirmTitle => 'حذف برنامه تمرینی';
+
+  @override
+  String get workoutHistoryDeleteConfirmBody =>
+      'آیا از حذف این برنامه تمرینی اطمینان دارید؟';
+
+  @override
+  String get workoutHistoryDeleteConfirmConfirm => 'حذف';
+
+  @override
+  String get workoutHistoryDeleteConfirmCancel => 'انصراف';
+
+  @override
+  String get workoutHistoryDeleteSuccess => 'برنامه با موفقیت حذف شد';
+
+  @override
+  String get workoutPlanDetailTitle => 'جزئیات برنامه تمرینی';
 }

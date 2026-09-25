@@ -11,6 +11,9 @@ import 'package:fitsho/features/diet/presentation/screens/diet_profile_edit_scre
 import 'package:fitsho/features/diet/presentation/screens/onboarding_screen.dart' as diet;
 import 'package:fitsho/features/diet/presentation/screens/supplements_screen.dart';
 import 'package:fitsho/features/diet/presentation/screens/weekly_plan_screen.dart';
+import 'package:fitsho/features/workout/domain/entities/workout_entities.dart';
+import 'package:fitsho/features/workout/presentation/screens/workout_history_screen.dart';
+import 'package:fitsho/features/workout/presentation/screens/workout_plan_detail_screen.dart';
 import 'package:fitsho/features/workout/presentation/screens/workout_onboarding_screen.dart';
 import 'package:fitsho/features/workout/presentation/screens/workout_plan_screen.dart';
 import 'package:fitsho/features/workout/presentation/screens/workout_profile_edit_screen.dart';
@@ -118,6 +121,17 @@ GoRouter goRouter(GoRouterRef ref) {
       GoRoute(
         path: AppRoutes.workoutProfileEdit,
         builder: (context, state) => const WorkoutProfileEditScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.workoutHistory,
+        builder: (context, state) => const WorkoutHistoryScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.workoutPlanDetail,
+        builder: (context, state) {
+          final plan = state.extra as WorkoutPlan;
+          return WorkoutPlanDetailScreen(plan: plan);
+        },
       ),
       GoRoute(
         path: AppRoutes.intro,

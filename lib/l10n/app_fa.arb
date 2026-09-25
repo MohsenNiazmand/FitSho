@@ -546,5 +546,21 @@
       }
     }
   },
-  "workoutInjuriesLabel": "آسیب‌ها یا نواحی دردناک:"
+  "workoutInjuriesLabel": "آسیب‌ها یا نواحی دردناک:",
+  "workoutExerciseSwappedSuccess": "حرکت با موفقیت تعویض شد. {remaining} تعویض دیگر باقی مانده است.",
+  "@workoutExerciseSwappedSuccess": {
+    "placeholders": {
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutHistoryTitle": "تاریخچه برنامه‌های تمرینی",
+  "workoutHistoryEmpty": "تاریخچه‌ای یافت نشد",
+  "workoutHistoryDeleteConfirmTitle": "حذف برنامه تمرینی",
+  "workoutHistoryDeleteConfirmBody": "آیا از حذف این برنامه تمرینی اطمینان دارید؟",
+  "workoutHistoryDeleteConfirmConfirm": "حذف",
+  "workoutHistoryDeleteConfirmCancel": "انصراف",
+  "workoutHistoryDeleteSuccess": "برنامه با موفقیت حذف شد",
+  "workoutPlanDetailTitle": "جزئیات برنامه تمرینی"
 }

@@ -155,3 +155,59 @@ extension WorkoutPlanModelX on WorkoutPlanModel {
     );
   }
 }
+
+extension WorkoutExerciseItemX on WorkoutExerciseItem {
+  WorkoutExerciseItemModel toModel() {
+    return WorkoutExerciseItemModel(
+      itemId: itemId,
+      exerciseId: exerciseId,
+      name: name,
+      sets: sets,
+      reps: reps,
+      durationSec: durationSec,
+      restSec: restSec,
+      rpe: rpe,
+      notes: notes,
+    );
+  }
+}
+
+extension WorkoutDayX on WorkoutDay {
+  WorkoutDayModel toModel() {
+    return WorkoutDayModel(
+      day: day,
+      isRest: isRest,
+      title: title,
+      focus: focus,
+      durationMin: durationMin,
+      warmup: warmup.map((e) => e.toModel()).toList(),
+      main: main.map((e) => e.toModel()).toList(),
+      cooldown: cooldown.map((e) => e.toModel()).toList(),
+    );
+  }
+}
+
+extension WorkoutNotesX on WorkoutNotes {
+  WorkoutNotesModel toModel() {
+    return WorkoutNotesModel(
+      progression: progression,
+      safety: safety,
+    );
+  }
+}
+
+extension WorkoutPlanX on WorkoutPlan {
+  WorkoutPlanModel toModel() {
+    return WorkoutPlanModel(
+      id: id,
+      userId: userId,
+      status: status,
+      summary: summary,
+      notes: notes.toModel(),
+      days: days.map((e) => e.toModel()).toList(),
+      createdAt: createdAt,
+      remainingFullGenerations: remainingFullGenerations,
+      remainingExerciseSwaps: remainingExerciseSwaps,
+    );
+  }
+}

@@ -1903,6 +1903,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Injuries or painful areas:'**
   String get workoutInjuriesLabel;
+
+  /// No description provided for @workoutExerciseSwappedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise swapped successfully. {remaining} swaps left today.'**
+  String workoutExerciseSwappedSuccess(int remaining);
+
+  /// No description provided for @workoutHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout History'**
+  String get workoutHistoryTitle;
+
+  /// No description provided for @workoutHistoryEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No workout history found'**
+  String get workoutHistoryEmpty;
+
+  /// No description provided for @workoutHistoryDeleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Workout Plan'**
+  String get workoutHistoryDeleteConfirmTitle;
+
+  /// No description provided for @workoutHistoryDeleteConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this workout plan?'**
+  String get workoutHistoryDeleteConfirmBody;
+
+  /// No description provided for @workoutHistoryDeleteConfirmConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get workoutHistoryDeleteConfirmConfirm;
+
+  /// No description provided for @workoutHistoryDeleteConfirmCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get workoutHistoryDeleteConfirmCancel;
+
+  /// No description provided for @workoutHistoryDeleteSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan deleted successfully'**
+  String get workoutHistoryDeleteSuccess;
+
+  /// No description provided for @workoutPlanDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout Plan Details'**
+  String get workoutPlanDetailTitle;
 }
 
 class _AppLocalizationsDelegate

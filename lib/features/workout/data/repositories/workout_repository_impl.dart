@@ -178,7 +178,7 @@ class WorkoutRepositoryImpl implements WorkoutRepository {
   }
 
   @override
-  Future<Either<Failure, WorkoutExerciseItem>> swapExercise({
+  Future<Either<Failure, (WorkoutExerciseItem, int)>> swapExercise({
     required String planId,
     required String day,
     required String itemId,
@@ -186,7 +186,51 @@ class WorkoutRepositoryImpl implements WorkoutRepository {
     return guard(() async {
       final request = SwapExerciseRequest(day: day, itemId: itemId);
       final envelope = await _api.swapExercise(planId, request);
-      return envelope.item.toEntity();
+      final newItem = envelope.item.toEntity();
+
+      final cachedPlan = _localDataSource.getCachedActivePlan()?.toEntity();
+      if (cachedPlan != null && cachedPlan.id == planId) {
+        final updatedDays = cachedPlan.days.map((workoutDay) {
+          if (workoutDay.day.toLowerCase() != day.toLowerCase()) {
+            return workoutDay;
+          }
+
+          List<WorkoutExerciseItem> replaceInList(
+            List<WorkoutExerciseItem> list,
+          ) {
+            return list.map((item) {
+              return item.itemId == itemId ? newItem : item;
+            }).toList();
+          }
+
+          return WorkoutDay(
+            day: workoutDay.day,
+            isRest: workoutDay.isRest,
+            title: workoutDay.title,
+            focus: workoutDay.focus,
+            durationMin: workoutDay.durationMin,
+            warmup: replaceInList(workoutDay.warmup),
+            main: replaceInList(workoutDay.main),
+            cooldown: replaceInList(workoutDay.cooldown),
+          );
+        }).toList();
+
+        final updatedPlan = WorkoutPlan(
+          id: cachedPlan.id,
+          userId: cachedPlan.userId,
+          status: cachedPlan.status,
+          summary: cachedPlan.summary,
+          notes: cachedPlan.notes,
+          days: updatedDays,
+          createdAt: cachedPlan.createdAt,
+          remainingFullGenerations: cachedPlan.remainingFullGenerations,
+          remainingExerciseSwaps: envelope.remainingExerciseSwaps,
+        );
+
+        await _localDataSource.saveActivePlan(updatedPlan.toModel());
+      }
+
+      return (newItem, envelope.remainingExerciseSwaps);
     });
   }
 }

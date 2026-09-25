@@ -9,11 +9,11 @@
 | F1 | Data layer (models, API, repository, cache, DI) | B1–B5 contract | ☑ |
 | F2 | Workout profile wizard | B1, B2 | ☑ |
 | F3 | Workout tab + plan screen + generation | B3, B4 | ☑ |
-| F4 | Exercise swap | B5 | ⬜ |
-| F5 | Workout history | B4 | ⬜ |
+| F4 | Exercise swap | B5 | ☑ |
+| F5 | Workout history | B4 | ☑ |
 | F6 | Profile edit, regenerate prompt, polish, tests | all | ⬜ |
 
-Last completed phase: **F3** · Next phase: **F4**
+Last completed phase: **F5** · Next phase: **F6**
 
 ---
 
@@ -99,18 +99,18 @@ Deliverables: [x] branch + nav [x] notifier [x] screen & widgets [x] generate fl
 
 ---
 
-## Phase F4 — Swap ⬜
+## Phase F4 — Swap ☑
 - `WorkoutPlanNotifier.swapExercise({planId, day, itemId})` → replace the item in state and in cache, update `remainingExerciseSwaps`.
 - Card shows spinner while swapping (one at a time, like `DietPlanSection.swappingKey`); swap icon hidden when remaining == 0 or plan is read-only.
-Deliverables: [ ] notifier method [ ] UI [ ] test for in-place replacement.
+Deliverables: [x] notifier method [x] UI [x] test for in-place replacement.
 
 ---
 
-## Phase F5 — History ⬜
+## Phase F5 — History ☑
 - `WorkoutHistoryNotifier` (page 1, limit 20, load-more on scroll).
 - `WorkoutHistoryScreen` (route `/workout/history`, pushed from plan screen app bar) and read-only `WorkoutPlanDetailScreen` reusing `WorkoutDaySection` with `readOnly: true`.
 - Delete with confirm dialog; deleting the active plan invalidates `WorkoutPlanNotifier`.
-Deliverables: [ ] notifier [ ] screens [ ] delete flow.
+Deliverables: [x] notifier [x] screens [x] delete flow.
 
 ---
 

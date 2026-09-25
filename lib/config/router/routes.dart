@@ -16,5 +16,7 @@ class AppRoutes {
   static const String workoutPlan = '/workout/plan';
   static const String workoutOnboarding = '/workout/onboarding';
   static const String workoutProfileEdit = '/workout/profile-edit';
+  static const String workoutHistory = '/workout/history';
+  static const String workoutPlanDetail = '/workout/plan-detail';
   static const String intro = '/intro';
 }

@@ -1016,4 +1016,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workoutInjuriesLabel => 'Injuries or painful areas:';
+
+  @override
+  String workoutExerciseSwappedSuccess(int remaining) {
+    return 'Exercise swapped successfully. $remaining swaps left today.';
+  }
+
+  @override
+  String get workoutHistoryTitle => 'Workout History';
+
+  @override
+  String get workoutHistoryEmpty => 'No workout history found';
+
+  @override
+  String get workoutHistoryDeleteConfirmTitle => 'Delete Workout Plan';
+
+  @override
+  String get workoutHistoryDeleteConfirmBody =>
+      'Are you sure you want to delete this workout plan?';
+
+  @override
+  String get workoutHistoryDeleteConfirmConfirm => 'Delete';
+
+  @override
+  String get workoutHistoryDeleteConfirmCancel => 'Cancel';
+
+  @override
+  String get workoutHistoryDeleteSuccess => 'Plan deleted successfully';
+
+  @override
+  String get workoutPlanDetailTitle => 'Workout Plan Details';
 }

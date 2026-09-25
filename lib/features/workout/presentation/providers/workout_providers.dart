@@ -1,7 +1,9 @@
+import 'package:fpdart/fpdart.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:fitsho/core/error/failures.dart';
 import 'package:fitsho/core/injection_container.dart';
+import 'package:fitsho/features/workout/data/mappers/workout_mappers.dart';
 import 'package:fitsho/features/workout/domain/entities/workout_entities.dart';
 import 'package:fitsho/features/workout/domain/repositories/workout_repository.dart';
 
@@ -192,6 +194,120 @@ class WorkoutPlanNotifier extends _$WorkoutPlanNotifier {
       },
     );
   }
+
+  Future<Either<Failure, int>> swapExercise({
+    required String day,
+    required String itemId,
+  }) async {
+    final currentPlan = state.valueOrNull;
+    if (currentPlan == null) {
+      return const Left(ValidationFailure('No active plan to swap'));
+    }
+
+    final result = await getIt<WorkoutRepository>().swapExercise(
+      planId: currentPlan.id,
+      day: day,
+      itemId: itemId,
+    );
+
+    return result.fold(
+      Left.new,
+      (tuple) {
+        final newItem = tuple.$1;
+        final remainingSwaps = tuple.$2;
+
+        final updatedDays = currentPlan.days.map((workoutDay) {
+          if (workoutDay.day.toLowerCase() != day.toLowerCase()) {
+            return workoutDay;
+          }
+
+          List<WorkoutExerciseItem> replaceInList(
+            List<WorkoutExerciseItem> list,
+          ) {
+            return list.map((item) {
+              return item.itemId == itemId ? newItem : item;
+            }).toList();
+          }
+
+          return WorkoutDay(
+            day: workoutDay.day,
+            isRest: workoutDay.isRest,
+            title: workoutDay.title,
+            focus: workoutDay.focus,
+            durationMin: workoutDay.durationMin,
+            warmup: replaceInList(workoutDay.warmup),
+            main: replaceInList(workoutDay.main),
+            cooldown: replaceInList(workoutDay.cooldown),
+          );
+        }).toList();
+
+        final updatedPlan = WorkoutPlan(
+          id: currentPlan.id,
+          userId: currentPlan.userId,
+          status: currentPlan.status,
+          summary: currentPlan.summary,
+          notes: currentPlan.notes,
+          days: updatedDays,
+          createdAt: currentPlan.createdAt,
+          remainingFullGenerations: currentPlan.remainingFullGenerations,
+          remainingExerciseSwaps: remainingSwaps,
+        );
+
+        state = AsyncValue.data(updatedPlan);
+
+        return Right(remainingSwaps);
+      },
+    );
+  }
 }
+
+@riverpod
+class WorkoutHistoryNotifier extends _$WorkoutHistoryNotifier {
+  @override
+  Future<WorkoutPlanHistory> build() async {
+    return _fetch(page: 1);
+  }
+
+  Future<WorkoutPlanHistory> _fetch({required int page}) async {
+    final result = await getIt<WorkoutRepository>().getPlanHistory(
+      page: page,
+      limit: 20,
+    );
+    return result.fold(
+      (failure) => throw StateError(failure.message),
+      (history) => history,
+    );
+  }
+
+  Future<void> loadMore() async {
+    final current = state.valueOrNull;
+    if (current == null || current.items.length >= current.total) return;
+
+    final nextPage = current.page + 1;
+    final result = await getIt<WorkoutRepository>().getPlanHistory(
+      page: nextPage,
+      limit: 20,
+    );
+    result.fold(
+      (_) {},
+      (nextHistory) {
+        state = AsyncValue.data(
+          WorkoutPlanHistory(
+            items: [...current.items, ...nextHistory.items],
+            total: nextHistory.total,
+            page: nextHistory.page,
+            limit: nextHistory.limit,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> refresh() async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() => _fetch(page: 1));
+  }
+}
+
 
 

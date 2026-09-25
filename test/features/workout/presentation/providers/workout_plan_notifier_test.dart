@@ -83,13 +83,29 @@ class MockWorkoutRepository implements WorkoutRepository {
     throw UnimplementedError();
   }
 
+  Failure? swapFailure;
+  WorkoutExerciseItem? swappedItem;
+  int swappedRemaining = 3;
+
   @override
-  Future<Either<Failure, WorkoutExerciseItem>> swapExercise({
+  Future<Either<Failure, (WorkoutExerciseItem, int)>> swapExercise({
     required String planId,
     required String day,
     required String itemId,
   }) async {
-    throw UnimplementedError();
+    if (swapFailure != null) {
+      return Left(swapFailure!);
+    }
+    final item = swappedItem ??
+        const WorkoutExerciseItem(
+          itemId: 'item_1',
+          exerciseId: 'cable_fly',
+          name: 'قفسه سینه سیم‌کش',
+          sets: 3,
+          reps: '12-15',
+          restSec: 60,
+        );
+    return Right((item, swappedRemaining));
   }
 }
 
@@ -208,5 +224,47 @@ void main() {
 
     expect(failure, isNull);
     expect(mockRepository.activePlan, isNull);
+  });
+
+  test('WorkoutPlanNotifier swapExercise replaces item in-place and updates remainingSwaps',
+      () async {
+    mockRepository.activePlan = _samplePlan;
+
+    // Load initial plan into notifier state
+    await container.read(workoutPlanNotifierProvider.future);
+
+    final notifier = container.read(workoutPlanNotifierProvider.notifier);
+    final result = await notifier.swapExercise(day: 'saturday', itemId: 'item_1');
+
+    expect(result.isRight(), isTrue);
+    expect(result.getOrElse((_) => -1), equals(3));
+
+    final updatedPlan = container.read(workoutPlanNotifierProvider).value;
+    expect(updatedPlan, isNotNull);
+    expect(updatedPlan!.remainingExerciseSwaps, equals(3));
+
+    final saturday = updatedPlan.days.firstWhere((d) => d.day == 'saturday');
+    final swappedExercise = saturday.main.firstWhere((e) => e.itemId == 'item_1');
+    expect(swappedExercise.name, equals('قفسه سینه سیم‌کش'));
+  });
+
+  test('WorkoutPlanNotifier swapExercise returns failure when API fails',
+      () async {
+    mockRepository.activePlan = _samplePlan;
+    mockRepository.swapFailure = const ValidationFailure('No alternative exercise');
+
+    await container.read(workoutPlanNotifierProvider.future);
+
+    final notifier = container.read(workoutPlanNotifierProvider.notifier);
+    final result = await notifier.swapExercise(day: 'saturday', itemId: 'item_1');
+
+    expect(result.isLeft(), isTrue);
+    final failure = result.fold((f) => f, (_) => null);
+    expect(failure?.message, equals('No alternative exercise'));
+
+    final plan = container.read(workoutPlanNotifierProvider).value;
+    expect(plan!.remainingExerciseSwaps, equals(4));
+    final saturday = plan.days.firstWhere((d) => d.day == 'saturday');
+    expect(saturday.main.firstWhere((e) => e.itemId == 'item_1').name, equals('پرس سینه دمبل'));
   });
 }

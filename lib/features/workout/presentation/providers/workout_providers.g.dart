@@ -47,7 +47,7 @@ final workoutProfileNotifierProvider =
 
 typedef _$WorkoutProfileNotifier = AutoDisposeAsyncNotifier<WorkoutProfile?>;
 String _$workoutPlanNotifierHash() =>
-    r'515ad3b144c0c2490bcf83660997db4cdf4d69e2';
+    r'3d2275674a18e3873a9930ec10a417244dcac9b2';
 
 /// See also [WorkoutPlanNotifier].
 @ProviderFor(WorkoutPlanNotifier)
@@ -66,5 +66,25 @@ final workoutPlanNotifierProvider =
     );
 
 typedef _$WorkoutPlanNotifier = AutoDisposeAsyncNotifier<WorkoutPlan?>;
+String _$workoutHistoryNotifierHash() =>
+    r'f2183211503e495a538805fee503130b692a588b';
+
+/// See also [WorkoutHistoryNotifier].
+@ProviderFor(WorkoutHistoryNotifier)
+final workoutHistoryNotifierProvider =
+    AutoDisposeAsyncNotifierProvider<
+      WorkoutHistoryNotifier,
+      WorkoutPlanHistory
+    >.internal(
+      WorkoutHistoryNotifier.new,
+      name: r'workoutHistoryNotifierProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$workoutHistoryNotifierHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+typedef _$WorkoutHistoryNotifier = AutoDisposeAsyncNotifier<WorkoutPlanHistory>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -11,6 +12,7 @@ import 'package:fitsho/core/error/failures.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
 import 'package:fitsho/features/diet/presentation/providers/diet_providers.dart';
 import 'package:fitsho/features/diet/presentation/widgets/ai_loading_dialog.dart';
+import 'package:fitsho/features/workout/domain/entities/workout_entities.dart';
 import 'package:fitsho/features/workout/presentation/providers/workout_providers.dart';
 import 'package:fitsho/features/workout/presentation/widgets/medical_referral_dialog.dart';
 import 'package:fitsho/features/workout/presentation/widgets/workout_day_section.dart';
@@ -24,7 +26,7 @@ import 'package:fitsho/shared/presentation/widgets/empty_state_view.dart';
 import 'package:fitsho/shared/presentation/widgets/error_retry_view.dart';
 import 'package:fitsho/shared/presentation/widgets/gap.dart';
 
-class WorkoutPlanScreen extends ConsumerWidget {
+class WorkoutPlanScreen extends HookConsumerWidget {
   const WorkoutPlanScreen({super.key});
 
   Future<void> _generatePlan(BuildContext context, WidgetRef ref) async {
@@ -54,24 +56,56 @@ class WorkoutPlanScreen extends ConsumerWidget {
     }
   }
 
+  Future<void> _swapExercise(
+    BuildContext context,
+    WidgetRef ref,
+    String day,
+    WorkoutExerciseItem item,
+    ValueNotifier<String?> swappingItemId,
+  ) async {
+    if (swappingItemId.value != null) return;
+    swappingItemId.value = item.itemId;
+
+    final result = await ref
+        .read(workoutPlanNotifierProvider.notifier)
+        .swapExercise(day: day, itemId: item.itemId);
+
+    if (context.mounted) {
+      swappingItemId.value = null;
+      result.fold(
+        (failure) => showFailureToast(context, failure),
+        (remainingSwaps) => showMessageToast(
+          context.tr.workoutExerciseSwappedSuccess(remainingSwaps),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dietProfileAsync = ref.watch(dietProfileNotifierProvider);
     final workoutProfileAsync = ref.watch(workoutProfileNotifierProvider);
     final workoutPlanAsync = ref.watch(workoutPlanNotifierProvider);
     final isGenerating = workoutPlanAsync.isLoading;
+    final swappingItemId = useState<String?>(null);
 
     return Scaffold(
       backgroundColor: cBackground,
       appBar: AppBar(
         title: Text(context.tr.workoutTabTitle),
         actions: [
-          if (workoutProfileAsync.valueOrNull != null)
+          if (workoutProfileAsync.valueOrNull != null) ...[
+            IconButton(
+              icon: const Icon(Icons.history_rounded),
+              tooltip: context.tr.workoutHistoryTitle,
+              onPressed: () => context.push(AppRoutes.workoutHistory),
+            ),
             IconButton(
               icon: const Icon(Icons.edit_outlined),
               tooltip: context.tr.workoutEditProfile,
               onPressed: () => context.push(AppRoutes.workoutProfileEdit),
             ),
+          ],
         ],
       ),
       body: SafeArea(
@@ -194,9 +228,15 @@ class WorkoutPlanScreen extends ConsumerWidget {
                                   ),
                                   WorkoutDaySection(
                                     plan: plan,
-                                    onSwapExercise: (day, item) {
-                                      // Wired in Phase F4
-                                    },
+                                    swappingItemId: swappingItemId.value,
+                                    onSwapExercise: (day, item) =>
+                                        _swapExercise(
+                                      context,
+                                      ref,
+                                      day,
+                                      item,
+                                      swappingItemId,
+                                    ),
                                   ),
                                 ],
                               ),

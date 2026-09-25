@@ -38,7 +38,7 @@ abstract class WorkoutRepository {
 
   Future<Either<Failure, void>> deletePlan(String id);
 
-  Future<Either<Failure, WorkoutExerciseItem>> swapExercise({
+  Future<Either<Failure, (WorkoutExerciseItem, int)>> swapExercise({
     required String planId,
     required String day,
     required String itemId,
