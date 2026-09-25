@@ -3,7 +3,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:fitsho/core/error/failures.dart';
 import 'package:fitsho/core/injection_container.dart';
-import 'package:fitsho/features/workout/data/mappers/workout_mappers.dart';
 import 'package:fitsho/features/workout/domain/entities/workout_entities.dart';
 import 'package:fitsho/features/workout/domain/repositories/workout_repository.dart';
 
@@ -26,10 +25,7 @@ class WorkoutOptionsNotifier extends _$WorkoutOptionsNotifier {
 
   Future<WorkoutOptions> _fetch() async {
     final result = await getIt<WorkoutRepository>().getProfileOptions();
-    return result.fold(
-      (failure) => throw StateError(failure.message),
-      (options) => options,
-    );
+    return result.fold((failure) => throw failure, (options) => options);
   }
 
   void _revalidate() {
@@ -57,28 +53,22 @@ class WorkoutProfileNotifier extends _$WorkoutProfileNotifier {
 
   Future<WorkoutProfile?> _fetch() async {
     final result = await getIt<WorkoutRepository>().getProfile();
-    return result.fold(
-      (failure) {
-        if (failure is NotFoundFailure) {
-          return null;
-        }
-        throw StateError(failure.message);
-      },
-      (profile) => profile,
-    );
+    return result.fold((failure) {
+      if (failure is NotFoundFailure) {
+        return null;
+      }
+      throw failure;
+    }, (profile) => profile);
   }
 
   void _revalidate() {
     getIt<WorkoutRepository>().getProfile().then((result) {
       if (_disposed) return;
-      result.fold(
-        (failure) {
-          if (failure is NotFoundFailure) {
-            state = const AsyncValue.data(null);
-          }
-        },
-        (profile) => state = AsyncValue.data(profile),
-      );
+      result.fold((failure) {
+        if (failure is NotFoundFailure) {
+          state = const AsyncValue.data(null);
+        }
+      }, (profile) => state = AsyncValue.data(profile));
     });
   }
 
@@ -109,13 +99,10 @@ class WorkoutProfileNotifier extends _$WorkoutProfileNotifier {
       painLevel: painLevel,
     );
 
-    return result.fold(
-      (failure) => (failure, null),
-      (saved) {
-        state = AsyncValue.data(saved);
-        return (null, saved);
-      },
-    );
+    return result.fold((failure) => (failure, null), (saved) {
+      state = AsyncValue.data(saved);
+      return (null, saved);
+    });
   }
 }
 
@@ -136,15 +123,12 @@ class WorkoutPlanNotifier extends _$WorkoutPlanNotifier {
 
   Future<WorkoutPlan?> _fetch() async {
     final result = await getIt<WorkoutRepository>().getActivePlan();
-    return result.fold(
-      (failure) {
-        if (failure is NotFoundFailure) {
-          return null;
-        }
-        throw StateError(failure.message);
-      },
-      (plan) => plan,
-    );
+    return result.fold((failure) {
+      if (failure is NotFoundFailure) {
+        return null;
+      }
+      throw failure;
+    }, (plan) => plan);
   }
 
   void _revalidate() {
@@ -186,13 +170,10 @@ class WorkoutPlanNotifier extends _$WorkoutPlanNotifier {
 
   Future<Failure?> delete(String id) async {
     final result = await getIt<WorkoutRepository>().deletePlan(id);
-    return result.fold(
-      (failure) => failure,
-      (_) {
-        ref.invalidateSelf();
-        return null;
-      },
-    );
+    return result.fold((failure) => failure, (_) {
+      ref.invalidateSelf();
+      return null;
+    });
   }
 
   Future<Either<Failure, int>> swapExercise({
@@ -210,59 +191,60 @@ class WorkoutPlanNotifier extends _$WorkoutPlanNotifier {
       itemId: itemId,
     );
 
-    return result.fold(
-      Left.new,
-      (tuple) {
-        final newItem = tuple.$1;
-        final remainingSwaps = tuple.$2;
+    return result.fold(Left.new, (tuple) {
+      final newItem = tuple.$1;
+      final remainingSwaps = tuple.$2;
 
-        final updatedDays = currentPlan.days.map((workoutDay) {
-          if (workoutDay.day.toLowerCase() != day.toLowerCase()) {
-            return workoutDay;
-          }
+      final updatedDays = currentPlan.days.map((workoutDay) {
+        if (workoutDay.day.toLowerCase() != day.toLowerCase()) {
+          return workoutDay;
+        }
 
-          List<WorkoutExerciseItem> replaceInList(
-            List<WorkoutExerciseItem> list,
-          ) {
-            return list.map((item) {
-              return item.itemId == itemId ? newItem : item;
-            }).toList();
-          }
+        List<WorkoutExerciseItem> replaceInList(
+          List<WorkoutExerciseItem> list,
+        ) {
+          return list.map((item) {
+            return item.itemId == itemId ? newItem : item;
+          }).toList();
+        }
 
-          return WorkoutDay(
-            day: workoutDay.day,
-            isRest: workoutDay.isRest,
-            title: workoutDay.title,
-            focus: workoutDay.focus,
-            durationMin: workoutDay.durationMin,
-            warmup: replaceInList(workoutDay.warmup),
-            main: replaceInList(workoutDay.main),
-            cooldown: replaceInList(workoutDay.cooldown),
-          );
-        }).toList();
-
-        final updatedPlan = WorkoutPlan(
-          id: currentPlan.id,
-          userId: currentPlan.userId,
-          status: currentPlan.status,
-          summary: currentPlan.summary,
-          notes: currentPlan.notes,
-          days: updatedDays,
-          createdAt: currentPlan.createdAt,
-          remainingFullGenerations: currentPlan.remainingFullGenerations,
-          remainingExerciseSwaps: remainingSwaps,
+        return WorkoutDay(
+          day: workoutDay.day,
+          isRest: workoutDay.isRest,
+          title: workoutDay.title,
+          focus: workoutDay.focus,
+          durationMin: workoutDay.durationMin,
+          warmup: replaceInList(workoutDay.warmup),
+          main: replaceInList(workoutDay.main),
+          cooldown: replaceInList(workoutDay.cooldown),
         );
+      }).toList();
 
-        state = AsyncValue.data(updatedPlan);
+      final updatedPlan = WorkoutPlan(
+        id: currentPlan.id,
+        userId: currentPlan.userId,
+        status: currentPlan.status,
+        summary: currentPlan.summary,
+        notes: currentPlan.notes,
+        days: updatedDays,
+        createdAt: currentPlan.createdAt,
+        remainingFullGenerations: currentPlan.remainingFullGenerations,
+        remainingExerciseSwaps: remainingSwaps,
+      );
 
-        return Right(remainingSwaps);
-      },
-    );
+      state = AsyncValue.data(updatedPlan);
+
+      return Right(remainingSwaps);
+    });
   }
 }
 
 @riverpod
 class WorkoutHistoryNotifier extends _$WorkoutHistoryNotifier {
+  bool _isLoadingMore = false;
+
+  bool get isLoadingMore => _isLoadingMore;
+
   @override
   Future<WorkoutPlanHistory> build() async {
     return _fetch(page: 1);
@@ -273,24 +255,25 @@ class WorkoutHistoryNotifier extends _$WorkoutHistoryNotifier {
       page: page,
       limit: 20,
     );
-    return result.fold(
-      (failure) => throw StateError(failure.message),
-      (history) => history,
-    );
+    return result.fold((failure) => throw failure, (history) => history);
   }
 
   Future<void> loadMore() async {
     final current = state.valueOrNull;
-    if (current == null || current.items.length >= current.total) return;
+    if (_isLoadingMore ||
+        current == null ||
+        current.items.length >= current.total) {
+      return;
+    }
 
+    _isLoadingMore = true;
     final nextPage = current.page + 1;
-    final result = await getIt<WorkoutRepository>().getPlanHistory(
-      page: nextPage,
-      limit: 20,
-    );
-    result.fold(
-      (_) {},
-      (nextHistory) {
+    try {
+      final result = await getIt<WorkoutRepository>().getPlanHistory(
+        page: nextPage,
+        limit: 20,
+      );
+      result.fold((_) {}, (nextHistory) {
         state = AsyncValue.data(
           WorkoutPlanHistory(
             items: [...current.items, ...nextHistory.items],
@@ -299,8 +282,10 @@ class WorkoutHistoryNotifier extends _$WorkoutHistoryNotifier {
             limit: nextHistory.limit,
           ),
         );
-      },
-    );
+      });
+    } finally {
+      _isLoadingMore = false;
+    }
   }
 
   Future<void> refresh() async {
@@ -308,6 +293,3 @@ class WorkoutHistoryNotifier extends _$WorkoutHistoryNotifier {
     state = await AsyncValue.guard(() => _fetch(page: 1));
   }
 }
-
-
-

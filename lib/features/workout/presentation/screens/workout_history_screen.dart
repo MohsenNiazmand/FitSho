@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -12,6 +14,7 @@ import 'package:fitsho/features/workout/presentation/providers/workout_providers
 import 'package:fitsho/shared/presentation/utils/failure_message.dart';
 import 'package:fitsho/shared/presentation/utils/toast_utils.dart';
 import 'package:fitsho/shared/presentation/widgets/app_loading_indicator.dart';
+import 'package:fitsho/shared/presentation/widgets/error_retry_view.dart';
 import 'package:fitsho/shared/presentation/widgets/gap.dart';
 
 class WorkoutHistoryScreen extends ConsumerWidget {
@@ -27,7 +30,13 @@ class WorkoutHistoryScreen extends ConsumerWidget {
       body: historyAsync.when(
         loading: () => const AppLoadingIndicator(),
         error: (error, _) => Center(
-          child: Text(errorDisplayMessage(context, error)),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: ErrorRetryView(
+              message: errorDisplayMessage(context, error),
+              onRetry: () => ref.invalidate(workoutHistoryNotifierProvider),
+            ),
+          ),
         ),
         data: (history) {
           final plans = history.items;
@@ -44,117 +53,138 @@ class WorkoutHistoryScreen extends ConsumerWidget {
             onRefresh: () async {
               await ref.read(workoutHistoryNotifierProvider.notifier).refresh();
             },
-            child: ListView.separated(
-              padding: const EdgeInsets.all(20),
-              itemCount: plans.length,
-              separatorBuilder: (context, index) => Gap.v12(),
-              itemBuilder: (context, index) {
-                final plan = plans[index];
-                final date = intl.DateFormat.yMMMMd(
-                  'fa_IR',
-                ).format(plan.createdAt);
+            child: NotificationListener<ScrollNotification>(
+              onNotification: (notification) {
+                if (notification.metrics.extentAfter < 240) {
+                  unawaited(
+                    ref
+                        .read(workoutHistoryNotifierProvider.notifier)
+                        .loadMore(),
+                  );
+                }
+                return false;
+              },
+              child: ListView.separated(
+                padding: const EdgeInsets.all(20),
+                itemCount: plans.length,
+                separatorBuilder: (context, index) => Gap.v12(),
+                itemBuilder: (context, index) {
+                  final plan = plans[index];
+                  final date = intl.DateFormat.yMMMMd(
+                    'fa_IR',
+                  ).format(plan.createdAt);
 
-                return InkWell(
-                  onTap: () {
-                    context.push(AppRoutes.workoutPlanDetail, extra: plan);
-                  },
-                  borderRadius: BorderRadius.circular(AppRadius.lg),
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: cSurface,
-                      borderRadius: BorderRadius.circular(AppRadius.lg),
-                      border: Border.all(color: cBorder.withValues(alpha: 0.8)),
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                PersianDigits.toPersian(date),
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                  color: cTextPrimary,
-                                ),
-                              ),
-                              if (plan.summary != null &&
-                                  plan.summary!.trim().isNotEmpty) ...[
-                                Gap.v4(),
-                                Text(
-                                  plan.summary!,
-                                  style: const TextStyle(
-                                    color: cTextSecondary,
-                                    fontSize: 13,
-                                  ),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ],
-                          ),
+                  return InkWell(
+                    onTap: () {
+                      context.push(AppRoutes.workoutPlanDetail, extra: plan);
+                    },
+                    borderRadius: BorderRadius.circular(AppRadius.lg),
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: cSurface,
+                        borderRadius: BorderRadius.circular(AppRadius.lg),
+                        border: Border.all(
+                          color: cBorder.withValues(alpha: 0.8),
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.delete_outline, color: cError),
-                          onPressed: () async {
-                            final confirm = await showDialog<bool>(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: Text(
-                                  context.tr.workoutHistoryDeleteConfirmTitle,
-                                ),
-                                content: Text(
-                                  context.tr.workoutHistoryDeleteConfirmBody,
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.pop(context, false),
-                                    child: Text(
-                                      context
-                                          .tr.workoutHistoryDeleteConfirmCancel,
-                                    ),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  PersianDigits.toPersian(date),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: cTextPrimary,
                                   ),
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.pop(context, true),
-                                    child: Text(
-                                      context
-                                          .tr.workoutHistoryDeleteConfirmConfirm,
-                                      style: const TextStyle(color: cError),
+                                ),
+                                if (plan.summary != null &&
+                                    plan.summary!.trim().isNotEmpty) ...[
+                                  Gap.v4(),
+                                  Text(
+                                    plan.summary!,
+                                    style: const TextStyle(
+                                      color: cTextSecondary,
+                                      fontSize: 13,
                                     ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ],
-                              ),
-                            );
+                              ],
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.delete_outline,
+                              color: cError,
+                            ),
+                            onPressed: () async {
+                              final confirm = await showDialog<bool>(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: Text(
+                                    context.tr.workoutHistoryDeleteConfirmTitle,
+                                  ),
+                                  content: Text(
+                                    context.tr.workoutHistoryDeleteConfirmBody,
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, false),
+                                      child: Text(
+                                        context
+                                            .tr
+                                            .workoutHistoryDeleteConfirmCancel,
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, true),
+                                      child: Text(
+                                        context
+                                            .tr
+                                            .workoutHistoryDeleteConfirmConfirm,
+                                        style: const TextStyle(color: cError),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
 
-                            if (confirm == true) {
-                              final failure = await ref
-                                  .read(workoutPlanNotifierProvider.notifier)
-                                  .delete(plan.id);
-                              if (context.mounted) {
-                                if (failure != null) {
-                                  showFailureToast(context, failure);
-                                } else {
-                                  ref
-                                      .read(workoutHistoryNotifierProvider
-                                          .notifier)
-                                      .refresh();
-                                  showMessageToast(
-                                    context.tr.workoutHistoryDeleteSuccess,
-                                  );
+                              if (confirm == true) {
+                                final failure = await ref
+                                    .read(workoutPlanNotifierProvider.notifier)
+                                    .delete(plan.id);
+                                if (context.mounted) {
+                                  if (failure != null) {
+                                    showFailureToast(context, failure);
+                                  } else {
+                                    ref
+                                        .read(
+                                          workoutHistoryNotifierProvider
+                                              .notifier,
+                                        )
+                                        .refresh();
+                                    showMessageToast(
+                                      context.tr.workoutHistoryDeleteSuccess,
+                                    );
+                                  }
                                 }
                               }
-                            }
-                          },
-                        ),
-                      ],
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           );
         },

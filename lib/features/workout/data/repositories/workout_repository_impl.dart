@@ -12,8 +12,8 @@ class WorkoutRepositoryImpl implements WorkoutRepository {
   const WorkoutRepositoryImpl({
     required WorkoutApi api,
     required WorkoutLocalDataSource localDataSource,
-  })  : _api = api,
-        _localDataSource = localDataSource;
+  }) : _api = api,
+       _localDataSource = localDataSource;
 
   final WorkoutApi _api;
   final WorkoutLocalDataSource _localDataSource;
@@ -42,18 +42,15 @@ class WorkoutRepositoryImpl implements WorkoutRepository {
       return envelope.data.toEntity();
     });
 
-    return result.fold(
-      (failure) async {
-        if (failure is NetworkFailure) {
-          final cached = await _localDataSource.getCachedProfileOptions();
-          if (cached != null) {
-            return Right(cached.toEntity());
-          }
+    return result.fold((failure) async {
+      if (failure is NetworkFailure) {
+        final cached = await _localDataSource.getCachedProfileOptions();
+        if (cached != null) {
+          return Right(cached.toEntity());
         }
-        return Left(failure);
-      },
-      Right.new,
-    );
+      }
+      return Left(failure);
+    }, Right.new);
   }
 
   @override
@@ -66,21 +63,19 @@ class WorkoutRepositoryImpl implements WorkoutRepository {
       );
     });
 
-    return result.fold(
-      (failure) async {
-        if (failure is NotFoundFailure) {
-          return const Right(null);
+    return result.fold((failure) async {
+      if (failure is NotFoundFailure) {
+        await _localDataSource.removeCachedProfile();
+        return const Right(null);
+      }
+      if (failure is NetworkFailure) {
+        final cached = _localDataSource.getCachedProfile();
+        if (cached != null) {
+          return Right(cached.toEntity());
         }
-        if (failure is NetworkFailure) {
-          final cached = _localDataSource.getCachedProfile();
-          if (cached != null) {
-            return Right(cached.toEntity());
-          }
-        }
-        return Left(failure);
-      },
-      Right.new,
-    );
+      }
+      return Left(failure);
+    }, Right.new);
   }
 
   @override
@@ -138,18 +133,18 @@ class WorkoutRepositoryImpl implements WorkoutRepository {
       return envelope.data.toEntity();
     });
 
-    return result.fold(
-      (failure) async {
-        if (failure is NetworkFailure) {
-          final cached = _localDataSource.getCachedActivePlan();
-          if (cached != null) {
-            return Right(cached.toEntity());
-          }
+    return result.fold((failure) async {
+      if (failure is NotFoundFailure) {
+        await _localDataSource.removeCachedActivePlan();
+      }
+      if (failure is NetworkFailure) {
+        final cached = _localDataSource.getCachedActivePlan();
+        if (cached != null) {
+          return Right(cached.toEntity());
         }
-        return Left(failure);
-      },
-      Right.new,
-    );
+      }
+      return Left(failure);
+    }, Right.new);
   }
 
   @override
@@ -174,6 +169,9 @@ class WorkoutRepositoryImpl implements WorkoutRepository {
   Future<Either<Failure, void>> deletePlan(String id) async {
     return guard(() async {
       await _api.deletePlan(id);
+      if (_localDataSource.getCachedActivePlan()?.id == id) {
+        await _localDataSource.removeCachedActivePlan();
+      }
     });
   }
 

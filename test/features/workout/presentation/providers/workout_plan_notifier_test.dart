@@ -80,12 +80,19 @@ class MockWorkoutRepository implements WorkoutRepository {
     int page = 1,
     int limit = 10,
   }) async {
-    throw UnimplementedError();
+    requestedHistoryPages.add(page);
+    final history = historyByPage[page];
+    if (history == null) {
+      return const Left(ValidationFailure('Missing test history page'));
+    }
+    return Right(history);
   }
 
   Failure? swapFailure;
   WorkoutExerciseItem? swappedItem;
   int swappedRemaining = 3;
+  final Map<int, WorkoutPlanHistory> historyByPage = {};
+  final List<int> requestedHistoryPages = [];
 
   @override
   Future<Either<Failure, (WorkoutExerciseItem, int)>> swapExercise({
@@ -96,7 +103,8 @@ class MockWorkoutRepository implements WorkoutRepository {
     if (swapFailure != null) {
       return Left(swapFailure!);
     }
-    final item = swappedItem ??
+    final item =
+        swappedItem ??
         const WorkoutExerciseItem(
           itemId: 'item_1',
           exerciseId: 'cable_fly',
@@ -199,72 +207,115 @@ void main() {
     expect(currentState?.id, equals('plan_123'));
   });
 
-  test('WorkoutPlanNotifier handles MedicalReferralFailure on generate',
-      () async {
-    mockRepository.generateFailure = const MedicalReferralFailure(
-      'ابتدا به پزشک یا فیزیوتراپیست مراجعه کنید',
+  test(
+    'WorkoutPlanNotifier handles MedicalReferralFailure on generate',
+    () async {
+      mockRepository.generateFailure = const MedicalReferralFailure(
+        'ابتدا به پزشک یا فیزیوتراپیست مراجعه کنید',
+      );
+
+      final notifier = container.read(workoutPlanNotifierProvider.notifier);
+      final failure = await notifier.generate();
+
+      expect(failure, isA<MedicalReferralFailure>());
+      expect(
+        failure?.message,
+        equals('ابتدا به پزشک یا فیزیوتراپیست مراجعه کنید'),
+      );
+    },
+  );
+
+  test(
+    'WorkoutPlanNotifier delete removes plan and invalidates self',
+    () async {
+      mockRepository.activePlan = _samplePlan;
+
+      final notifier = container.read(workoutPlanNotifierProvider.notifier);
+      final failure = await notifier.delete('plan_123');
+
+      expect(failure, isNull);
+      expect(mockRepository.activePlan, isNull);
+    },
+  );
+
+  test(
+    'WorkoutPlanNotifier swapExercise replaces item in-place and updates remainingSwaps',
+    () async {
+      mockRepository.activePlan = _samplePlan;
+
+      // Load initial plan into notifier state
+      await container.read(workoutPlanNotifierProvider.future);
+
+      final notifier = container.read(workoutPlanNotifierProvider.notifier);
+      final result = await notifier.swapExercise(
+        day: 'saturday',
+        itemId: 'item_1',
+      );
+
+      expect(result.isRight(), isTrue);
+      expect(result.getOrElse((_) => -1), equals(3));
+
+      final updatedPlan = container.read(workoutPlanNotifierProvider).value;
+      expect(updatedPlan, isNotNull);
+      expect(updatedPlan!.remainingExerciseSwaps, equals(3));
+
+      final saturday = updatedPlan.days.firstWhere((d) => d.day == 'saturday');
+      final swappedExercise = saturday.main.firstWhere(
+        (e) => e.itemId == 'item_1',
+      );
+      expect(swappedExercise.name, equals('قفسه سینه سیم‌کش'));
+    },
+  );
+
+  test(
+    'WorkoutPlanNotifier swapExercise returns failure when API fails',
+    () async {
+      mockRepository.activePlan = _samplePlan;
+      mockRepository.swapFailure = const ValidationFailure(
+        'No alternative exercise',
+      );
+
+      await container.read(workoutPlanNotifierProvider.future);
+
+      final notifier = container.read(workoutPlanNotifierProvider.notifier);
+      final result = await notifier.swapExercise(
+        day: 'saturday',
+        itemId: 'item_1',
+      );
+
+      expect(result.isLeft(), isTrue);
+      final failure = result.fold((f) => f, (_) => null);
+      expect(failure?.message, equals('No alternative exercise'));
+
+      final plan = container.read(workoutPlanNotifierProvider).value;
+      expect(plan!.remainingExerciseSwaps, equals(4));
+      final saturday = plan.days.firstWhere((d) => d.day == 'saturday');
+      expect(
+        saturday.main.firstWhere((e) => e.itemId == 'item_1').name,
+        equals('پرس سینه دمبل'),
+      );
+    },
+  );
+
+  test('WorkoutHistoryNotifier loads the next page', () async {
+    mockRepository.historyByPage[1] = WorkoutPlanHistory(
+      items: [_samplePlan],
+      total: 2,
+      page: 1,
+      limit: 20,
+    );
+    mockRepository.historyByPage[2] = WorkoutPlanHistory(
+      items: [_samplePlan],
+      total: 2,
+      page: 2,
+      limit: 20,
     );
 
-    final notifier = container.read(workoutPlanNotifierProvider.notifier);
-    final failure = await notifier.generate();
+    await container.read(workoutHistoryNotifierProvider.future);
+    await container.read(workoutHistoryNotifierProvider.notifier).loadMore();
 
-    expect(failure, isA<MedicalReferralFailure>());
-    expect(
-      failure?.message,
-      equals('ابتدا به پزشک یا فیزیوتراپیست مراجعه کنید'),
-    );
-  });
-
-  test('WorkoutPlanNotifier delete removes plan and invalidates self',
-      () async {
-    mockRepository.activePlan = _samplePlan;
-
-    final notifier = container.read(workoutPlanNotifierProvider.notifier);
-    final failure = await notifier.delete('plan_123');
-
-    expect(failure, isNull);
-    expect(mockRepository.activePlan, isNull);
-  });
-
-  test('WorkoutPlanNotifier swapExercise replaces item in-place and updates remainingSwaps',
-      () async {
-    mockRepository.activePlan = _samplePlan;
-
-    // Load initial plan into notifier state
-    await container.read(workoutPlanNotifierProvider.future);
-
-    final notifier = container.read(workoutPlanNotifierProvider.notifier);
-    final result = await notifier.swapExercise(day: 'saturday', itemId: 'item_1');
-
-    expect(result.isRight(), isTrue);
-    expect(result.getOrElse((_) => -1), equals(3));
-
-    final updatedPlan = container.read(workoutPlanNotifierProvider).value;
-    expect(updatedPlan, isNotNull);
-    expect(updatedPlan!.remainingExerciseSwaps, equals(3));
-
-    final saturday = updatedPlan.days.firstWhere((d) => d.day == 'saturday');
-    final swappedExercise = saturday.main.firstWhere((e) => e.itemId == 'item_1');
-    expect(swappedExercise.name, equals('قفسه سینه سیم‌کش'));
-  });
-
-  test('WorkoutPlanNotifier swapExercise returns failure when API fails',
-      () async {
-    mockRepository.activePlan = _samplePlan;
-    mockRepository.swapFailure = const ValidationFailure('No alternative exercise');
-
-    await container.read(workoutPlanNotifierProvider.future);
-
-    final notifier = container.read(workoutPlanNotifierProvider.notifier);
-    final result = await notifier.swapExercise(day: 'saturday', itemId: 'item_1');
-
-    expect(result.isLeft(), isTrue);
-    final failure = result.fold((f) => f, (_) => null);
-    expect(failure?.message, equals('No alternative exercise'));
-
-    final plan = container.read(workoutPlanNotifierProvider).value;
-    expect(plan!.remainingExerciseSwaps, equals(4));
-    final saturday = plan.days.firstWhere((d) => d.day == 'saturday');
-    expect(saturday.main.firstWhere((e) => e.itemId == 'item_1').name, equals('پرس سینه دمبل'));
+    final history = container.read(workoutHistoryNotifierProvider).value;
+    expect(history?.items, hasLength(2));
+    expect(mockRepository.requestedHistoryPages, [1, 2]);
   });
 }

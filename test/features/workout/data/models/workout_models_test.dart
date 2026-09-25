@@ -38,7 +38,7 @@ void main() {
           'levels': [
             {'id': 'beginner', 'label': 'مبتدی'}
           ],
-          'sessionMinutes': [30, 60],
+          'sessionMinutes': ['30', '۶۰'],
           'locations': [
             {'id': 'gym', 'label': 'باشگاه'}
           ],
@@ -65,6 +65,7 @@ void main() {
       expect(envelope.data.styles.first.minDays, equals(2));
       expect(envelope.data.styles.first.maxDays, equals(3));
       expect(envelope.data.maxDisciplines, equals(2));
+      expect(envelope.data.sessionMinutes, [30, 60]);
     });
 
     test('WorkoutProfileEnvelope should parse response with nested profile', () {
@@ -82,7 +83,7 @@ void main() {
             'sessionMinutes': '60',
             'location': 'gym',
             'equipment': ['dumbbell'],
-            'injuries': [],
+            'injuries': <dynamic>[],
             'painLevel': '0',
           },
           'shouldRegeneratePlan': true,
@@ -113,7 +114,7 @@ void main() {
             'title': 'شنبه',
             'focus': ['chest'],
             'durationMin': '60',
-            'warmup': [],
+            'warmup': <dynamic>[],
             'main': [
               {
                 'itemId': 'item_1',
@@ -127,7 +128,7 @@ void main() {
                 'notes': 'نکته',
               }
             ],
-            'cooldown': [],
+            'cooldown': <dynamic>[],
           }
         ],
         'createdAt': '2026-03-30T10:00:00.000Z',
@@ -156,8 +157,8 @@ void main() {
               'userId': 'user_1',
               'status': 'archived',
               'summary': 'برنامه قدیمی',
-              'notes': {'progression': 'پیشرفت', 'safety': []},
-              'days': [],
+              'notes': {'progression': 'پیشرفت', 'safety': <dynamic>[]},
+              'days': <dynamic>[],
               'createdAt': '2026-03-01T10:00:00.000Z',
             }
           ],

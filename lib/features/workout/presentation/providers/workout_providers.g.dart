@@ -7,7 +7,7 @@ part of 'workout_providers.dart';
 // **************************************************************************
 
 String _$workoutOptionsNotifierHash() =>
-    r'407e08007e540acaeb1d171f1aedb5d974db298a';
+    r'907ef4da3d7dbbb05c93ca33d4ee80b6da66577c';
 
 /// See also [WorkoutOptionsNotifier].
 @ProviderFor(WorkoutOptionsNotifier)
@@ -27,7 +27,7 @@ final workoutOptionsNotifierProvider =
 
 typedef _$WorkoutOptionsNotifier = AutoDisposeAsyncNotifier<WorkoutOptions>;
 String _$workoutProfileNotifierHash() =>
-    r'b8b0d6569eeefa09e7a680acbfec3b488e281133';
+    r'd7d13ef20cf16208c42c9d8d6545a4842153f69f';
 
 /// See also [WorkoutProfileNotifier].
 @ProviderFor(WorkoutProfileNotifier)
@@ -47,7 +47,7 @@ final workoutProfileNotifierProvider =
 
 typedef _$WorkoutProfileNotifier = AutoDisposeAsyncNotifier<WorkoutProfile?>;
 String _$workoutPlanNotifierHash() =>
-    r'3d2275674a18e3873a9930ec10a417244dcac9b2';
+    r'a787533aaf8f83b7e5cfd932074bcb7ce2b5aed1';
 
 /// See also [WorkoutPlanNotifier].
 @ProviderFor(WorkoutPlanNotifier)
@@ -67,7 +67,7 @@ final workoutPlanNotifierProvider =
 
 typedef _$WorkoutPlanNotifier = AutoDisposeAsyncNotifier<WorkoutPlan?>;
 String _$workoutHistoryNotifierHash() =>
-    r'f2183211503e495a538805fee503130b692a588b';
+    r'd6dfe767621e5135b869d7205c89fc8ad9d2f1cf';
 
 /// See also [WorkoutHistoryNotifier].
 @ProviderFor(WorkoutHistoryNotifier)

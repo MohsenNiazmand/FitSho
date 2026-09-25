@@ -12,8 +12,8 @@ import 'package:fitsho/core/utils/persian_input.dart';
 import 'package:fitsho/features/diet/presentation/widgets/ai_loading_dialog.dart';
 import 'package:fitsho/features/workout/domain/entities/workout_entities.dart';
 import 'package:fitsho/features/workout/presentation/providers/workout_providers.dart';
+import 'package:fitsho/features/workout/presentation/utils/workout_profile_validation.dart';
 import 'package:fitsho/features/workout/presentation/widgets/medical_referral_dialog.dart';
-import 'package:fitsho/shared/presentation/utils/failure_message.dart';
 import 'package:fitsho/shared/presentation/utils/toast_utils.dart';
 import 'package:fitsho/shared/presentation/widgets/app_primary_button.dart';
 import 'package:fitsho/shared/presentation/widgets/app_text_field.dart';
@@ -71,22 +71,15 @@ class WorkoutProfileForm extends HookConsumerWidget {
     return optionsAsync.when(
       data: (options) {
         bool canProceed() {
-          switch (currentStep.value) {
-            case 0:
-              return selectedDisciplines.value.isNotEmpty;
-            case 1:
-              return selectedDisciplines.value.every(
-                (dId) => selectedStyles.value.containsKey(dId),
-              );
-            case 2:
-              return selectedGoal.value != null;
-            case 3:
-              return true;
-            case 4:
-              return true;
-            default:
-              return false;
-          }
+          return isWorkoutProfileStepValid(
+            step: currentStep.value,
+            options: options,
+            selectedDisciplines: selectedDisciplines.value,
+            selectedStyles: selectedStyles.value,
+            selectedLevel: selectedLevel.value,
+            selectedGoal: selectedGoal.value,
+            daysPerWeek: daysPerWeek.value,
+          );
         }
 
         void nextStep() {
@@ -117,7 +110,9 @@ class WorkoutProfileForm extends HookConsumerWidget {
 
         Future<void> saveProfile() async {
           isSaving.value = true;
-          final (failure, saved) = await ref.read(workoutProfileNotifierProvider.notifier).save(
+          final (failure, saved) = await ref
+              .read(workoutProfileNotifierProvider.notifier)
+              .save(
                 disciplines: selectedDisciplines.value,
                 styles: selectedStyles.value,
                 goal: selectedGoal.value ?? options.goals.first.id,
@@ -125,7 +120,9 @@ class WorkoutProfileForm extends HookConsumerWidget {
                 daysPerWeek: daysPerWeek.value,
                 sessionMinutes: sessionMinutes.value,
                 location: location.value,
-                equipment: location.value == 'gym' ? [] : selectedEquipment.value,
+                equipment: location.value == 'gym'
+                    ? []
+                    : selectedEquipment.value,
                 injuries: hasNoInjuries.value ? [] : selectedInjuries.value,
                 injuryNotes: injuryNotesController.text.trim().isEmpty
                     ? null
@@ -176,10 +173,37 @@ class WorkoutProfileForm extends HookConsumerWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
                   _buildDisciplinesStep(context, options, selectedDisciplines),
-                  _buildLevelStylesStep(context, options, selectedDisciplines, selectedLevel, selectedStyles),
-                  _buildGoalStep(context, options, selectedDisciplines, selectedGoal),
-                  _buildConditionsStep(context, options, selectedDisciplines, selectedStyles, daysPerWeek, sessionMinutes, location, selectedEquipment),
-                  _buildInjuriesStep(context, options, hasNoInjuries, selectedInjuries, painLevel, injuryNotesController),
+                  _buildLevelStylesStep(
+                    context,
+                    options,
+                    selectedDisciplines,
+                    selectedLevel,
+                    selectedStyles,
+                  ),
+                  _buildGoalStep(
+                    context,
+                    options,
+                    selectedDisciplines,
+                    selectedGoal,
+                  ),
+                  _buildConditionsStep(
+                    context,
+                    options,
+                    selectedDisciplines,
+                    selectedStyles,
+                    daysPerWeek,
+                    sessionMinutes,
+                    location,
+                    selectedEquipment,
+                  ),
+                  _buildInjuriesStep(
+                    context,
+                    options,
+                    hasNoInjuries,
+                    selectedInjuries,
+                    painLevel,
+                    injuryNotesController,
+                  ),
                 ],
               ),
             ),
@@ -254,7 +278,9 @@ class WorkoutProfileForm extends HookConsumerWidget {
                 list.remove(d.id);
               } else {
                 if (list.length >= options.maxDisciplines) {
-                  BotToast.showText(text: context.tr.workoutMaxDisciplinesWarning);
+                  BotToast.showText(
+                    text: context.tr.workoutMaxDisciplinesWarning,
+                  );
                   return;
                 }
                 list.add(d.id);
@@ -267,7 +293,9 @@ class WorkoutProfileForm extends HookConsumerWidget {
               decoration: BoxDecoration(
                 color: isSelected ? const Color(0xFFEEF2FF) : Colors.white,
                 border: Border.all(
-                  color: isSelected ? const Color(0xFF6366F1) : Colors.grey.shade300,
+                  color: isSelected
+                      ? const Color(0xFF6366F1)
+                      : Colors.grey.shade300,
                   width: isSelected ? 2 : 1,
                 ),
                 borderRadius: AppRadius.card,
@@ -283,11 +311,16 @@ class WorkoutProfileForm extends HookConsumerWidget {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: isSelected ? const Color(0xFF4338CA) : Colors.black87,
+                          color: isSelected
+                              ? const Color(0xFF4338CA)
+                              : Colors.black87,
                         ),
                       ),
                       if (isSelected)
-                        const Icon(Icons.check_circle, color: Color(0xFF6366F1)),
+                        const Icon(
+                          Icons.check_circle,
+                          color: Color(0xFF6366F1),
+                        ),
                     ],
                   ),
                   Gap.v6(),
@@ -319,7 +352,10 @@ class WorkoutProfileForm extends HookConsumerWidget {
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         Gap.v12(),
-        Text(context.tr.workoutFitnessLevelLabel, style: const TextStyle(fontWeight: FontWeight.w600)),
+        Text(
+          context.tr.workoutFitnessLevelLabel,
+          style: const TextStyle(fontWeight: FontWeight.w600),
+        ),
         Gap.v8(),
         Row(
           children: options.levels.map((lvl) {
@@ -332,7 +368,9 @@ class WorkoutProfileForm extends HookConsumerWidget {
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: isSelected ? const Color(0xFF6366F1) : Colors.grey.shade100,
+                    color: isSelected
+                        ? const Color(0xFF6366F1)
+                        : Colors.grey.shade100,
                     borderRadius: AppRadius.button,
                   ),
                   child: Text(
@@ -351,7 +389,11 @@ class WorkoutProfileForm extends HookConsumerWidget {
         ...selectedDisciplines.value.map((dId) {
           final discipline = options.disciplines.firstWhere((d) => d.id == dId);
           final availableStyles = options.styles
-              .where((s) => s.disciplineId == dId && s.levels.contains(selectedLevel.value))
+              .where(
+                (s) =>
+                    s.disciplineId == dId &&
+                    s.levels.contains(selectedLevel.value),
+              )
               .toList();
 
           return Column(
@@ -359,18 +401,26 @@ class WorkoutProfileForm extends HookConsumerWidget {
             children: [
               Text(
                 context.tr.workoutDisciplineStyleLabel(discipline.label),
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               Gap.v8(),
               ...availableStyles.map((style) {
                 return RadioListTile<String>(
-                  title: Text(style.label, style: const TextStyle(fontWeight: FontWeight.w600)),
+                  title: Text(
+                    style.label,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
                   subtitle: Text(style.description),
                   value: style.id,
                   groupValue: selectedStyles.value[dId],
                   onChanged: (val) {
                     if (val != null) {
-                      final map = Map<String, String>.from(selectedStyles.value);
+                      final map = Map<String, String>.from(
+                        selectedStyles.value,
+                      );
                       map[dId] = val;
                       selectedStyles.value = map;
                     }
@@ -392,7 +442,9 @@ class WorkoutProfileForm extends HookConsumerWidget {
     ValueNotifier<String?> selectedGoal,
   ) {
     final compatibleGoals = options.goals.where((g) {
-      return g.compatibleDisciplines.any((dId) => selectedDisciplines.value.contains(dId));
+      return g.compatibleDisciplines.any(
+        (dId) => selectedDisciplines.value.contains(dId),
+      );
     }).toList();
 
     return ListView(
@@ -418,7 +470,9 @@ class WorkoutProfileForm extends HookConsumerWidget {
               decoration: BoxDecoration(
                 color: isSelected ? const Color(0xFFEEF2FF) : Colors.white,
                 border: Border.all(
-                  color: isSelected ? const Color(0xFF6366F1) : Colors.grey.shade300,
+                  color: isSelected
+                      ? const Color(0xFF6366F1)
+                      : Colors.grey.shade300,
                   width: isSelected ? 2 : 1,
                 ),
                 borderRadius: AppRadius.card,
@@ -431,7 +485,9 @@ class WorkoutProfileForm extends HookConsumerWidget {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: isSelected ? const Color(0xFF4338CA) : Colors.black87,
+                      color: isSelected
+                          ? const Color(0xFF4338CA)
+                          : Colors.black87,
                     ),
                   ),
                   if (isSelected)
@@ -475,7 +531,10 @@ class WorkoutProfileForm extends HookConsumerWidget {
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         Gap.v16(),
-        Text(context.tr.workoutDaysPerWeek, style: const TextStyle(fontWeight: FontWeight.w600)),
+        Text(
+          context.tr.workoutDaysPerWeek,
+          style: const TextStyle(fontWeight: FontWeight.w600),
+        ),
         Gap.v8(),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -486,9 +545,14 @@ class WorkoutProfileForm extends HookConsumerWidget {
               onTap: () => daysPerWeek.value = day,
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 6),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 10,
+                ),
                 decoration: BoxDecoration(
-                  color: isSelected ? const Color(0xFF6366F1) : Colors.grey.shade100,
+                  color: isSelected
+                      ? const Color(0xFF6366F1)
+                      : Colors.grey.shade100,
                   borderRadius: AppRadius.button,
                 ),
                 child: Text(
@@ -503,7 +567,10 @@ class WorkoutProfileForm extends HookConsumerWidget {
           }),
         ),
         Gap.custom(height: 20),
-        Text(context.tr.workoutSessionMinutes, style: const TextStyle(fontWeight: FontWeight.w600)),
+        Text(
+          context.tr.workoutSessionMinutes,
+          style: const TextStyle(fontWeight: FontWeight.w600),
+        ),
         Gap.v8(),
         Wrap(
           spacing: 8,
@@ -517,7 +584,10 @@ class WorkoutProfileForm extends HookConsumerWidget {
           }).toList(),
         ),
         Gap.custom(height: 20),
-        Text(context.tr.workoutLocation, style: const TextStyle(fontWeight: FontWeight.w600)),
+        Text(
+          context.tr.workoutLocation,
+          style: const TextStyle(fontWeight: FontWeight.w600),
+        ),
         Gap.v8(),
         Row(
           children: options.locations.map((loc) {
@@ -530,7 +600,9 @@ class WorkoutProfileForm extends HookConsumerWidget {
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: isSelected ? const Color(0xFF6366F1) : Colors.grey.shade100,
+                    color: isSelected
+                        ? const Color(0xFF6366F1)
+                        : Colors.grey.shade100,
                     borderRadius: AppRadius.button,
                   ),
                   child: Text(
@@ -547,7 +619,10 @@ class WorkoutProfileForm extends HookConsumerWidget {
         ),
         if (location.value == 'home') ...[
           Gap.custom(height: 20),
-          Text(context.tr.workoutEquipment, style: const TextStyle(fontWeight: FontWeight.w600)),
+          Text(
+            context.tr.workoutEquipment,
+            style: const TextStyle(fontWeight: FontWeight.w600),
+          ),
           Gap.v8(),
           Wrap(
             spacing: 8,
@@ -583,11 +658,15 @@ class WorkoutProfileForm extends HookConsumerWidget {
     TextEditingController injuryNotesController,
   ) {
     final hasReferralInjury = selectedInjuries.value.any((injId) {
-      final inj = options.injuries.firstWhere((i) => i.id == injId, orElse: () => options.injuries.first);
+      final inj = options.injuries.firstWhere(
+        (i) => i.id == injId,
+        orElse: () => options.injuries.first,
+      );
       return inj.requiresReferral;
     });
 
-    final showWarning = !hasNoInjuries.value && (painLevel.value >= 7 || hasReferralInjury);
+    final showWarning =
+        !hasNoInjuries.value && (painLevel.value >= 7 || hasReferralInjury);
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -598,7 +677,10 @@ class WorkoutProfileForm extends HookConsumerWidget {
         ),
         Gap.v16(),
         SwitchListTile(
-          title: Text(context.tr.workoutNoInjuries, style: const TextStyle(fontWeight: FontWeight.w600)),
+          title: Text(
+            context.tr.workoutNoInjuries,
+            style: const TextStyle(fontWeight: FontWeight.w600),
+          ),
           value: hasNoInjuries.value,
           onChanged: (val) {
             hasNoInjuries.value = val;
@@ -610,7 +692,10 @@ class WorkoutProfileForm extends HookConsumerWidget {
         ),
         if (!hasNoInjuries.value) ...[
           Gap.v16(),
-          Text(context.tr.workoutInjuriesLabel, style: const TextStyle(fontWeight: FontWeight.w600)),
+          Text(
+            context.tr.workoutInjuriesLabel,
+            style: const TextStyle(fontWeight: FontWeight.w600),
+          ),
           Gap.v8(),
           Wrap(
             spacing: 8,
@@ -633,7 +718,10 @@ class WorkoutProfileForm extends HookConsumerWidget {
             }).toList(),
           ),
           Gap.custom(height: 20),
-          Text('${context.tr.workoutPainLevel} ${painLevel.value}', style: const TextStyle(fontWeight: FontWeight.w600)),
+          Text(
+            '${context.tr.workoutPainLevel} ${painLevel.value}',
+            style: const TextStyle(fontWeight: FontWeight.w600),
+          ),
           Slider(
             value: painLevel.value.toDouble(),
             min: 0,
@@ -666,7 +754,10 @@ class WorkoutProfileForm extends HookConsumerWidget {
                 Expanded(
                   child: Text(
                     context.tr.workoutMedicalReferralWarning,
-                    style: TextStyle(color: Colors.amber.shade900, fontSize: 13),
+                    style: TextStyle(
+                      color: Colors.amber.shade900,
+                      fontSize: 13,
+                    ),
                   ),
                 ),
               ],
@@ -698,7 +789,9 @@ Future<void> _generatePlanAfterProfileSave(
     title: context.tr.workoutGeneratingPlanTitle,
     message: context.tr.workoutGeneratingPlanMessage,
   );
-  final failure = await ref.read(workoutPlanNotifierProvider.notifier).generate();
+  final failure = await ref
+      .read(workoutPlanNotifierProvider.notifier)
+      .generate();
   if (!context.mounted) return;
   AiLoadingDialog.hide(context);
 

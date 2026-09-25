@@ -119,9 +119,7 @@ WorkoutOptionsModel _$WorkoutOptionsModelFromJson(
   levels: (json['levels'] as List<dynamic>)
       .map((e) => WorkoutOptionItemModel.fromJson(e as Map<String, dynamic>))
       .toList(),
-  sessionMinutes: (json['sessionMinutes'] as List<dynamic>)
-      .map((e) => (e as num).toInt())
-      .toList(),
+  sessionMinutes: _parseIntList(json['sessionMinutes']),
   locations: (json['locations'] as List<dynamic>)
       .map((e) => WorkoutOptionItemModel.fromJson(e as Map<String, dynamic>))
       .toList(),

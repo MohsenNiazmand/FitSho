@@ -8,9 +8,11 @@ abstract class WorkoutLocalDataSource {
 
   WorkoutProfileModel? getCachedProfile();
   Future<void> saveProfile(WorkoutProfileModel profile);
+  Future<void> removeCachedProfile();
 
   WorkoutPlanModel? getCachedActivePlan();
   Future<void> saveActivePlan(WorkoutPlanModel plan);
+  Future<void> removeCachedActivePlan();
 
   Future<void> clear();
 }
@@ -61,6 +63,11 @@ class WorkoutLocalDataSourceImpl implements WorkoutLocalDataSource {
   }
 
   @override
+  Future<void> removeCachedProfile() async {
+    await _prefs.remove(_profileKey);
+  }
+
+  @override
   WorkoutPlanModel? getCachedActivePlan() {
     final raw = _prefs.getString(_activePlanKey);
     if (raw == null) return null;
@@ -76,6 +83,11 @@ class WorkoutLocalDataSourceImpl implements WorkoutLocalDataSource {
   Future<void> saveActivePlan(WorkoutPlanModel plan) async {
     final raw = jsonEncode(plan.toJson());
     await _prefs.setString(_activePlanKey, raw);
+  }
+
+  @override
+  Future<void> removeCachedActivePlan() async {
+    await _prefs.remove(_activePlanKey);
   }
 
   @override

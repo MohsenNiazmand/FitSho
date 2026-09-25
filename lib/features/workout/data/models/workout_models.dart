@@ -20,6 +20,11 @@ int _parseInt(dynamic value, [int defaultValue = 0]) {
   return _parseNullableInt(value) ?? defaultValue;
 }
 
+List<int> _parseIntList(dynamic value) {
+  if (value is! List) return const [];
+  return value.map((item) => _parseInt(item)).toList();
+}
+
 double? _parseNullableDouble(dynamic value) {
   if (value == null) return null;
   if (value is double) return value;
@@ -172,6 +177,7 @@ class WorkoutOptionsModel {
   final List<StyleOptionModel> styles;
   final List<GoalOptionModel> goals;
   final List<WorkoutOptionItemModel> levels;
+  @JsonKey(fromJson: _parseIntList)
   final List<int> sessionMinutes;
   final List<WorkoutOptionItemModel> locations;
   final List<WorkoutOptionItemModel> equipment;
