@@ -88,9 +88,13 @@ class WorkoutOptions {
     required this.locations,
     required this.equipment,
     required this.injuries,
+    this.injuryAreas = const [],
+    this.medicalConditions = const [],
     required this.maxDisciplines,
     required this.minDaysPerWeek,
     required this.maxDaysPerWeek,
+    this.minSessionMinutes = 10,
+    this.maxSessionMinutes = 180,
   });
 
   final List<DisciplineOption> disciplines;
@@ -101,9 +105,13 @@ class WorkoutOptions {
   final List<WorkoutOptionItem> locations;
   final List<WorkoutOptionItem> equipment;
   final List<InjuryOption> injuries;
+  final List<InjuryOption> injuryAreas;
+  final List<InjuryOption> medicalConditions;
   final int maxDisciplines;
   final int minDaysPerWeek;
   final int maxDaysPerWeek;
+  final int minSessionMinutes;
+  final int maxSessionMinutes;
 }
 
 class WorkoutProfile {
@@ -112,13 +120,15 @@ class WorkoutProfile {
     required this.userId,
     required this.disciplines,
     required this.styles,
-    required this.goal,
+    required this.primaryGoal,
+    this.secondaryGoal,
     required this.level,
     required this.daysPerWeek,
     required this.sessionMinutes,
     required this.location,
     required this.equipment,
-    required this.injuries,
+    required this.injuryAreas,
+    required this.medicalConditions,
     this.injuryNotes,
     required this.painLevel,
     this.shouldRegeneratePlan = false,
@@ -128,13 +138,15 @@ class WorkoutProfile {
   final String userId;
   final List<String> disciplines;
   final Map<String, String> styles; // { disciplineId: styleId }
-  final String goal;
+  final String primaryGoal;
+  final String? secondaryGoal;
   final String level;
   final int daysPerWeek;
   final int sessionMinutes;
   final String location;
   final List<String> equipment;
-  final List<String> injuries;
+  final List<String> injuryAreas;
+  final List<String> medicalConditions;
   final String? injuryNotes;
   final int painLevel;
   final bool shouldRegeneratePlan;
@@ -164,10 +176,10 @@ class WorkoutExerciseItem {
   final String? notes;
 }
 
-class WorkoutDay {
-  const WorkoutDay({
-    required this.day,
-    required this.isRest,
+class WorkoutSession {
+  const WorkoutSession({
+    required this.sessionId,
+    required this.sessionNumber,
     required this.title,
     required this.focus,
     required this.durationMin,
@@ -176,8 +188,8 @@ class WorkoutDay {
     required this.cooldown,
   });
 
-  final String day;
-  final bool isRest;
+  final String sessionId;
+  final int sessionNumber;
   final String title;
   final List<String> focus;
   final int durationMin;
@@ -197,25 +209,29 @@ class WorkoutProfileSnapshot {
   const WorkoutProfileSnapshot({
     this.disciplines = const [],
     this.styles = const {},
-    this.goal = '',
+    this.primaryGoal = '',
+    this.secondaryGoal,
     this.level = '',
     this.daysPerWeek = 0,
     this.sessionMinutes = 0,
     this.location = '',
     this.equipment = const [],
-    this.injuries = const [],
+    this.injuryAreas = const [],
+    this.medicalConditions = const [],
     this.painLevel = 0,
   });
 
   final List<String> disciplines;
   final Map<String, String> styles;
-  final String goal;
+  final String primaryGoal;
+  final String? secondaryGoal;
   final String level;
   final int daysPerWeek;
   final int sessionMinutes;
   final String location;
   final List<String> equipment;
-  final List<String> injuries;
+  final List<String> injuryAreas;
+  final List<String> medicalConditions;
   final int painLevel;
 }
 
@@ -226,7 +242,7 @@ class WorkoutPlan {
     required this.status,
     this.summary,
     required this.notes,
-    required this.days,
+    required this.sessions,
     required this.createdAt,
     this.profileSnapshot,
     this.remainingFullGenerations = 3,
@@ -238,7 +254,7 @@ class WorkoutPlan {
   final String status;
   final String? summary;
   final WorkoutNotes notes;
-  final List<WorkoutDay> days;
+  final List<WorkoutSession> sessions;
   final DateTime createdAt;
   final WorkoutProfileSnapshot? profileSnapshot;
   final int remainingFullGenerations;

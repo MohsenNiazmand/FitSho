@@ -45,6 +45,11 @@ double? _parseNullableDouble(dynamic value) {
   return null;
 }
 
+List<String> _parseStringList(dynamic value) {
+  if (value is! List) return const [];
+  return value.map((item) => item.toString()).toList();
+}
+
 @JsonSerializable()
 class WorkoutOptionItemModel {
   const WorkoutOptionItemModel({
@@ -171,13 +176,47 @@ class WorkoutOptionsModel {
     required this.locations,
     required this.equipment,
     required this.injuries,
+    this.injuryAreas = const [],
+    this.medicalConditions = const [],
     required this.maxDisciplines,
     required this.minDaysPerWeek,
     required this.maxDaysPerWeek,
+    this.minSessionMinutes = 10,
+    this.maxSessionMinutes = 180,
   });
 
-  factory WorkoutOptionsModel.fromJson(Map<String, dynamic> json) =>
-      _$WorkoutOptionsModelFromJson(json);
+  factory WorkoutOptionsModel.fromJson(Map<String, dynamic> json) {
+    final parsed = _$WorkoutOptionsModelFromJson(json);
+    return WorkoutOptionsModel(
+      disciplines: parsed.disciplines,
+      styles: parsed.styles,
+      goals: parsed.goals,
+      levels: parsed.levels,
+      sessionMinutes: parsed.sessionMinutes,
+      locations: parsed.locations,
+      equipment: parsed.equipment,
+      injuries: parsed.injuries,
+      maxDisciplines: parsed.maxDisciplines,
+      minDaysPerWeek: parsed.minDaysPerWeek,
+      maxDaysPerWeek: parsed.maxDaysPerWeek,
+      minSessionMinutes:
+          json.containsKey('minSessionMinutes') ||
+              json.containsKey('min_session_minutes')
+          ? _parseInt(
+              json['minSessionMinutes'] ?? json['min_session_minutes'],
+              10,
+            )
+          : 10,
+      maxSessionMinutes:
+          json.containsKey('maxSessionMinutes') ||
+              json.containsKey('max_session_minutes')
+          ? _parseInt(
+              json['maxSessionMinutes'] ?? json['max_session_minutes'],
+              180,
+            )
+          : 180,
+    );
+  }
 
   final List<DisciplineOptionModel> disciplines;
   final List<StyleOptionModel> styles;
@@ -188,6 +227,8 @@ class WorkoutOptionsModel {
   final List<WorkoutOptionItemModel> locations;
   final List<WorkoutOptionItemModel> equipment;
   final List<InjuryOptionModel> injuries;
+  final List<InjuryOptionModel> injuryAreas;
+  final List<InjuryOptionModel> medicalConditions;
 
   @JsonKey(fromJson: _parseInt)
   final int maxDisciplines;
@@ -197,6 +238,12 @@ class WorkoutOptionsModel {
 
   @JsonKey(fromJson: _parseInt)
   final int maxDaysPerWeek;
+
+  @JsonKey(fromJson: _parseInt)
+  final int minSessionMinutes;
+
+  @JsonKey(fromJson: _parseInt)
+  final int maxSessionMinutes;
 
   Map<String, dynamic> toJson() => _$WorkoutOptionsModelToJson(this);
 }
@@ -221,25 +268,61 @@ class WorkoutProfileModel {
     required this.userId,
     required this.disciplines,
     required this.styles,
-    required this.goal,
+    required this.primaryGoal,
+    this.secondaryGoal,
     required this.level,
     required this.daysPerWeek,
     required this.sessionMinutes,
     required this.location,
     required this.equipment,
-    required this.injuries,
+    required this.injuryAreas,
+    required this.medicalConditions,
     this.injuryNotes,
     required this.painLevel,
   });
 
-  factory WorkoutProfileModel.fromJson(Map<String, dynamic> json) =>
-      _$WorkoutProfileModelFromJson(json);
+  factory WorkoutProfileModel.fromJson(Map<String, dynamic> json) {
+    final primaryGoal =
+        json['primaryGoal'] as String? ?? json['goal'] as String? ?? '';
+    final secondaryGoal = json['secondaryGoal'] as String?;
+
+    final injuryAreas = json.containsKey('injuryAreas')
+        ? _parseStringList(json['injuryAreas'])
+        : _parseStringList(json['injuries']);
+
+    final medicalConditions = json.containsKey('medicalConditions')
+        ? _parseStringList(json['medicalConditions'])
+        : <String>[];
+
+    return WorkoutProfileModel(
+      id: json['id'] as String? ?? '',
+      userId: json['userId'] as String? ?? '',
+      disciplines: _parseStringList(json['disciplines']),
+      styles:
+          (json['styles'] as Map<String, dynamic>?)?.map(
+            (k, v) => MapEntry(k, v.toString()),
+          ) ??
+          const {},
+      primaryGoal: primaryGoal,
+      secondaryGoal: secondaryGoal,
+      level: json['level'] as String? ?? '',
+      daysPerWeek: _parseInt(json['daysPerWeek']),
+      sessionMinutes: _parseInt(json['sessionMinutes']),
+      location: json['location'] as String? ?? '',
+      equipment: _parseStringList(json['equipment']),
+      injuryAreas: injuryAreas,
+      medicalConditions: medicalConditions,
+      injuryNotes: json['injuryNotes'] as String?,
+      painLevel: _parseInt(json['painLevel']),
+    );
+  }
 
   final String id;
   final String userId;
   final List<String> disciplines;
   final Map<String, String> styles;
-  final String goal;
+  final String primaryGoal;
+  final String? secondaryGoal;
   final String level;
 
   @JsonKey(fromJson: _parseInt)
@@ -250,7 +333,8 @@ class WorkoutProfileModel {
 
   final String location;
   final List<String> equipment;
-  final List<String> injuries;
+  final List<String> injuryAreas;
+  final List<String> medicalConditions;
   final String? injuryNotes;
 
   @JsonKey(fromJson: _parseInt)
@@ -297,13 +381,15 @@ class UpsertWorkoutProfileRequest {
   const UpsertWorkoutProfileRequest({
     required this.disciplines,
     required this.styles,
-    required this.goal,
+    required this.primaryGoal,
+    this.secondaryGoal,
     required this.level,
     required this.daysPerWeek,
     required this.sessionMinutes,
     required this.location,
     required this.equipment,
-    required this.injuries,
+    required this.injuryAreas,
+    required this.medicalConditions,
     this.injuryNotes,
     required this.painLevel,
   });
@@ -313,13 +399,15 @@ class UpsertWorkoutProfileRequest {
 
   final List<String> disciplines;
   final Map<String, String> styles;
-  final String goal;
+  final String primaryGoal;
+  final String? secondaryGoal;
   final String level;
   final int daysPerWeek;
   final int sessionMinutes;
   final String location;
   final List<String> equipment;
-  final List<String> injuries;
+  final List<String> injuryAreas;
+  final List<String> medicalConditions;
   final String? injuryNotes;
   final int painLevel;
 
@@ -367,10 +455,10 @@ class WorkoutExerciseItemModel {
 }
 
 @JsonSerializable()
-class WorkoutDayModel {
-  const WorkoutDayModel({
-    required this.day,
-    required this.isRest,
+class WorkoutSessionModel {
+  const WorkoutSessionModel({
+    required this.sessionId,
+    required this.sessionNumber,
     required this.title,
     required this.focus,
     required this.durationMin,
@@ -379,11 +467,59 @@ class WorkoutDayModel {
     required this.cooldown,
   });
 
-  factory WorkoutDayModel.fromJson(Map<String, dynamic> json) =>
-      _$WorkoutDayModelFromJson(json);
+  factory WorkoutSessionModel.fromJson(Map<String, dynamic> json) {
+    final sessionId =
+        json['sessionId'] as String? ??
+        json['session_id'] as String? ??
+        json['day'] as String? ??
+        'session_${json['sessionNumber'] ?? json['session_number'] ?? 1}';
 
-  final String day;
-  final bool isRest;
+    final sessionNumber = _parseInt(
+      json['sessionNumber'] ?? json['session_number'],
+      1,
+    );
+
+    return WorkoutSessionModel(
+      sessionId: sessionId,
+      sessionNumber: sessionNumber,
+      title: json['title'] as String? ?? '',
+      focus: _parseStringList(json['focus']),
+      durationMin: _parseInt(json['durationMin'] ?? json['duration_min']),
+      warmup:
+          (json['warmup'] as List<dynamic>?)
+              ?.map(
+                (e) => WorkoutExerciseItemModel.fromJson(
+                  e as Map<String, dynamic>,
+                ),
+              )
+              .toList() ??
+          const [],
+      main:
+          (json['main'] as List<dynamic>?)
+              ?.map(
+                (e) => WorkoutExerciseItemModel.fromJson(
+                  e as Map<String, dynamic>,
+                ),
+              )
+              .toList() ??
+          const [],
+      cooldown:
+          (json['cooldown'] as List<dynamic>?)
+              ?.map(
+                (e) => WorkoutExerciseItemModel.fromJson(
+                  e as Map<String, dynamic>,
+                ),
+              )
+              .toList() ??
+          const [],
+    );
+  }
+
+  final String sessionId;
+
+  @JsonKey(fromJson: _parseInt)
+  final int sessionNumber;
+
   final String title;
   final List<String> focus;
 
@@ -394,7 +530,7 @@ class WorkoutDayModel {
   final List<WorkoutExerciseItemModel> main;
   final List<WorkoutExerciseItemModel> cooldown;
 
-  Map<String, dynamic> toJson() => _$WorkoutDayModelToJson(this);
+  Map<String, dynamic> toJson() => _$WorkoutSessionModelToJson(this);
 }
 
 @JsonSerializable()
@@ -415,22 +551,55 @@ class WorkoutProfileSnapshotModel {
   const WorkoutProfileSnapshotModel({
     this.disciplines = const [],
     this.styles = const {},
-    this.goal = '',
+    this.primaryGoal = '',
+    this.secondaryGoal,
     this.level = '',
     this.daysPerWeek = 0,
     this.sessionMinutes = 0,
     this.location = '',
     this.equipment = const [],
-    this.injuries = const [],
+    this.injuryAreas = const [],
+    this.medicalConditions = const [],
     this.painLevel = 0,
   });
 
-  factory WorkoutProfileSnapshotModel.fromJson(Map<String, dynamic> json) =>
-      _$WorkoutProfileSnapshotModelFromJson(json);
+  factory WorkoutProfileSnapshotModel.fromJson(Map<String, dynamic> json) {
+    final primaryGoal =
+        json['primaryGoal'] as String? ?? json['goal'] as String? ?? '';
+    final secondaryGoal = json['secondaryGoal'] as String?;
+
+    final injuryAreas = json.containsKey('injuryAreas')
+        ? _parseStringList(json['injuryAreas'])
+        : _parseStringList(json['injuries']);
+
+    final medicalConditions = json.containsKey('medicalConditions')
+        ? _parseStringList(json['medicalConditions'])
+        : <String>[];
+
+    return WorkoutProfileSnapshotModel(
+      disciplines: _parseStringList(json['disciplines']),
+      styles:
+          (json['styles'] as Map<String, dynamic>?)?.map(
+            (k, v) => MapEntry(k, v.toString()),
+          ) ??
+          const {},
+      primaryGoal: primaryGoal,
+      secondaryGoal: secondaryGoal,
+      level: json['level'] as String? ?? '',
+      daysPerWeek: _parseInt(json['daysPerWeek']),
+      sessionMinutes: _parseInt(json['sessionMinutes']),
+      location: json['location'] as String? ?? '',
+      equipment: _parseStringList(json['equipment']),
+      injuryAreas: injuryAreas,
+      medicalConditions: medicalConditions,
+      painLevel: _parseInt(json['painLevel']),
+    );
+  }
 
   final List<String> disciplines;
   final Map<String, String> styles;
-  final String goal;
+  final String primaryGoal;
+  final String? secondaryGoal;
   final String level;
   @JsonKey(fromJson: _parseInt)
   final int daysPerWeek;
@@ -438,7 +607,8 @@ class WorkoutProfileSnapshotModel {
   final int sessionMinutes;
   final String location;
   final List<String> equipment;
-  final List<String> injuries;
+  final List<String> injuryAreas;
+  final List<String> medicalConditions;
   @JsonKey(fromJson: _parseInt)
   final int painLevel;
 
@@ -453,22 +623,57 @@ class WorkoutPlanModel {
     required this.status,
     this.summary,
     required this.notes,
-    required this.days,
+    required this.sessions,
     required this.createdAt,
     this.profileSnapshot,
     this.remainingFullGenerations = 3,
     this.remainingExerciseSwaps = 5,
   });
 
-  factory WorkoutPlanModel.fromJson(Map<String, dynamic> json) =>
-      _$WorkoutPlanModelFromJson(json);
+  factory WorkoutPlanModel.fromJson(Map<String, dynamic> json) {
+    final sessionsRaw =
+        json['sessions'] as List<dynamic>? ??
+        json['days'] as List<dynamic>? ??
+        [];
+
+    final sessions = sessionsRaw
+        .map((e) => WorkoutSessionModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+
+    return WorkoutPlanModel(
+      id: json['id'] as String? ?? '',
+      userId: json['userId'] as String? ?? '',
+      status: json['status'] as String? ?? 'active',
+      summary: json['summary'] as String?,
+      notes: json['notes'] != null
+          ? WorkoutNotesModel.fromJson(json['notes'] as Map<String, dynamic>)
+          : const WorkoutNotesModel(progression: '', safety: []),
+      sessions: sessions,
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'] as String)
+          : DateTime.now(),
+      profileSnapshot: json['profileSnapshot'] != null
+          ? WorkoutProfileSnapshotModel.fromJson(
+              json['profileSnapshot'] as Map<String, dynamic>,
+            )
+          : null,
+      remainingFullGenerations: _parseInt(
+        json['remaining_full_generations'] ?? json['remainingFullGenerations'],
+        3,
+      ),
+      remainingExerciseSwaps: _parseInt(
+        json['remaining_exercise_swaps'] ?? json['remainingExerciseSwaps'],
+        5,
+      ),
+    );
+  }
 
   final String id;
   final String userId;
   final String status;
   final String? summary;
   final WorkoutNotesModel notes;
-  final List<WorkoutDayModel> days;
+  final List<WorkoutSessionModel> sessions;
   final DateTime createdAt;
   final WorkoutProfileSnapshotModel? profileSnapshot;
 
@@ -535,12 +740,12 @@ class WorkoutPlanHistoryEnvelope {
 
 @JsonSerializable()
 class SwapExerciseRequest {
-  const SwapExerciseRequest({required this.day, required this.itemId});
+  const SwapExerciseRequest({required this.sessionId, required this.itemId});
 
   factory SwapExerciseRequest.fromJson(Map<String, dynamic> json) =>
       _$SwapExerciseRequestFromJson(json);
 
-  final String day;
+  final String sessionId;
   final String itemId;
 
   Map<String, dynamic> toJson() => _$SwapExerciseRequestToJson(this);

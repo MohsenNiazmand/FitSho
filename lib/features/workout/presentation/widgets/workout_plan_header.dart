@@ -218,9 +218,9 @@ class WorkoutPlanHeader extends StatelessWidget {
               Text(
                 title,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: cTextSecondary,
-                      fontWeight: FontWeight.w500,
-                    ),
+                  color: cTextSecondary,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ],
           ),
@@ -228,9 +228,9 @@ class WorkoutPlanHeader extends StatelessWidget {
           Text(
             PersianDigits.toPersian(value),
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: cTextPrimary,
-                  fontWeight: FontWeight.bold,
-                ),
+              color: cTextPrimary,
+              fontWeight: FontWeight.bold,
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),

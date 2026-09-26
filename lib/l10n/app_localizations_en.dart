@@ -1074,4 +1074,50 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get workoutPlanRegenerated =>
       'A new workout plan was generated successfully';
+
+  @override
+  String workoutSessionTitle(int number) {
+    return 'Session $number';
+  }
+
+  @override
+  String get workoutNewPlanChoiceTitle =>
+      'How would you like to create a new plan?';
+
+  @override
+  String get workoutNewPlanChoiceUseCurrent =>
+      'Use current details & generate new plan';
+
+  @override
+  String get workoutNewPlanChoiceEdit => 'Edit workout details first';
+
+  @override
+  String get workoutPrimaryGoalLabel => 'Primary Goal (Required):';
+
+  @override
+  String get workoutSecondaryGoalLabel => 'Secondary Goal (Optional):';
+
+  @override
+  String get workoutGoalPrimaryTag => 'Primary Goal';
+
+  @override
+  String get workoutGoalSecondaryTag => 'Secondary Goal';
+
+  @override
+  String get workoutInjuryAreasLabel => 'Injury Areas (Max 2):';
+
+  @override
+  String get workoutMedicalConditionsLabel => 'Medical Conditions:';
+
+  @override
+  String get workoutMaxInjuryAreasWarning =>
+      'You can select at most 2 injury areas.';
+
+  @override
+  String get workoutCustomDurationLabel => 'Custom duration (minutes):';
+
+  @override
+  String workoutCustomDurationInvalid(int min, int max) {
+    return 'Please enter a value between $min and $max';
+  }
 }

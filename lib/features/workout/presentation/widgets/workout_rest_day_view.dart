@@ -34,11 +34,7 @@ class WorkoutRestDayView extends StatelessWidget {
               color: cSecondaryContainer.withValues(alpha: 0.5),
               shape: BoxShape.circle,
             ),
-            child: const Icon(
-              Icons.spa_rounded,
-              color: cPrimary,
-              size: 38,
-            ),
+            child: const Icon(Icons.spa_rounded, color: cPrimary, size: 38),
           ),
           Gap.v16(),
           Text(

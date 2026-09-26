@@ -115,9 +115,7 @@ class WorkoutExerciseCard extends StatelessWidget {
               _buildBadge(
                 context,
                 icon: Icons.timer_outlined,
-                label: context.tr.workoutRest(
-                  exercise.restSec,
-                ),
+                label: context.tr.workoutRest(exercise.restSec),
               ),
               if (exercise.rpe != null)
                 _buildBadge(
@@ -188,9 +186,9 @@ class WorkoutExerciseCard extends StatelessWidget {
           Text(
             label,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: cTextSecondary,
-                  fontWeight: FontWeight.w500,
-                ),
+              color: cTextSecondary,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ],
       ),

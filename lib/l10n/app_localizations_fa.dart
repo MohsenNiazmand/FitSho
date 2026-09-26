@@ -1073,4 +1073,49 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get workoutPlanRegenerated => 'برنامه تمرینی جدید با موفقیت ساخته شد';
+
+  @override
+  String workoutSessionTitle(int number) {
+    return 'جلسه $number';
+  }
+
+  @override
+  String get workoutNewPlanChoiceTitle => 'نحوه ساخت برنامه جدید';
+
+  @override
+  String get workoutNewPlanChoiceUseCurrent =>
+      'استفاده از اطلاعات فعلی و ساخت برنامه جدید';
+
+  @override
+  String get workoutNewPlanChoiceEdit => 'ویرایش مشخصات و ساخت برنامه';
+
+  @override
+  String get workoutPrimaryGoalLabel => 'هدف اصلی (الزامی):';
+
+  @override
+  String get workoutSecondaryGoalLabel => 'هدف ثانویه (اختیاری):';
+
+  @override
+  String get workoutGoalPrimaryTag => 'هدف اصلی';
+
+  @override
+  String get workoutGoalSecondaryTag => 'هدف ثانویه';
+
+  @override
+  String get workoutInjuryAreasLabel => 'نواحی آسیب‌دیده (حداکثر ۲ ناحیه):';
+
+  @override
+  String get workoutMedicalConditionsLabel => 'شرایط پزشکی:';
+
+  @override
+  String get workoutMaxInjuryAreasWarning =>
+      'حداکثر می‌توانید ۲ ناحیه آسیب انتخاب کنید.';
+
+  @override
+  String get workoutCustomDurationLabel => 'مدت زمان دلخواه (دقیقه):';
+
+  @override
+  String workoutCustomDurationInvalid(int min, int max) {
+    return 'لطفاً عددی بین $min تا $max وارد کنید';
+  }
 }

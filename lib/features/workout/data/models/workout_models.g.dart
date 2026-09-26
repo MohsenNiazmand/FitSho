@@ -129,9 +129,25 @@ WorkoutOptionsModel _$WorkoutOptionsModelFromJson(
   injuries: (json['injuries'] as List<dynamic>)
       .map((e) => InjuryOptionModel.fromJson(e as Map<String, dynamic>))
       .toList(),
+  injuryAreas:
+      (json['injuryAreas'] as List<dynamic>?)
+          ?.map((e) => InjuryOptionModel.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
+  medicalConditions:
+      (json['medicalConditions'] as List<dynamic>?)
+          ?.map((e) => InjuryOptionModel.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
   maxDisciplines: _parseInt(json['maxDisciplines']),
   minDaysPerWeek: _parseInt(json['minDaysPerWeek']),
   maxDaysPerWeek: _parseInt(json['maxDaysPerWeek']),
+  minSessionMinutes: json['minSessionMinutes'] == null
+      ? 10
+      : _parseInt(json['minSessionMinutes']),
+  maxSessionMinutes: json['maxSessionMinutes'] == null
+      ? 180
+      : _parseInt(json['maxSessionMinutes']),
 );
 
 Map<String, dynamic> _$WorkoutOptionsModelToJson(
@@ -145,9 +161,13 @@ Map<String, dynamic> _$WorkoutOptionsModelToJson(
   'locations': instance.locations,
   'equipment': instance.equipment,
   'injuries': instance.injuries,
+  'injuryAreas': instance.injuryAreas,
+  'medicalConditions': instance.medicalConditions,
   'maxDisciplines': instance.maxDisciplines,
   'minDaysPerWeek': instance.minDaysPerWeek,
   'maxDaysPerWeek': instance.maxDaysPerWeek,
+  'minSessionMinutes': instance.minSessionMinutes,
+  'maxSessionMinutes': instance.maxSessionMinutes,
 };
 
 WorkoutOptionsEnvelope _$WorkoutOptionsEnvelopeFromJson(
@@ -169,7 +189,8 @@ WorkoutProfileModel _$WorkoutProfileModelFromJson(Map<String, dynamic> json) =>
           .map((e) => e as String)
           .toList(),
       styles: Map<String, String>.from(json['styles'] as Map),
-      goal: json['goal'] as String,
+      primaryGoal: json['primaryGoal'] as String,
+      secondaryGoal: json['secondaryGoal'] as String?,
       level: json['level'] as String,
       daysPerWeek: _parseInt(json['daysPerWeek']),
       sessionMinutes: _parseInt(json['sessionMinutes']),
@@ -177,7 +198,10 @@ WorkoutProfileModel _$WorkoutProfileModelFromJson(Map<String, dynamic> json) =>
       equipment: (json['equipment'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
-      injuries: (json['injuries'] as List<dynamic>)
+      injuryAreas: (json['injuryAreas'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
+      medicalConditions: (json['medicalConditions'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
       injuryNotes: json['injuryNotes'] as String?,
@@ -191,13 +215,15 @@ Map<String, dynamic> _$WorkoutProfileModelToJson(
   'userId': instance.userId,
   'disciplines': instance.disciplines,
   'styles': instance.styles,
-  'goal': instance.goal,
+  'primaryGoal': instance.primaryGoal,
+  'secondaryGoal': instance.secondaryGoal,
   'level': instance.level,
   'daysPerWeek': instance.daysPerWeek,
   'sessionMinutes': instance.sessionMinutes,
   'location': instance.location,
   'equipment': instance.equipment,
-  'injuries': instance.injuries,
+  'injuryAreas': instance.injuryAreas,
+  'medicalConditions': instance.medicalConditions,
   'injuryNotes': instance.injuryNotes,
   'painLevel': instance.painLevel,
 };
@@ -209,7 +235,8 @@ UpsertWorkoutProfileRequest _$UpsertWorkoutProfileRequestFromJson(
       .map((e) => e as String)
       .toList(),
   styles: Map<String, String>.from(json['styles'] as Map),
-  goal: json['goal'] as String,
+  primaryGoal: json['primaryGoal'] as String,
+  secondaryGoal: json['secondaryGoal'] as String?,
   level: json['level'] as String,
   daysPerWeek: (json['daysPerWeek'] as num).toInt(),
   sessionMinutes: (json['sessionMinutes'] as num).toInt(),
@@ -217,7 +244,10 @@ UpsertWorkoutProfileRequest _$UpsertWorkoutProfileRequestFromJson(
   equipment: (json['equipment'] as List<dynamic>)
       .map((e) => e as String)
       .toList(),
-  injuries: (json['injuries'] as List<dynamic>)
+  injuryAreas: (json['injuryAreas'] as List<dynamic>)
+      .map((e) => e as String)
+      .toList(),
+  medicalConditions: (json['medicalConditions'] as List<dynamic>)
       .map((e) => e as String)
       .toList(),
   injuryNotes: json['injuryNotes'] as String?,
@@ -229,13 +259,15 @@ Map<String, dynamic> _$UpsertWorkoutProfileRequestToJson(
 ) => <String, dynamic>{
   'disciplines': instance.disciplines,
   'styles': instance.styles,
-  'goal': instance.goal,
+  'primaryGoal': instance.primaryGoal,
+  'secondaryGoal': instance.secondaryGoal,
   'level': instance.level,
   'daysPerWeek': instance.daysPerWeek,
   'sessionMinutes': instance.sessionMinutes,
   'location': instance.location,
   'equipment': instance.equipment,
-  'injuries': instance.injuries,
+  'injuryAreas': instance.injuryAreas,
+  'medicalConditions': instance.medicalConditions,
   'injuryNotes': instance.injuryNotes,
   'painLevel': instance.painLevel,
 };
@@ -268,11 +300,11 @@ Map<String, dynamic> _$WorkoutExerciseItemModelToJson(
   'notes': instance.notes,
 };
 
-WorkoutDayModel _$WorkoutDayModelFromJson(
+WorkoutSessionModel _$WorkoutSessionModelFromJson(
   Map<String, dynamic> json,
-) => WorkoutDayModel(
-  day: json['day'] as String,
-  isRest: json['isRest'] as bool,
+) => WorkoutSessionModel(
+  sessionId: json['sessionId'] as String,
+  sessionNumber: _parseInt(json['sessionNumber']),
   title: json['title'] as String,
   focus: (json['focus'] as List<dynamic>).map((e) => e as String).toList(),
   durationMin: _parseInt(json['durationMin']),
@@ -287,17 +319,18 @@ WorkoutDayModel _$WorkoutDayModelFromJson(
       .toList(),
 );
 
-Map<String, dynamic> _$WorkoutDayModelToJson(WorkoutDayModel instance) =>
-    <String, dynamic>{
-      'day': instance.day,
-      'isRest': instance.isRest,
-      'title': instance.title,
-      'focus': instance.focus,
-      'durationMin': instance.durationMin,
-      'warmup': instance.warmup,
-      'main': instance.main,
-      'cooldown': instance.cooldown,
-    };
+Map<String, dynamic> _$WorkoutSessionModelToJson(
+  WorkoutSessionModel instance,
+) => <String, dynamic>{
+  'sessionId': instance.sessionId,
+  'sessionNumber': instance.sessionNumber,
+  'title': instance.title,
+  'focus': instance.focus,
+  'durationMin': instance.durationMin,
+  'warmup': instance.warmup,
+  'main': instance.main,
+  'cooldown': instance.cooldown,
+};
 
 WorkoutNotesModel _$WorkoutNotesModelFromJson(Map<String, dynamic> json) =>
     WorkoutNotesModel(
@@ -326,7 +359,8 @@ WorkoutProfileSnapshotModel _$WorkoutProfileSnapshotModelFromJson(
         (k, e) => MapEntry(k, e as String),
       ) ??
       const {},
-  goal: json['goal'] as String? ?? '',
+  primaryGoal: json['primaryGoal'] as String? ?? '',
+  secondaryGoal: json['secondaryGoal'] as String?,
   level: json['level'] as String? ?? '',
   daysPerWeek: json['daysPerWeek'] == null ? 0 : _parseInt(json['daysPerWeek']),
   sessionMinutes: json['sessionMinutes'] == null
@@ -336,8 +370,15 @@ WorkoutProfileSnapshotModel _$WorkoutProfileSnapshotModelFromJson(
   equipment:
       (json['equipment'] as List<dynamic>?)?.map((e) => e as String).toList() ??
       const [],
-  injuries:
-      (json['injuries'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+  injuryAreas:
+      (json['injuryAreas'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const [],
+  medicalConditions:
+      (json['medicalConditions'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
       const [],
   painLevel: json['painLevel'] == null ? 0 : _parseInt(json['painLevel']),
 );
@@ -347,13 +388,15 @@ Map<String, dynamic> _$WorkoutProfileSnapshotModelToJson(
 ) => <String, dynamic>{
   'disciplines': instance.disciplines,
   'styles': instance.styles,
-  'goal': instance.goal,
+  'primaryGoal': instance.primaryGoal,
+  'secondaryGoal': instance.secondaryGoal,
   'level': instance.level,
   'daysPerWeek': instance.daysPerWeek,
   'sessionMinutes': instance.sessionMinutes,
   'location': instance.location,
   'equipment': instance.equipment,
-  'injuries': instance.injuries,
+  'injuryAreas': instance.injuryAreas,
+  'medicalConditions': instance.medicalConditions,
   'painLevel': instance.painLevel,
 };
 
@@ -364,8 +407,8 @@ WorkoutPlanModel _$WorkoutPlanModelFromJson(Map<String, dynamic> json) =>
       status: json['status'] as String,
       summary: json['summary'] as String?,
       notes: WorkoutNotesModel.fromJson(json['notes'] as Map<String, dynamic>),
-      days: (json['days'] as List<dynamic>)
-          .map((e) => WorkoutDayModel.fromJson(e as Map<String, dynamic>))
+      sessions: (json['sessions'] as List<dynamic>)
+          .map((e) => WorkoutSessionModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       createdAt: DateTime.parse(json['createdAt'] as String),
       profileSnapshot: json['profileSnapshot'] == null
@@ -388,7 +431,7 @@ Map<String, dynamic> _$WorkoutPlanModelToJson(WorkoutPlanModel instance) =>
       'status': instance.status,
       'summary': instance.summary,
       'notes': instance.notes,
-      'days': instance.days,
+      'sessions': instance.sessions,
       'createdAt': instance.createdAt.toIso8601String(),
       'profileSnapshot': instance.profileSnapshot,
       'remaining_full_generations': instance.remainingFullGenerations,
@@ -407,10 +450,13 @@ Map<String, dynamic> _$WorkoutPlanEnvelopeToJson(
 
 SwapExerciseRequest _$SwapExerciseRequestFromJson(Map<String, dynamic> json) =>
     SwapExerciseRequest(
-      day: json['day'] as String,
+      sessionId: json['sessionId'] as String,
       itemId: json['itemId'] as String,
     );
 
 Map<String, dynamic> _$SwapExerciseRequestToJson(
   SwapExerciseRequest instance,
-) => <String, dynamic>{'day': instance.day, 'itemId': instance.itemId};
+) => <String, dynamic>{
+  'sessionId': instance.sessionId,
+  'itemId': instance.itemId,
+};

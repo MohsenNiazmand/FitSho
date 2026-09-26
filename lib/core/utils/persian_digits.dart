@@ -32,4 +32,6 @@ abstract final class PersianDigits {
     }
     return buffer.toString();
   }
+
+  static String toEnglish(String input) => toLatin(input);
 }

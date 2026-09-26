@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fitsho/core/constants/colors.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
 import 'package:fitsho/features/workout/domain/entities/workout_entities.dart';
-import 'package:fitsho/features/workout/presentation/widgets/workout_day_section.dart';
+import 'package:fitsho/features/workout/presentation/widgets/workout_session_section.dart';
 import 'package:fitsho/features/workout/presentation/widgets/workout_plan_header.dart';
 
 class WorkoutPlanDetailScreen extends StatelessWidget {
@@ -15,9 +15,7 @@ class WorkoutPlanDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: cBackground,
-      appBar: AppBar(
-        title: Text(context.tr.workoutPlanDetailTitle),
-      ),
+      appBar: AppBar(title: Text(context.tr.workoutPlanDetailTitle)),
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
@@ -27,14 +25,8 @@ class WorkoutPlanDetailScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    WorkoutPlanHeader(
-                      plan: plan,
-                      readOnly: true,
-                    ),
-                    WorkoutDaySection(
-                      plan: plan,
-                      readOnly: true,
-                    ),
+                    WorkoutPlanHeader(plan: plan, readOnly: true),
+                    WorkoutSessionSection(plan: plan, readOnly: true),
                   ],
                 ),
               ),

@@ -12,9 +12,7 @@ class WorkoutOnboardingScreen extends StatelessWidget {
         title: Text(context.tr.workoutOnboardingTitle),
         automaticallyImplyLeading: false,
       ),
-      body: const SafeArea(
-        child: WorkoutProfileForm(isEditing: false),
-      ),
+      body: const SafeArea(child: WorkoutProfileForm(isEditing: false)),
     );
   }
 }

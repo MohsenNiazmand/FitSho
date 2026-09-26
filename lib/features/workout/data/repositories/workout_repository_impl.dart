@@ -82,13 +82,15 @@ class WorkoutRepositoryImpl implements WorkoutRepository {
   Future<Either<Failure, WorkoutProfile>> upsertProfile({
     required List<String> disciplines,
     required Map<String, String> styles,
-    required String goal,
+    required String primaryGoal,
+    String? secondaryGoal,
     required String level,
     required int daysPerWeek,
     required int sessionMinutes,
     required String location,
     required List<String> equipment,
-    required List<String> injuries,
+    required List<String> injuryAreas,
+    required List<String> medicalConditions,
     String? injuryNotes,
     required int painLevel,
   }) async {
@@ -96,13 +98,15 @@ class WorkoutRepositoryImpl implements WorkoutRepository {
       final request = UpsertWorkoutProfileRequest(
         disciplines: disciplines,
         styles: styles,
-        goal: goal,
+        primaryGoal: primaryGoal,
+        secondaryGoal: secondaryGoal,
         level: level,
         daysPerWeek: daysPerWeek,
         sessionMinutes: sessionMinutes,
         location: location,
         equipment: equipment,
-        injuries: injuries,
+        injuryAreas: injuryAreas,
+        medicalConditions: medicalConditions,
         injuryNotes: injuryNotes,
         painLevel: painLevel,
       );
@@ -178,19 +182,19 @@ class WorkoutRepositoryImpl implements WorkoutRepository {
   @override
   Future<Either<Failure, (WorkoutExerciseItem, int)>> swapExercise({
     required String planId,
-    required String day,
+    required String sessionId,
     required String itemId,
   }) async {
     return guard(() async {
-      final request = SwapExerciseRequest(day: day, itemId: itemId);
+      final request = SwapExerciseRequest(sessionId: sessionId, itemId: itemId);
       final envelope = await _api.swapExercise(planId, request);
       final newItem = envelope.item.toEntity();
 
       final cachedPlan = _localDataSource.getCachedActivePlan()?.toEntity();
       if (cachedPlan != null && cachedPlan.id == planId) {
-        final updatedDays = cachedPlan.days.map((workoutDay) {
-          if (workoutDay.day.toLowerCase() != day.toLowerCase()) {
-            return workoutDay;
+        final updatedSessions = cachedPlan.sessions.map((session) {
+          if (session.sessionId.toLowerCase() != sessionId.toLowerCase()) {
+            return session;
           }
 
           List<WorkoutExerciseItem> replaceInList(
@@ -201,15 +205,15 @@ class WorkoutRepositoryImpl implements WorkoutRepository {
             }).toList();
           }
 
-          return WorkoutDay(
-            day: workoutDay.day,
-            isRest: workoutDay.isRest,
-            title: workoutDay.title,
-            focus: workoutDay.focus,
-            durationMin: workoutDay.durationMin,
-            warmup: replaceInList(workoutDay.warmup),
-            main: replaceInList(workoutDay.main),
-            cooldown: replaceInList(workoutDay.cooldown),
+          return WorkoutSession(
+            sessionId: session.sessionId,
+            sessionNumber: session.sessionNumber,
+            title: session.title,
+            focus: session.focus,
+            durationMin: session.durationMin,
+            warmup: replaceInList(session.warmup),
+            main: replaceInList(session.main),
+            cooldown: replaceInList(session.cooldown),
           );
         }).toList();
 
@@ -219,8 +223,9 @@ class WorkoutRepositoryImpl implements WorkoutRepository {
           status: cachedPlan.status,
           summary: cachedPlan.summary,
           notes: cachedPlan.notes,
-          days: updatedDays,
+          sessions: updatedSessions,
           createdAt: cachedPlan.createdAt,
+          profileSnapshot: cachedPlan.profileSnapshot,
           remainingFullGenerations: cachedPlan.remainingFullGenerations,
           remainingExerciseSwaps: envelope.remainingExerciseSwaps,
         );

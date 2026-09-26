@@ -2005,6 +2005,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'A new workout plan was generated successfully'**
   String get workoutPlanRegenerated;
+
+  /// No description provided for @workoutSessionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Session {number}'**
+  String workoutSessionTitle(int number);
+
+  /// No description provided for @workoutNewPlanChoiceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How would you like to create a new plan?'**
+  String get workoutNewPlanChoiceTitle;
+
+  /// No description provided for @workoutNewPlanChoiceUseCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Use current details & generate new plan'**
+  String get workoutNewPlanChoiceUseCurrent;
+
+  /// No description provided for @workoutNewPlanChoiceEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit workout details first'**
+  String get workoutNewPlanChoiceEdit;
+
+  /// No description provided for @workoutPrimaryGoalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary Goal (Required):'**
+  String get workoutPrimaryGoalLabel;
+
+  /// No description provided for @workoutSecondaryGoalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Secondary Goal (Optional):'**
+  String get workoutSecondaryGoalLabel;
+
+  /// No description provided for @workoutGoalPrimaryTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary Goal'**
+  String get workoutGoalPrimaryTag;
+
+  /// No description provided for @workoutGoalSecondaryTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Secondary Goal'**
+  String get workoutGoalSecondaryTag;
+
+  /// No description provided for @workoutInjuryAreasLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Injury Areas (Max 2):'**
+  String get workoutInjuryAreasLabel;
+
+  /// No description provided for @workoutMedicalConditionsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical Conditions:'**
+  String get workoutMedicalConditionsLabel;
+
+  /// No description provided for @workoutMaxInjuryAreasWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'You can select at most 2 injury areas.'**
+  String get workoutMaxInjuryAreasWarning;
+
+  /// No description provided for @workoutCustomDurationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom duration (minutes):'**
+  String get workoutCustomDurationLabel;
+
+  /// No description provided for @workoutCustomDurationInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a value between {min} and {max}'**
+  String workoutCustomDurationInvalid(int min, int max);
 }
 
 class _AppLocalizationsDelegate

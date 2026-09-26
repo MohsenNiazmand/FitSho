@@ -27,7 +27,7 @@ final workoutOptionsNotifierProvider =
 
 typedef _$WorkoutOptionsNotifier = AutoDisposeAsyncNotifier<WorkoutOptions>;
 String _$workoutProfileNotifierHash() =>
-    r'd7d13ef20cf16208c42c9d8d6545a4842153f69f';
+    r'c8d2c45ea4c7b1a6bf2ab6715f5ade95578f1110';
 
 /// See also [WorkoutProfileNotifier].
 @ProviderFor(WorkoutProfileNotifier)
@@ -47,7 +47,7 @@ final workoutProfileNotifierProvider =
 
 typedef _$WorkoutProfileNotifier = AutoDisposeAsyncNotifier<WorkoutProfile?>;
 String _$workoutPlanNotifierHash() =>
-    r'a787533aaf8f83b7e5cfd932074bcb7ce2b5aed1';
+    r'0188fedd6e1ec3090642ec4cf86764832f205395';
 
 /// See also [WorkoutPlanNotifier].
 @ProviderFor(WorkoutPlanNotifier)

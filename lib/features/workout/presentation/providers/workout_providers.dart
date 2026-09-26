@@ -75,26 +75,30 @@ class WorkoutProfileNotifier extends _$WorkoutProfileNotifier {
   Future<(Failure?, WorkoutProfile?)> save({
     required List<String> disciplines,
     required Map<String, String> styles,
-    required String goal,
+    required String primaryGoal,
+    String? secondaryGoal,
     required String level,
     required int daysPerWeek,
     required int sessionMinutes,
     required String location,
     required List<String> equipment,
-    required List<String> injuries,
+    required List<String> injuryAreas,
+    required List<String> medicalConditions,
     required int painLevel,
     String? injuryNotes,
   }) async {
     final result = await getIt<WorkoutRepository>().upsertProfile(
       disciplines: disciplines,
       styles: styles,
-      goal: goal,
+      primaryGoal: primaryGoal,
+      secondaryGoal: secondaryGoal,
       level: level,
       daysPerWeek: daysPerWeek,
       sessionMinutes: sessionMinutes,
       location: location,
       equipment: equipment,
-      injuries: injuries,
+      injuryAreas: injuryAreas,
+      medicalConditions: medicalConditions,
       injuryNotes: injuryNotes,
       painLevel: painLevel,
     );
@@ -177,7 +181,7 @@ class WorkoutPlanNotifier extends _$WorkoutPlanNotifier {
   }
 
   Future<Either<Failure, int>> swapExercise({
-    required String day,
+    required String sessionId,
     required String itemId,
   }) async {
     final currentPlan = state.valueOrNull;
@@ -187,7 +191,7 @@ class WorkoutPlanNotifier extends _$WorkoutPlanNotifier {
 
     final result = await getIt<WorkoutRepository>().swapExercise(
       planId: currentPlan.id,
-      day: day,
+      sessionId: sessionId,
       itemId: itemId,
     );
 
@@ -195,9 +199,9 @@ class WorkoutPlanNotifier extends _$WorkoutPlanNotifier {
       final newItem = tuple.$1;
       final remainingSwaps = tuple.$2;
 
-      final updatedDays = currentPlan.days.map((workoutDay) {
-        if (workoutDay.day.toLowerCase() != day.toLowerCase()) {
-          return workoutDay;
+      final updatedSessions = currentPlan.sessions.map((session) {
+        if (session.sessionId.toLowerCase() != sessionId.toLowerCase()) {
+          return session;
         }
 
         List<WorkoutExerciseItem> replaceInList(
@@ -208,15 +212,15 @@ class WorkoutPlanNotifier extends _$WorkoutPlanNotifier {
           }).toList();
         }
 
-        return WorkoutDay(
-          day: workoutDay.day,
-          isRest: workoutDay.isRest,
-          title: workoutDay.title,
-          focus: workoutDay.focus,
-          durationMin: workoutDay.durationMin,
-          warmup: replaceInList(workoutDay.warmup),
-          main: replaceInList(workoutDay.main),
-          cooldown: replaceInList(workoutDay.cooldown),
+        return WorkoutSession(
+          sessionId: session.sessionId,
+          sessionNumber: session.sessionNumber,
+          title: session.title,
+          focus: session.focus,
+          durationMin: session.durationMin,
+          warmup: replaceInList(session.warmup),
+          main: replaceInList(session.main),
+          cooldown: replaceInList(session.cooldown),
         );
       }).toList();
 
@@ -226,8 +230,9 @@ class WorkoutPlanNotifier extends _$WorkoutPlanNotifier {
         status: currentPlan.status,
         summary: currentPlan.summary,
         notes: currentPlan.notes,
-        days: updatedDays,
+        sessions: updatedSessions,
         createdAt: currentPlan.createdAt,
+        profileSnapshot: currentPlan.profileSnapshot,
         remainingFullGenerations: currentPlan.remainingFullGenerations,
         remainingExerciseSwaps: remainingSwaps,
       );

@@ -17,10 +17,7 @@ Widget _createTestWidget(Widget child) {
       GlobalWidgetsLocalizations.delegate,
       GlobalCupertinoLocalizations.delegate,
     ],
-    supportedLocales: const [
-      Locale('fa'),
-      Locale('en'),
-    ],
+    supportedLocales: const [Locale('fa'), Locale('en')],
     locale: const Locale('fa'),
     home: Scaffold(body: child),
   );
@@ -33,9 +30,7 @@ void main() {
     const testMessage = 'به دلیل آسیب شانه به پزشک مراجعه کنید.';
 
     await tester.pumpWidget(
-      _createTestWidget(
-        const MedicalReferralDialog(message: testMessage),
-      ),
+      _createTestWidget(const MedicalReferralDialog(message: testMessage)),
     );
     await tester.pumpAndSettle();
 
@@ -46,11 +41,7 @@ void main() {
   testWidgets('WorkoutRestDayView displays rest title and description', (
     WidgetTester tester,
   ) async {
-    await tester.pumpWidget(
-      _createTestWidget(
-        const WorkoutRestDayView(),
-      ),
-    );
+    await tester.pumpWidget(_createTestWidget(const WorkoutRestDayView()));
     await tester.pumpAndSettle();
 
     expect(find.byIcon(Icons.spa_rounded), findsOneWidget);
@@ -72,9 +63,7 @@ void main() {
     );
 
     await tester.pumpWidget(
-      _createTestWidget(
-        const WorkoutExerciseCard(exercise: item),
-      ),
+      _createTestWidget(const WorkoutExerciseCard(exercise: item)),
     );
     await tester.pumpAndSettle();
 
@@ -92,17 +81,13 @@ void main() {
       status: 'active',
       summary: 'برنامه تست',
       notes: const WorkoutNotes(progression: 'پیشرفت', safety: ['ایمنی']),
-      days: [],
+      sessions: [],
       createdAt: DateTime.now(),
       remainingFullGenerations: 0,
       remainingExerciseSwaps: 2,
     );
 
-    await tester.pumpWidget(
-      _createTestWidget(
-        WorkoutPlanHeader(plan: plan),
-      ),
-    );
+    await tester.pumpWidget(_createTestWidget(WorkoutPlanHeader(plan: plan)));
     await tester.pumpAndSettle();
 
     expect(find.text('برنامه تست'), findsOneWidget);

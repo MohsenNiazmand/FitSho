@@ -18,8 +18,12 @@ bool isWorkoutProfileStepValid({
   required List<String> selectedDisciplines,
   required Map<String, String> selectedStyles,
   required String selectedLevel,
-  required String? selectedGoal,
+  required String? primaryGoal,
+  String? secondaryGoal,
   required int daysPerWeek,
+  required int sessionMinutes,
+  List<String> injuryAreas = const [],
+  List<String> medicalConditions = const [],
 }) {
   switch (step) {
     case 0:
@@ -31,8 +35,12 @@ bool isWorkoutProfileStepValid({
             ),
           );
     case 1:
+      if (!options.levels.any((l) => l.id == selectedLevel && l.isAvailable)) {
+        return false;
+      }
       return selectedDisciplines.every((disciplineId) {
         final styleId = selectedStyles[disciplineId];
+        if (styleId == null || styleId.isEmpty) return false;
         return options.styles.any(
           (style) =>
               style.id == styleId &&
@@ -42,12 +50,28 @@ bool isWorkoutProfileStepValid({
         );
       });
     case 2:
-      return options.goals.any(
+      if (primaryGoal == null || primaryGoal.isEmpty) return false;
+
+      final isPrimaryValid = options.goals.any(
         (goal) =>
-            goal.id == selectedGoal &&
+            goal.id == primaryGoal &&
             goal.isAvailable &&
             goal.compatibleDisciplines.any(selectedDisciplines.contains),
       );
+      if (!isPrimaryValid) return false;
+
+      if (secondaryGoal != null && secondaryGoal.isNotEmpty) {
+        if (secondaryGoal == primaryGoal) return false;
+        final isSecondaryValid = options.goals.any(
+          (goal) =>
+              goal.id == secondaryGoal &&
+              goal.isAvailable &&
+              goal.compatibleDisciplines.any(selectedDisciplines.contains),
+        );
+        if (!isSecondaryValid) return false;
+      }
+
+      return true;
     case 3:
       var minDays = options.minDaysPerWeek;
       var maxDays = options.maxDaysPerWeek;
@@ -64,9 +88,14 @@ bool isWorkoutProfileStepValid({
           }
         }
       }
-      return daysPerWeek >= minDays && daysPerWeek <= maxDays;
+      final isDaysValid = daysPerWeek >= minDays && daysPerWeek <= maxDays;
+      final isMinutesValid =
+          sessionMinutes >= options.minSessionMinutes &&
+          sessionMinutes <= options.maxSessionMinutes;
+
+      return isDaysValid && isMinutesValid;
     case 4:
-      return true;
+      return injuryAreas.length <= 2;
     default:
       return false;
   }

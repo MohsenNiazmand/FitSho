@@ -82,13 +82,14 @@ void main() {
               'userId': 'user_1',
               'disciplines': ['bodybuilding'],
               'styles': {'bodybuilding': 'full_body'},
-              'goal': 'muscle_gain',
+              'primaryGoal': 'muscle_gain',
               'level': 'beginner',
               'daysPerWeek': '3',
               'sessionMinutes': '60',
               'location': 'gym',
               'equipment': ['dumbbell'],
-              'injuries': <dynamic>[],
+              'injuryAreas': <dynamic>[],
+              'medicalConditions': <dynamic>[],
               'painLevel': '0',
             },
             'shouldRegeneratePlan': true,
@@ -112,24 +113,25 @@ void main() {
         'profileSnapshot': {
           'disciplines': ['bodybuilding', 'fitness'],
           'styles': {'bodybuilding': 'full_body', 'fitness': 'hiit'},
-          'goal': 'muscle_gain',
+          'primaryGoal': 'muscle_gain',
           'level': 'beginner',
           'daysPerWeek': '4',
           'sessionMinutes': '60',
           'location': 'gym',
           'equipment': ['dumbbell'],
-          'injuries': <dynamic>[],
+          'injuryAreas': <dynamic>[],
+          'medicalConditions': <dynamic>[],
           'painLevel': '0',
         },
         'notes': {
           'progression': 'پیشرفت',
           'safety': ['ایمنی'],
         },
-        'days': [
+        'sessions': [
           {
-            'day': 'saturday',
-            'isRest': false,
-            'title': 'شنبه',
+            'sessionId': 'session_1',
+            'sessionNumber': 1,
+            'title': 'تمرین اول',
             'focus': ['chest'],
             'durationMin': '60',
             'warmup': <dynamic>[],
@@ -161,7 +163,7 @@ void main() {
       expect(plan.profileSnapshot?.disciplines, ['bodybuilding', 'fitness']);
       expect(plan.profileSnapshot?.daysPerWeek, 4);
 
-      final item = plan.days.first.main.first;
+      final item = plan.sessions.first.main.first;
       expect(item.sets, equals(3));
       expect(item.restSec, equals(90));
       expect(item.rpe, equals(8.5));
@@ -184,7 +186,7 @@ void main() {
                   'daysPerWeek': 3,
                 },
                 'notes': {'progression': 'پیشرفت', 'safety': <dynamic>[]},
-                'days': <dynamic>[],
+                'sessions': <dynamic>[],
                 'createdAt': '2026-03-01T10:00:00.000Z',
               },
             ],

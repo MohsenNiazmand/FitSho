@@ -15,7 +15,8 @@ import 'package:fitsho/features/diet/presentation/widgets/ai_loading_dialog.dart
 import 'package:fitsho/features/workout/domain/entities/workout_entities.dart';
 import 'package:fitsho/features/workout/presentation/providers/workout_providers.dart';
 import 'package:fitsho/features/workout/presentation/widgets/medical_referral_dialog.dart';
-import 'package:fitsho/features/workout/presentation/widgets/workout_day_section.dart';
+import 'package:fitsho/features/workout/presentation/widgets/new_plan_choice_dialog.dart';
+import 'package:fitsho/features/workout/presentation/widgets/workout_session_section.dart';
 import 'package:fitsho/features/workout/presentation/widgets/workout_plan_header.dart';
 import 'package:fitsho/features/workout/presentation/widgets/workout_profile_form.dart';
 import 'package:fitsho/shared/presentation/utils/failure_message.dart';
@@ -38,8 +39,9 @@ class WorkoutPlanScreen extends HookConsumerWidget {
       ),
     );
 
-    final failure =
-        await ref.read(workoutPlanNotifierProvider.notifier).generate();
+    final failure = await ref
+        .read(workoutPlanNotifierProvider.notifier)
+        .generate();
 
     if (context.mounted) {
       AiLoadingDialog.hide(context);
@@ -59,7 +61,7 @@ class WorkoutPlanScreen extends HookConsumerWidget {
   Future<void> _swapExercise(
     BuildContext context,
     WidgetRef ref,
-    String day,
+    String sessionId,
     WorkoutExerciseItem item,
     ValueNotifier<String?> swappingItemId,
   ) async {
@@ -68,7 +70,7 @@ class WorkoutPlanScreen extends HookConsumerWidget {
 
     final result = await ref
         .read(workoutPlanNotifierProvider.notifier)
-        .swapExercise(day: day, itemId: item.itemId);
+        .swapExercise(sessionId: sessionId, itemId: item.itemId);
 
     if (context.mounted) {
       swappingItemId.value = null;
@@ -78,6 +80,17 @@ class WorkoutPlanScreen extends HookConsumerWidget {
           context.tr.workoutExerciseSwappedSuccess(remainingSwaps),
         ),
       );
+    }
+  }
+
+  Future<void> _handleNewPlan(BuildContext context, WidgetRef ref) async {
+    final choice = await NewPlanChoiceDialog.show(context);
+
+    if (!context.mounted || choice == null) return;
+    if (choice == NewPlanChoiceAction.generateCurrent) {
+      await _generatePlan(context, ref);
+    } else {
+      await context.push(AppRoutes.workoutProfileEdit, extra: true);
     }
   }
 
@@ -132,8 +145,7 @@ class WorkoutPlanScreen extends HookConsumerWidget {
                       Gap.v24(),
                       AppPrimaryButton(
                         label: context.tr.workoutGoToDietOnboarding,
-                        onPressed: () =>
-                            context.push(AppRoutes.dietOnboarding),
+                        onPressed: () => context.push(AppRoutes.dietOnboarding),
                       ),
                     ],
                   ),
@@ -146,8 +158,7 @@ class WorkoutPlanScreen extends HookConsumerWidget {
               loading: () => const AppLoadingIndicator(),
               error: (error, _) => ErrorRetryView(
                 message: errorDisplayMessage(context, error),
-                onRetry: () =>
-                    ref.invalidate(workoutProfileNotifierProvider),
+                onRetry: () => ref.invalidate(workoutProfileNotifierProvider),
               ),
               data: (workoutProfile) {
                 // Scenario §2.2: No WorkoutProfile (GET 404) -> wizard
@@ -176,9 +187,8 @@ class WorkoutPlanScreen extends HookConsumerWidget {
                             child: Center(
                               child: ErrorRetryView(
                                 message: errorDisplayMessage(context, error),
-                                onRetry: () => ref.invalidate(
-                                  workoutPlanNotifierProvider,
-                                ),
+                                onRetry: () =>
+                                    ref.invalidate(workoutPlanNotifierProvider),
                               ),
                             ),
                           ),
@@ -224,19 +234,19 @@ class WorkoutPlanScreen extends HookConsumerWidget {
                                     plan: plan,
                                     isGenerating: isGenerating,
                                     onGenerateNewPlan: () =>
-                                        _generatePlan(context, ref),
+                                        _handleNewPlan(context, ref),
                                   ),
-                                  WorkoutDaySection(
+                                  WorkoutSessionSection(
                                     plan: plan,
                                     swappingItemId: swappingItemId.value,
-                                    onSwapExercise: (day, item) =>
+                                    onSwapExercise: (sessionId, item) =>
                                         _swapExercise(
-                                      context,
-                                      ref,
-                                      day,
-                                      item,
-                                      swappingItemId,
-                                    ),
+                                          context,
+                                          ref,
+                                          sessionId,
+                                          item,
+                                          swappingItemId,
+                                        ),
                                   ),
                                 ],
                               ),

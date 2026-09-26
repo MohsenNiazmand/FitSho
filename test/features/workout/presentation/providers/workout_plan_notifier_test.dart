@@ -62,13 +62,15 @@ class MockWorkoutRepository implements WorkoutRepository {
   Future<Either<Failure, WorkoutProfile>> upsertProfile({
     required List<String> disciplines,
     required Map<String, String> styles,
-    required String goal,
+    required String primaryGoal,
+    String? secondaryGoal,
     required String level,
     required int daysPerWeek,
     required int sessionMinutes,
     required String location,
     required List<String> equipment,
-    required List<String> injuries,
+    required List<String> injuryAreas,
+    required List<String> medicalConditions,
     String? injuryNotes,
     required int painLevel,
   }) async {
@@ -97,7 +99,7 @@ class MockWorkoutRepository implements WorkoutRepository {
   @override
   Future<Either<Failure, (WorkoutExerciseItem, int)>> swapExercise({
     required String planId,
-    required String day,
+    required String sessionId,
     required String itemId,
   }) async {
     if (swapFailure != null) {
@@ -126,10 +128,10 @@ final _samplePlan = WorkoutPlan(
     progression: 'افزایش وزنه تدریجی',
     safety: ['گرم کردن کامل پیش از شروع'],
   ),
-  days: [
-    const WorkoutDay(
-      day: 'saturday',
-      isRest: false,
+  sessions: [
+    const WorkoutSession(
+      sessionId: 'session_1',
+      sessionNumber: 1,
       title: 'تمرین سینه و پشت بازو',
       focus: ['chest', 'triceps'],
       durationMin: 60,
@@ -146,10 +148,10 @@ final _samplePlan = WorkoutPlan(
       ],
       cooldown: [],
     ),
-    const WorkoutDay(
-      day: 'sunday',
-      isRest: true,
-      title: 'استراحت',
+    const WorkoutSession(
+      sessionId: 'session_2',
+      sessionNumber: 2,
+      title: 'تمرین دوم',
       focus: [],
       durationMin: 0,
       warmup: [],
@@ -192,7 +194,7 @@ void main() {
     final plan = await container.read(workoutPlanNotifierProvider.future);
     expect(plan, isNotNull);
     expect(plan!.id, equals('plan_123'));
-    expect(plan.days.length, equals(2));
+    expect(plan.sessions.length, equals(2));
   });
 
   test('WorkoutPlanNotifier generate succeeds and updates state', () async {
@@ -248,7 +250,7 @@ void main() {
 
       final notifier = container.read(workoutPlanNotifierProvider.notifier);
       final result = await notifier.swapExercise(
-        day: 'saturday',
+        sessionId: 'session_1',
         itemId: 'item_1',
       );
 
@@ -259,8 +261,10 @@ void main() {
       expect(updatedPlan, isNotNull);
       expect(updatedPlan!.remainingExerciseSwaps, equals(3));
 
-      final saturday = updatedPlan.days.firstWhere((d) => d.day == 'saturday');
-      final swappedExercise = saturday.main.firstWhere(
+      final firstSession = updatedPlan.sessions.firstWhere(
+        (session) => session.sessionId == 'session_1',
+      );
+      final swappedExercise = firstSession.main.firstWhere(
         (e) => e.itemId == 'item_1',
       );
       expect(swappedExercise.name, equals('قفسه سینه سیم‌کش'));
@@ -279,7 +283,7 @@ void main() {
 
       final notifier = container.read(workoutPlanNotifierProvider.notifier);
       final result = await notifier.swapExercise(
-        day: 'saturday',
+        sessionId: 'session_1',
         itemId: 'item_1',
       );
 
@@ -289,9 +293,11 @@ void main() {
 
       final plan = container.read(workoutPlanNotifierProvider).value;
       expect(plan!.remainingExerciseSwaps, equals(4));
-      final saturday = plan.days.firstWhere((d) => d.day == 'saturday');
+      final firstSession = plan.sessions.firstWhere(
+        (session) => session.sessionId == 'session_1',
+      );
       expect(
-        saturday.main.firstWhere((e) => e.itemId == 'item_1').name,
+        firstSession.main.firstWhere((e) => e.itemId == 'item_1').name,
         equals('پرس سینه دمبل'),
       );
     },

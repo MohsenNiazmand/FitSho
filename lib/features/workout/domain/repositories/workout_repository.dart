@@ -16,13 +16,15 @@ abstract class WorkoutRepository {
   Future<Either<Failure, WorkoutProfile>> upsertProfile({
     required List<String> disciplines,
     required Map<String, String> styles,
-    required String goal,
+    required String primaryGoal,
+    String? secondaryGoal,
     required String level,
     required int daysPerWeek,
     required int sessionMinutes,
     required String location,
     required List<String> equipment,
-    required List<String> injuries,
+    required List<String> injuryAreas,
+    required List<String> medicalConditions,
     String? injuryNotes,
     required int painLevel,
   });
@@ -40,7 +42,7 @@ abstract class WorkoutRepository {
 
   Future<Either<Failure, (WorkoutExerciseItem, int)>> swapExercise({
     required String planId,
-    required String day,
+    required String sessionId,
     required String itemId,
   });
 }

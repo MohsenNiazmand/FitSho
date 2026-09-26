@@ -4,10 +4,7 @@ import 'package:fitsho/shared/presentation/widgets/gap.dart';
 import 'package:flutter/material.dart';
 
 class MedicalReferralDialog extends StatelessWidget {
-  const MedicalReferralDialog({
-    required this.message,
-    super.key,
-  });
+  const MedicalReferralDialog({required this.message, super.key});
 
   final String message;
 

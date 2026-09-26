@@ -19,7 +19,7 @@ void main() {
       userId: 'user_1',
       status: 'active',
       notes: WorkoutNotesModel(progression: '', safety: []),
-      days: [],
+      sessions: [],
       createdAt: DateTime(2026, 1, 1),
     );
 
@@ -39,13 +39,14 @@ void main() {
       userId: 'user_1',
       disciplines: ['strength'],
       styles: {'strength': 'full_body'},
-      goal: 'strength',
+      primaryGoal: 'strength',
       level: 'beginner',
       daysPerWeek: 3,
       sessionMinutes: 60,
       location: 'gym',
       equipment: [],
-      injuries: [],
+      injuryAreas: [],
+      medicalConditions: [],
       painLevel: 0,
     );
 

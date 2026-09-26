@@ -72,9 +72,13 @@ extension WorkoutOptionsModelX on WorkoutOptionsModel {
       locations: locations.map((e) => e.toEntity()).toList(),
       equipment: equipment.map((e) => e.toEntity()).toList(),
       injuries: injuries.map((e) => e.toEntity()).toList(),
+      injuryAreas: injuryAreas.map((e) => e.toEntity()).toList(),
+      medicalConditions: medicalConditions.map((e) => e.toEntity()).toList(),
       maxDisciplines: maxDisciplines,
       minDaysPerWeek: minDaysPerWeek,
       maxDaysPerWeek: maxDaysPerWeek,
+      minSessionMinutes: minSessionMinutes,
+      maxSessionMinutes: maxSessionMinutes,
     );
   }
 }
@@ -86,13 +90,15 @@ extension WorkoutProfileModelX on WorkoutProfileModel {
       userId: userId,
       disciplines: disciplines,
       styles: styles,
-      goal: goal,
+      primaryGoal: primaryGoal,
+      secondaryGoal: secondaryGoal,
       level: level,
       daysPerWeek: daysPerWeek,
       sessionMinutes: sessionMinutes,
       location: location,
       equipment: equipment,
-      injuries: injuries,
+      injuryAreas: injuryAreas,
+      medicalConditions: medicalConditions,
       injuryNotes: injuryNotes,
       painLevel: painLevel,
       shouldRegeneratePlan: shouldRegeneratePlan,
@@ -116,11 +122,11 @@ extension WorkoutExerciseItemModelX on WorkoutExerciseItemModel {
   }
 }
 
-extension WorkoutDayModelX on WorkoutDayModel {
-  WorkoutDay toEntity() {
-    return WorkoutDay(
-      day: day,
-      isRest: isRest,
+extension WorkoutSessionModelX on WorkoutSessionModel {
+  WorkoutSession toEntity() {
+    return WorkoutSession(
+      sessionId: sessionId,
+      sessionNumber: sessionNumber,
       title: title,
       focus: focus,
       durationMin: durationMin,
@@ -142,13 +148,15 @@ extension WorkoutProfileSnapshotModelX on WorkoutProfileSnapshotModel {
     return WorkoutProfileSnapshot(
       disciplines: disciplines,
       styles: styles,
-      goal: goal,
+      primaryGoal: primaryGoal,
+      secondaryGoal: secondaryGoal,
       level: level,
       daysPerWeek: daysPerWeek,
       sessionMinutes: sessionMinutes,
       location: location,
       equipment: equipment,
-      injuries: injuries,
+      injuryAreas: injuryAreas,
+      medicalConditions: medicalConditions,
       painLevel: painLevel,
     );
   }
@@ -162,7 +170,7 @@ extension WorkoutPlanModelX on WorkoutPlanModel {
       status: status,
       summary: summary,
       notes: notes.toEntity(),
-      days: days.map((e) => e.toEntity()).toList(),
+      sessions: sessions.map((e) => e.toEntity()).toList(),
       createdAt: createdAt,
       profileSnapshot: profileSnapshot?.toEntity(),
       remainingFullGenerations: remainingFullGenerations,
@@ -187,11 +195,11 @@ extension WorkoutExerciseItemX on WorkoutExerciseItem {
   }
 }
 
-extension WorkoutDayX on WorkoutDay {
-  WorkoutDayModel toModel() {
-    return WorkoutDayModel(
-      day: day,
-      isRest: isRest,
+extension WorkoutSessionX on WorkoutSession {
+  WorkoutSessionModel toModel() {
+    return WorkoutSessionModel(
+      sessionId: sessionId,
+      sessionNumber: sessionNumber,
       title: title,
       focus: focus,
       durationMin: durationMin,
@@ -213,13 +221,15 @@ extension WorkoutProfileSnapshotX on WorkoutProfileSnapshot {
     return WorkoutProfileSnapshotModel(
       disciplines: disciplines,
       styles: styles,
-      goal: goal,
+      primaryGoal: primaryGoal,
+      secondaryGoal: secondaryGoal,
       level: level,
       daysPerWeek: daysPerWeek,
       sessionMinutes: sessionMinutes,
       location: location,
       equipment: equipment,
-      injuries: injuries,
+      injuryAreas: injuryAreas,
+      medicalConditions: medicalConditions,
       painLevel: painLevel,
     );
   }
@@ -233,7 +243,7 @@ extension WorkoutPlanX on WorkoutPlan {
       status: status,
       summary: summary,
       notes: notes.toModel(),
-      days: days.map((e) => e.toModel()).toList(),
+      sessions: sessions.map((e) => e.toModel()).toList(),
       createdAt: createdAt,
       profileSnapshot: profileSnapshot?.toModel(),
       remainingFullGenerations: remainingFullGenerations,

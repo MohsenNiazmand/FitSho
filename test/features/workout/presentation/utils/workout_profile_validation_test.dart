@@ -62,6 +62,8 @@ void main() {
     maxDisciplines: 2,
     minDaysPerWeek: 2,
     maxDaysPerWeek: 6,
+    minSessionMinutes: 10,
+    maxSessionMinutes: 180,
   );
 
   test('rejects a style that is not available at the selected level', () {
@@ -71,8 +73,9 @@ void main() {
       selectedDisciplines: ['strength'],
       selectedStyles: {'strength': 'beginner_style'},
       selectedLevel: 'advanced',
-      selectedGoal: null,
+      primaryGoal: null,
       daysPerWeek: 3,
+      sessionMinutes: 60,
     );
 
     expect(isValid, isFalse);
@@ -85,8 +88,9 @@ void main() {
       selectedDisciplines: ['strength'],
       selectedStyles: {'strength': 'beginner_style'},
       selectedLevel: 'beginner',
-      selectedGoal: 'mobility_goal',
+      primaryGoal: 'mobility_goal',
       daysPerWeek: 3,
+      sessionMinutes: 60,
     );
 
     expect(isValid, isFalse);
@@ -99,8 +103,9 @@ void main() {
       selectedDisciplines: ['strength'],
       selectedStyles: {'strength': 'beginner_style'},
       selectedLevel: 'beginner',
-      selectedGoal: 'strength_goal',
+      primaryGoal: 'strength_goal',
       daysPerWeek: 4,
+      sessionMinutes: 60,
     );
 
     expect(isValid, isFalse);

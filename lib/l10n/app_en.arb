@@ -591,5 +591,35 @@
   "workoutRegeneratePromptBody": "Your details have changed. Would you like to regenerate your workout plan based on the new information?",
   "workoutRegenerateConfirm": "Yes, regenerate",
   "workoutRegenerateDismiss": "Not now",
-  "workoutPlanRegenerated": "A new workout plan was generated successfully"
+  "workoutPlanRegenerated": "A new workout plan was generated successfully",
+  "workoutSessionTitle": "Session {number}",
+  "@workoutSessionTitle": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutNewPlanChoiceTitle": "How would you like to create a new plan?",
+  "workoutNewPlanChoiceUseCurrent": "Use current details & generate new plan",
+  "workoutNewPlanChoiceEdit": "Edit workout details first",
+  "workoutPrimaryGoalLabel": "Primary Goal (Required):",
+  "workoutSecondaryGoalLabel": "Secondary Goal (Optional):",
+  "workoutGoalPrimaryTag": "Primary Goal",
+  "workoutGoalSecondaryTag": "Secondary Goal",
+  "workoutInjuryAreasLabel": "Injury Areas (Max 2):",
+  "workoutMedicalConditionsLabel": "Medical Conditions:",
+  "workoutMaxInjuryAreasWarning": "You can select at most 2 injury areas.",
+  "workoutCustomDurationLabel": "Custom duration (minutes):",
+  "workoutCustomDurationInvalid": "Please enter a value between {min} and {max}",
+  "@workoutCustomDurationInvalid": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  }
 }

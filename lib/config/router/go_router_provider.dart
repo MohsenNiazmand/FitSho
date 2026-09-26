@@ -8,7 +8,8 @@ import 'package:fitsho/features/diet/presentation/screens/dashboard_screen.dart'
 import 'package:fitsho/features/diet/presentation/screens/diet_history_screen.dart';
 import 'package:fitsho/features/diet/presentation/screens/diet_meal_slots_screen.dart';
 import 'package:fitsho/features/diet/presentation/screens/diet_profile_edit_screen.dart';
-import 'package:fitsho/features/diet/presentation/screens/onboarding_screen.dart' as diet;
+import 'package:fitsho/features/diet/presentation/screens/onboarding_screen.dart'
+    as diet;
 import 'package:fitsho/features/diet/presentation/screens/supplements_screen.dart';
 import 'package:fitsho/features/diet/presentation/screens/weekly_plan_screen.dart';
 import 'package:fitsho/features/workout/domain/entities/workout_entities.dart';
@@ -28,8 +29,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'go_router_provider.g.dart';
 
-final GlobalKey<NavigatorState> rootNavigatorKey =
-    GlobalKey<NavigatorState>(debugLabel: 'root');
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>(
+  debugLabel: 'root',
+);
 
 @Riverpod(keepAlive: true)
 GoRouter goRouter(GoRouterRef ref) {
@@ -120,7 +122,8 @@ GoRouter goRouter(GoRouterRef ref) {
       ),
       GoRoute(
         path: AppRoutes.workoutProfileEdit,
-        builder: (context, state) => const WorkoutProfileEditScreen(),
+        builder: (context, state) =>
+            WorkoutProfileEditScreen(skipRegeneratePrompt: state.extra == true),
       ),
       GoRoute(
         path: AppRoutes.workoutHistory,
@@ -159,15 +162,13 @@ GoRouter goRouter(GoRouterRef ref) {
                   final extra = state.extra as Map<String, dynamic>?;
 
                   final day = queryParams['day'] ?? extra?['day'] as String?;
-                  final meal = queryParams['meal'] ??
+                  final meal =
+                      queryParams['meal'] ??
                       queryParams['slot'] ??
                       extra?['meal'] as String? ??
                       extra?['slot'] as String?;
 
-                  return WeeklyPlanScreen(
-                    initialDay: day,
-                    initialSlot: meal,
-                  );
+                  return WeeklyPlanScreen(initialDay: day, initialSlot: meal);
                 },
               ),
             ],

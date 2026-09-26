@@ -8,6 +8,7 @@ import 'package:fitsho/config/theme/app_radius.dart';
 import 'package:fitsho/core/constants/colors.dart';
 import 'package:fitsho/core/error/failures.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
+import 'package:fitsho/core/utils/persian_digits.dart';
 import 'package:fitsho/core/utils/persian_input.dart';
 import 'package:fitsho/features/diet/presentation/widgets/ai_loading_dialog.dart';
 import 'package:fitsho/features/workout/domain/entities/workout_entities.dart';
@@ -23,9 +24,16 @@ import 'package:fitsho/shared/presentation/widgets/gap.dart';
 const _stepCount = 5;
 
 class WorkoutProfileForm extends HookConsumerWidget {
-  const WorkoutProfileForm({super.key, this.isEditing = false});
+  const WorkoutProfileForm({
+    super.key,
+    this.isEditing = false,
+    this.skipRegeneratePrompt = false,
+    this.onProfileSaved,
+  });
 
   final bool isEditing;
+  final bool skipRegeneratePrompt;
+  final Future<void> Function()? onProfileSaved;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -34,14 +42,18 @@ class WorkoutProfileForm extends HookConsumerWidget {
 
     final selectedDisciplines = useState<List<String>>([]);
     final selectedStyles = useState<Map<String, String>>({});
-    final selectedGoal = useState<String?>(null);
+    final primaryGoal = useState<String?>(null);
+    final secondaryGoal = useState<String?>(null);
     final selectedLevel = useState<String>('beginner');
     final daysPerWeek = useState<int>(3);
     final sessionMinutes = useState<int>(60);
+    final customDurationController = useTextEditingController(text: '60');
+    final customDurationError = useState<String?>(null);
     final location = useState<String>('gym');
     final selectedEquipment = useState<List<String>>([]);
     final hasNoInjuries = useState<bool>(true);
-    final selectedInjuries = useState<List<String>>([]);
+    final selectedInjuryAreas = useState<List<String>>([]);
+    final selectedMedicalConditions = useState<List<String>>([]);
     final painLevel = useState<int>(0);
     final injuryNotesController = useTextEditingController();
 
@@ -54,19 +66,37 @@ class WorkoutProfileForm extends HookConsumerWidget {
       if (profile != null) {
         selectedDisciplines.value = List.from(profile.disciplines);
         selectedStyles.value = Map.from(profile.styles);
-        selectedGoal.value = profile.goal;
+        primaryGoal.value = profile.primaryGoal;
+        secondaryGoal.value = profile.secondaryGoal;
         selectedLevel.value = profile.level;
         daysPerWeek.value = profile.daysPerWeek;
+        final options = optionsAsync.valueOrNull;
+        if (options != null && profile.disciplines.length == 1) {
+          final styleId = profile.styles[profile.disciplines.single];
+          for (final style in options.styles) {
+            if (style.id == styleId &&
+                style.disciplineId == profile.disciplines.single) {
+              daysPerWeek.value = profile.daysPerWeek.clamp(
+                style.minDays,
+                style.maxDays,
+              );
+              break;
+            }
+          }
+        }
         sessionMinutes.value = profile.sessionMinutes;
+        customDurationController.text = profile.sessionMinutes.toString();
         location.value = profile.location;
         selectedEquipment.value = List.from(profile.equipment);
-        selectedInjuries.value = List.from(profile.injuries);
-        hasNoInjuries.value = profile.injuries.isEmpty;
+        selectedInjuryAreas.value = List.from(profile.injuryAreas);
+        selectedMedicalConditions.value = List.from(profile.medicalConditions);
+        hasNoInjuries.value =
+            profile.injuryAreas.isEmpty && profile.medicalConditions.isEmpty;
         painLevel.value = profile.painLevel;
         injuryNotesController.text = profile.injuryNotes ?? '';
       }
       return null;
-    }, [profileAsync.value]);
+    }, [profileAsync.value, optionsAsync.value]);
 
     return optionsAsync.when(
       data: (options) {
@@ -77,8 +107,12 @@ class WorkoutProfileForm extends HookConsumerWidget {
             selectedDisciplines: selectedDisciplines.value,
             selectedStyles: selectedStyles.value,
             selectedLevel: selectedLevel.value,
-            selectedGoal: selectedGoal.value,
+            primaryGoal: primaryGoal.value,
+            secondaryGoal: secondaryGoal.value,
             daysPerWeek: daysPerWeek.value,
+            sessionMinutes: sessionMinutes.value,
+            injuryAreas: selectedInjuryAreas.value,
+            medicalConditions: selectedMedicalConditions.value,
           );
         }
 
@@ -109,13 +143,35 @@ class WorkoutProfileForm extends HookConsumerWidget {
         }
 
         Future<void> saveProfile() async {
+          final isFormValid = List.generate(
+            _stepCount,
+            (step) => isWorkoutProfileStepValid(
+              step: step,
+              options: options,
+              selectedDisciplines: selectedDisciplines.value,
+              selectedStyles: selectedStyles.value,
+              selectedLevel: selectedLevel.value,
+              primaryGoal: primaryGoal.value,
+              secondaryGoal: secondaryGoal.value,
+              daysPerWeek: daysPerWeek.value,
+              sessionMinutes: sessionMinutes.value,
+              injuryAreas: selectedInjuryAreas.value,
+              medicalConditions: selectedMedicalConditions.value,
+            ),
+          ).every((valid) => valid);
+          if (!isFormValid) {
+            showMessageToast(context.tr.dietFormValidationError);
+            return;
+          }
+
           isSaving.value = true;
           final (failure, saved) = await ref
               .read(workoutProfileNotifierProvider.notifier)
               .save(
                 disciplines: selectedDisciplines.value,
                 styles: selectedStyles.value,
-                goal: selectedGoal.value ?? options.goals.first.id,
+                primaryGoal: primaryGoal.value!,
+                secondaryGoal: secondaryGoal.value,
                 level: selectedLevel.value,
                 daysPerWeek: daysPerWeek.value,
                 sessionMinutes: sessionMinutes.value,
@@ -123,7 +179,12 @@ class WorkoutProfileForm extends HookConsumerWidget {
                 equipment: location.value == 'gym'
                     ? []
                     : selectedEquipment.value,
-                injuries: hasNoInjuries.value ? [] : selectedInjuries.value,
+                injuryAreas: hasNoInjuries.value
+                    ? []
+                    : selectedInjuryAreas.value,
+                medicalConditions: hasNoInjuries.value
+                    ? []
+                    : selectedMedicalConditions.value,
                 injuryNotes: injuryNotesController.text.trim().isEmpty
                     ? null
                     : injuryNotesController.text.trim(),
@@ -137,7 +198,8 @@ class WorkoutProfileForm extends HookConsumerWidget {
             showFailureToast(context, failure);
           } else {
             showSuccessToast(context.tr.workoutProfileSaved);
-            if (saved?.shouldRegeneratePlan == true) {
+            await onProfileSaved?.call();
+            if (!skipRegeneratePrompt && saved?.shouldRegeneratePlan == true) {
               await _maybePromptRegenerate(context, ref);
             }
             if (context.canPop()) {
@@ -189,7 +251,8 @@ class WorkoutProfileForm extends HookConsumerWidget {
                     context,
                     options,
                     selectedDisciplines,
-                    selectedGoal,
+                    primaryGoal,
+                    secondaryGoal,
                   ),
                   _buildConditionsStep(
                     context,
@@ -198,6 +261,8 @@ class WorkoutProfileForm extends HookConsumerWidget {
                     selectedStyles,
                     daysPerWeek,
                     sessionMinutes,
+                    customDurationController,
+                    customDurationError,
                     location,
                     selectedEquipment,
                   ),
@@ -205,7 +270,8 @@ class WorkoutProfileForm extends HookConsumerWidget {
                     context,
                     options,
                     hasNoInjuries,
-                    selectedInjuries,
+                    selectedInjuryAreas,
+                    selectedMedicalConditions,
                     painLevel,
                     injuryNotesController,
                   ),
@@ -369,7 +435,9 @@ class WorkoutProfileForm extends HookConsumerWidget {
           style: const TextStyle(fontWeight: FontWeight.w600),
         ),
         Gap.v8(),
+        // F11: Accessible equal-width selectable tiles with short title on line 1 and description on line 2
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: options.levels.map((lvl) {
             final isSelected = selectedLevel.value == lvl.id;
             return Expanded(
@@ -377,20 +445,50 @@ class WorkoutProfileForm extends HookConsumerWidget {
                 onTap: () => selectedLevel.value = lvl.id,
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 4),
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  alignment: Alignment.center,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 12,
+                  ),
                   decoration: BoxDecoration(
                     color: isSelected
                         ? const Color(0xFF6366F1)
                         : Colors.grey.shade100,
                     borderRadius: AppRadius.button,
-                  ),
-                  child: Text(
-                    lvl.label,
-                    style: TextStyle(
-                      color: isSelected ? Colors.white : Colors.black87,
-                      fontWeight: FontWeight.bold,
+                    border: Border.all(
+                      color: isSelected
+                          ? const Color(0xFF4338CA)
+                          : Colors.grey.shade300,
                     ),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        lvl.label,
+                        style: TextStyle(
+                          color: isSelected ? Colors.white : Colors.black87,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      if (lvl.description != null &&
+                          lvl.description!.isNotEmpty) ...[
+                        Gap.v4(),
+                        Text(
+                          lvl.description!,
+                          style: TextStyle(
+                            color: isSelected
+                                ? Colors.white70
+                                : Colors.grey.shade600,
+                            fontSize: 11,
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ],
                   ),
                 ),
               ),
@@ -420,6 +518,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
               ),
               Gap.v8(),
               ...availableStyles.map((style) {
+                final isSelectedStyle = selectedStyles.value[dId] == style.id;
                 return RadioListTile<String>(
                   title: Text(
                     style.label,
@@ -428,14 +527,15 @@ class WorkoutProfileForm extends HookConsumerWidget {
                   subtitle: Text(style.description),
                   value: style.id,
                   groupValue: selectedStyles.value[dId],
-                  onChanged: (val) {
-                    if (val != null) {
-                      final map = Map<String, String>.from(
-                        selectedStyles.value,
-                      );
-                      map[dId] = val;
-                      selectedStyles.value = map;
+                  onChanged: (_) {
+                    final map = Map<String, String>.from(selectedStyles.value);
+                    if (isSelectedStyle) {
+                      // F10: Tapping currently selected style clears it
+                      map.remove(dId);
+                    } else {
+                      map[dId] = style.id;
                     }
+                    selectedStyles.value = map;
                   },
                 );
               }),
@@ -451,13 +551,24 @@ class WorkoutProfileForm extends HookConsumerWidget {
     BuildContext context,
     WorkoutOptions options,
     ValueNotifier<List<String>> selectedDisciplines,
-    ValueNotifier<String?> selectedGoal,
+    ValueNotifier<String?> primaryGoal,
+    ValueNotifier<String?> secondaryGoal,
   ) {
     final compatibleGoals = options.goals.where((g) {
       return g.compatibleDisciplines.any(
         (dId) => selectedDisciplines.value.contains(dId),
       );
     }).toList();
+    final selectedGoalIds = {primaryGoal.value, secondaryGoal.value}
+      ..remove(null);
+    final visibleGoals = [
+      ...compatibleGoals,
+      ...options.goals.where(
+        (goal) =>
+            selectedGoalIds.contains(goal.id) &&
+            !compatibleGoals.any((candidate) => candidate.id == goal.id),
+      ),
+    ];
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -472,10 +583,32 @@ class WorkoutProfileForm extends HookConsumerWidget {
           style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
         ),
         Gap.v16(),
-        ...compatibleGoals.map((goal) {
-          final isSelected = selectedGoal.value == goal.id;
+        ...visibleGoals.map((goal) {
+          final isPrimary = primaryGoal.value == goal.id;
+          final isSecondary = secondaryGoal.value == goal.id;
+          final isSelected = isPrimary || isSecondary;
+
           return GestureDetector(
-            onTap: () => selectedGoal.value = goal.id,
+            onTap: () {
+              if (isPrimary) {
+                primaryGoal.value = null;
+              } else if (isSecondary) {
+                if (primaryGoal.value == null) {
+                  primaryGoal.value = secondaryGoal.value;
+                  secondaryGoal.value = null;
+                } else {
+                  secondaryGoal.value = null;
+                }
+              } else {
+                if (primaryGoal.value == null) {
+                  primaryGoal.value = goal.id;
+                } else if (secondaryGoal.value == null) {
+                  secondaryGoal.value = goal.id;
+                } else {
+                  showMessageToast(context.tr.dietFormValidationError);
+                }
+              }
+            },
             child: Container(
               margin: const EdgeInsets.only(bottom: 12),
               padding: const EdgeInsets.all(16),
@@ -492,18 +625,56 @@ class WorkoutProfileForm extends HookConsumerWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    goal.label,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: isSelected
-                          ? const Color(0xFF4338CA)
-                          : Colors.black87,
+                  Expanded(
+                    child: Text(
+                      goal.label,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: isSelected
+                            ? const Color(0xFF4338CA)
+                            : Colors.black87,
+                      ),
                     ),
                   ),
-                  if (isSelected)
-                    const Icon(Icons.check_circle, color: Color(0xFF6366F1)),
+                  if (isPrimary)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: cPrimary,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        context.tr.workoutGoalPrimaryTag,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    )
+                  else if (isSecondary)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: cPrimary.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        context.tr.workoutGoalSecondaryTag,
+                        style: const TextStyle(
+                          color: cPrimaryDark,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -520,6 +691,8 @@ class WorkoutProfileForm extends HookConsumerWidget {
     ValueNotifier<Map<String, String>> selectedStyles,
     ValueNotifier<int> daysPerWeek,
     ValueNotifier<int> sessionMinutes,
+    TextEditingController customDurationController,
+    ValueNotifier<String?> customDurationError,
     ValueNotifier<String> location,
     ValueNotifier<List<String>> selectedEquipment,
   ) {
@@ -532,6 +705,20 @@ class WorkoutProfileForm extends HookConsumerWidget {
         final style = options.styles.firstWhere((s) => s.id == sId);
         minDays = style.minDays;
         maxDays = style.maxDays;
+      }
+    }
+
+    void updateSessionMinutes(int val) {
+      if (val >= options.minSessionMinutes &&
+          val <= options.maxSessionMinutes) {
+        sessionMinutes.value = val;
+        customDurationError.value = null;
+      } else {
+        sessionMinutes.value = -1;
+        customDurationError.value = context.tr.workoutCustomDurationInvalid(
+          options.minSessionMinutes,
+          options.maxSessionMinutes,
+        );
       }
     }
 
@@ -549,14 +736,15 @@ class WorkoutProfileForm extends HookConsumerWidget {
         ),
         Gap.v8(),
         Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          // alignment: WrapAlignment.center,
+          // spacing: 8,
+          // runSpacing: 8,
           children: List.generate(maxDays - minDays + 1, (i) {
             final day = minDays + i;
             final isSelected = daysPerWeek.value == day;
             return GestureDetector(
               onTap: () => daysPerWeek.value = day,
               child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 6),
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 10,
@@ -584,6 +772,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
           style: const TextStyle(fontWeight: FontWeight.w600),
         ),
         Gap.v8(),
+        // Suggested session-minute chips
         Wrap(
           spacing: 8,
           children: options.sessionMinutes.map((min) {
@@ -591,9 +780,41 @@ class WorkoutProfileForm extends HookConsumerWidget {
             return ChoiceChip(
               label: Text(context.tr.workoutMinutesCount(min)),
               selected: isSelected,
-              onSelected: (_) => sessionMinutes.value = min,
+              onSelected: (_) {
+                sessionMinutes.value = min;
+                customDurationController.text = min.toString();
+                customDurationError.value = null;
+              },
             );
           }).toList(),
+        ),
+        Gap.v12(),
+        // F11: Custom integer duration input field accepting Persian and Latin digits
+        AppTextField(
+          controller: customDurationController,
+          labelText: context.tr.workoutCustomDurationLabel,
+          errorText: customDurationError.value,
+          keyboardType: TextInputType.number,
+          inputFormatters: [createPersianDigitFormatter()],
+          onChanged: (text) {
+            final normalized = PersianDigits.toEnglish(text).trim();
+            final parsed = RegExp(r'^[0-9]+$').hasMatch(normalized)
+                ? int.tryParse(normalized)
+                : null;
+            if (parsed != null) {
+              updateSessionMinutes(parsed);
+            } else if (normalized.isEmpty) {
+              sessionMinutes.value = -1;
+              customDurationError.value = null;
+            } else {
+              sessionMinutes.value = -1;
+              customDurationError.value = context.tr
+                  .workoutCustomDurationInvalid(
+                    options.minSessionMinutes,
+                    options.maxSessionMinutes,
+                  );
+            }
+          },
         ),
         Gap.custom(height: 20),
         Text(
@@ -665,20 +886,22 @@ class WorkoutProfileForm extends HookConsumerWidget {
     BuildContext context,
     WorkoutOptions options,
     ValueNotifier<bool> hasNoInjuries,
-    ValueNotifier<List<String>> selectedInjuries,
+    ValueNotifier<List<String>> selectedInjuryAreas,
+    ValueNotifier<List<String>> selectedMedicalConditions,
     ValueNotifier<int> painLevel,
     TextEditingController injuryNotesController,
   ) {
-    final hasReferralInjury = selectedInjuries.value.any((injId) {
-      final inj = options.injuries.firstWhere(
-        (i) => i.id == injId,
-        orElse: () => options.injuries.first,
-      );
-      return inj.requiresReferral;
-    });
+    final medicalOptions = options.medicalConditions.isNotEmpty
+        ? options.medicalConditions
+        : options.injuries.where((i) => i.requiresReferral).toList();
+    final hasReferralCondition = selectedMedicalConditions.value.any(
+      (condId) => medicalOptions.any(
+        (condition) => condition.id == condId && condition.requiresReferral,
+      ),
+    );
 
     final showWarning =
-        !hasNoInjuries.value && (painLevel.value >= 7 || hasReferralInjury);
+        !hasNoInjuries.value && (painLevel.value >= 7 || hasReferralCondition);
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -697,37 +920,92 @@ class WorkoutProfileForm extends HookConsumerWidget {
           onChanged: (val) {
             hasNoInjuries.value = val;
             if (val) {
-              selectedInjuries.value = [];
+              selectedInjuryAreas.value = [];
+              selectedMedicalConditions.value = [];
               painLevel.value = 0;
+              injuryNotesController.clear();
             }
           },
         ),
         if (!hasNoInjuries.value) ...[
           Gap.v16(),
+          // F10: Injury areas (max 2)
           Text(
-            context.tr.workoutInjuriesLabel,
+            context.tr.workoutInjuryAreasLabel,
             style: const TextStyle(fontWeight: FontWeight.w600),
           ),
           Gap.v8(),
           Wrap(
             spacing: 8,
             runSpacing: 4,
-            children: options.injuries.map((inj) {
-              final isSelected = selectedInjuries.value.contains(inj.id);
-              return FilterChip(
-                label: Text(inj.label),
-                selected: isSelected,
-                onSelected: (selected) {
-                  final list = List<String>.from(selectedInjuries.value);
-                  if (selected) {
-                    list.add(inj.id);
-                  } else {
-                    list.remove(inj.id);
-                  }
-                  selectedInjuries.value = list;
-                },
-              );
-            }).toList(),
+            children:
+                (options.injuryAreas.isNotEmpty
+                        ? options.injuryAreas
+                        : options.injuries.where((i) => !i.requiresReferral))
+                    .map((inj) {
+                      final isSelected = selectedInjuryAreas.value.contains(
+                        inj.id,
+                      );
+                      return FilterChip(
+                        label: Text(inj.label),
+                        selected: isSelected,
+                        onSelected: (selected) {
+                          final list = List<String>.from(
+                            selectedInjuryAreas.value,
+                          );
+                          if (selected) {
+                            if (list.length >= 2) {
+                              BotToast.showText(
+                                text: context.tr.workoutMaxInjuryAreasWarning,
+                              );
+                              return;
+                            }
+                            list.add(inj.id);
+                          } else {
+                            list.remove(inj.id);
+                          }
+                          selectedInjuryAreas.value = list;
+                          hasNoInjuries.value = false;
+                        },
+                      );
+                    })
+                    .toList(),
+          ),
+          Gap.v16(),
+          // F10: Medical conditions (unlimited)
+          Text(
+            context.tr.workoutMedicalConditionsLabel,
+            style: const TextStyle(fontWeight: FontWeight.w600),
+          ),
+          Gap.v8(),
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children:
+                (options.medicalConditions.isNotEmpty
+                        ? options.medicalConditions
+                        : options.injuries.where((i) => i.requiresReferral))
+                    .map((inj) {
+                      final isSelected = selectedMedicalConditions.value
+                          .contains(inj.id);
+                      return FilterChip(
+                        label: Text(inj.label),
+                        selected: isSelected,
+                        onSelected: (selected) {
+                          final list = List<String>.from(
+                            selectedMedicalConditions.value,
+                          );
+                          if (selected) {
+                            list.add(inj.id);
+                          } else {
+                            list.remove(inj.id);
+                          }
+                          selectedMedicalConditions.value = list;
+                          hasNoInjuries.value = false;
+                        },
+                      );
+                    })
+                    .toList(),
           ),
           Gap.custom(height: 20),
           Text(

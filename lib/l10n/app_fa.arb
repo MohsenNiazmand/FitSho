@@ -577,5 +577,35 @@
   "workoutRegeneratePromptBody": "مشخصات شما تغییر کرد. می‌خواهید برنامه تمرینی بر اساس اطلاعات جدید دوباره ساخته شود؟",
   "workoutRegenerateConfirm": "بله، بازتولید کن",
   "workoutRegenerateDismiss": "فعلاً نه",
-  "workoutPlanRegenerated": "برنامه تمرینی جدید با موفقیت ساخته شد"
+  "workoutPlanRegenerated": "برنامه تمرینی جدید با موفقیت ساخته شد",
+  "workoutSessionTitle": "جلسه {number}",
+  "@workoutSessionTitle": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutNewPlanChoiceTitle": "نحوه ساخت برنامه جدید",
+  "workoutNewPlanChoiceUseCurrent": "استفاده از اطلاعات فعلی و ساخت برنامه جدید",
+  "workoutNewPlanChoiceEdit": "ویرایش مشخصات و ساخت برنامه",
+  "workoutPrimaryGoalLabel": "هدف اصلی (الزامی):",
+  "workoutSecondaryGoalLabel": "هدف ثانویه (اختیاری):",
+  "workoutGoalPrimaryTag": "هدف اصلی",
+  "workoutGoalSecondaryTag": "هدف ثانویه",
+  "workoutInjuryAreasLabel": "نواحی آسیب‌دیده (حداکثر ۲ ناحیه):",
+  "workoutMedicalConditionsLabel": "شرایط پزشکی:",
+  "workoutMaxInjuryAreasWarning": "حداکثر می‌توانید ۲ ناحیه آسیب انتخاب کنید.",
+  "workoutCustomDurationLabel": "مدت زمان دلخواه (دقیقه):",
+  "workoutCustomDurationInvalid": "لطفاً عددی بین {min} تا {max} وارد کنید",
+  "@workoutCustomDurationInvalid": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  }
 }
