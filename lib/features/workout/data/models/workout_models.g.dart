@@ -313,6 +313,50 @@ Map<String, dynamic> _$WorkoutNotesModelToJson(WorkoutNotesModel instance) =>
       'safety': instance.safety,
     };
 
+WorkoutProfileSnapshotModel _$WorkoutProfileSnapshotModelFromJson(
+  Map<String, dynamic> json,
+) => WorkoutProfileSnapshotModel(
+  disciplines:
+      (json['disciplines'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const [],
+  styles:
+      (json['styles'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as String),
+      ) ??
+      const {},
+  goal: json['goal'] as String? ?? '',
+  level: json['level'] as String? ?? '',
+  daysPerWeek: json['daysPerWeek'] == null ? 0 : _parseInt(json['daysPerWeek']),
+  sessionMinutes: json['sessionMinutes'] == null
+      ? 0
+      : _parseInt(json['sessionMinutes']),
+  location: json['location'] as String? ?? '',
+  equipment:
+      (json['equipment'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      const [],
+  injuries:
+      (json['injuries'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      const [],
+  painLevel: json['painLevel'] == null ? 0 : _parseInt(json['painLevel']),
+);
+
+Map<String, dynamic> _$WorkoutProfileSnapshotModelToJson(
+  WorkoutProfileSnapshotModel instance,
+) => <String, dynamic>{
+  'disciplines': instance.disciplines,
+  'styles': instance.styles,
+  'goal': instance.goal,
+  'level': instance.level,
+  'daysPerWeek': instance.daysPerWeek,
+  'sessionMinutes': instance.sessionMinutes,
+  'location': instance.location,
+  'equipment': instance.equipment,
+  'injuries': instance.injuries,
+  'painLevel': instance.painLevel,
+};
+
 WorkoutPlanModel _$WorkoutPlanModelFromJson(Map<String, dynamic> json) =>
     WorkoutPlanModel(
       id: json['id'] as String,
@@ -324,6 +368,11 @@ WorkoutPlanModel _$WorkoutPlanModelFromJson(Map<String, dynamic> json) =>
           .map((e) => WorkoutDayModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       createdAt: DateTime.parse(json['createdAt'] as String),
+      profileSnapshot: json['profileSnapshot'] == null
+          ? null
+          : WorkoutProfileSnapshotModel.fromJson(
+              json['profileSnapshot'] as Map<String, dynamic>,
+            ),
       remainingFullGenerations: json['remaining_full_generations'] == null
           ? 3
           : _parseInt(json['remaining_full_generations']),
@@ -341,6 +390,7 @@ Map<String, dynamic> _$WorkoutPlanModelToJson(WorkoutPlanModel instance) =>
       'notes': instance.notes,
       'days': instance.days,
       'createdAt': instance.createdAt.toIso8601String(),
+      'profileSnapshot': instance.profileSnapshot,
       'remaining_full_generations': instance.remainingFullGenerations,
       'remaining_exercise_swaps': instance.remainingExerciseSwaps,
     };

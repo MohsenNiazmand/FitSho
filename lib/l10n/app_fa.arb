@@ -557,6 +557,16 @@
   },
   "workoutHistoryTitle": "تاریخچه برنامه‌های تمرینی",
   "workoutHistoryEmpty": "تاریخچه‌ای یافت نشد",
+  "workoutHistoryDays": "{count} روز در هفته",
+  "@workoutHistoryDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutStatusActive": "فعال",
+  "workoutStatusArchived": "بایگانی‌شده",
   "workoutHistoryDeleteConfirmTitle": "حذف برنامه تمرینی",
   "workoutHistoryDeleteConfirmBody": "آیا از حذف این برنامه تمرینی اطمینان دارید؟",
   "workoutHistoryDeleteConfirmConfirm": "حذف",

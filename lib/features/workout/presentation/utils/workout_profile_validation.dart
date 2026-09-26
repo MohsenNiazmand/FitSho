@@ -1,5 +1,17 @@
 import 'package:fitsho/features/workout/domain/entities/workout_entities.dart';
 
+({List<String> disciplines, Map<String, String> styles})
+removeWorkoutDisciplineSelection({
+  required List<String> disciplines,
+  required Map<String, String> styles,
+  required String disciplineId,
+}) {
+  final updatedDisciplines = List<String>.from(disciplines)
+    ..remove(disciplineId);
+  final updatedStyles = Map<String, String>.from(styles)..remove(disciplineId);
+  return (disciplines: updatedDisciplines, styles: updatedStyles);
+}
+
 bool isWorkoutProfileStepValid({
   required int step,
   required WorkoutOptions options,

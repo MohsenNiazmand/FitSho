@@ -1029,6 +1029,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutHistoryEmpty => 'No workout history found';
 
   @override
+  String workoutHistoryDays(int count) {
+    return '$count days per week';
+  }
+
+  @override
+  String get workoutStatusActive => 'Active';
+
+  @override
+  String get workoutStatusArchived => 'Archived';
+
+  @override
   String get workoutHistoryDeleteConfirmTitle => 'Delete Workout Plan';
 
   @override

@@ -187,13 +187,36 @@ class WorkoutDay {
 }
 
 class WorkoutNotes {
-  const WorkoutNotes({
-    required this.progression,
-    required this.safety,
-  });
+  const WorkoutNotes({required this.progression, required this.safety});
 
   final String progression;
   final List<String> safety;
+}
+
+class WorkoutProfileSnapshot {
+  const WorkoutProfileSnapshot({
+    this.disciplines = const [],
+    this.styles = const {},
+    this.goal = '',
+    this.level = '',
+    this.daysPerWeek = 0,
+    this.sessionMinutes = 0,
+    this.location = '',
+    this.equipment = const [],
+    this.injuries = const [],
+    this.painLevel = 0,
+  });
+
+  final List<String> disciplines;
+  final Map<String, String> styles;
+  final String goal;
+  final String level;
+  final int daysPerWeek;
+  final int sessionMinutes;
+  final String location;
+  final List<String> equipment;
+  final List<String> injuries;
+  final int painLevel;
 }
 
 class WorkoutPlan {
@@ -205,6 +228,7 @@ class WorkoutPlan {
     required this.notes,
     required this.days,
     required this.createdAt,
+    this.profileSnapshot,
     this.remainingFullGenerations = 3,
     this.remainingExerciseSwaps = 5,
   });
@@ -216,6 +240,7 @@ class WorkoutPlan {
   final WorkoutNotes notes;
   final List<WorkoutDay> days;
   final DateTime createdAt;
+  final WorkoutProfileSnapshot? profileSnapshot;
   final int remainingFullGenerations;
   final int remainingExerciseSwaps;
 }

@@ -1922,6 +1922,24 @@ abstract class AppLocalizations {
   /// **'No workout history found'**
   String get workoutHistoryEmpty;
 
+  /// No description provided for @workoutHistoryDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days per week'**
+  String workoutHistoryDays(int count);
+
+  /// No description provided for @workoutStatusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get workoutStatusActive;
+
+  /// No description provided for @workoutStatusArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived'**
+  String get workoutStatusArchived;
+
   /// No description provided for @workoutHistoryDeleteConfirmTitle.
   ///
   /// In en, this message translates to:

@@ -571,6 +571,16 @@
   },
   "workoutHistoryTitle": "Workout History",
   "workoutHistoryEmpty": "No workout history found",
+  "workoutHistoryDays": "{count} days per week",
+  "@workoutHistoryDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutStatusActive": "Active",
+  "workoutStatusArchived": "Archived",
   "workoutHistoryDeleteConfirmTitle": "Delete Workout Plan",
   "workoutHistoryDeleteConfirmBody": "Are you sure you want to delete this workout plan?",
   "workoutHistoryDeleteConfirmConfirm": "Delete",

@@ -10,6 +10,7 @@ import 'package:fitsho/config/theme/app_radius.dart';
 import 'package:fitsho/core/constants/colors.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
 import 'package:fitsho/core/utils/persian_digits.dart';
+import 'package:fitsho/features/workout/domain/entities/workout_entities.dart';
 import 'package:fitsho/features/workout/presentation/providers/workout_providers.dart';
 import 'package:fitsho/shared/presentation/utils/failure_message.dart';
 import 'package:fitsho/shared/presentation/utils/toast_utils.dart';
@@ -40,6 +41,9 @@ class WorkoutHistoryScreen extends ConsumerWidget {
         ),
         data: (history) {
           final plans = history.items;
+          final workoutOptions = ref
+              .watch(workoutOptionsNotifierProvider)
+              .valueOrNull;
           if (plans.isEmpty) {
             return Center(
               child: Text(
@@ -73,6 +77,19 @@ class WorkoutHistoryScreen extends ConsumerWidget {
                   final date = intl.DateFormat.yMMMMd(
                     'fa_IR',
                   ).format(plan.createdAt);
+                  final snapshot = plan.profileSnapshot;
+                  final disciplineLabels = (snapshot?.disciplines ?? []).map((
+                    disciplineId,
+                  ) {
+                    for (final discipline
+                        in workoutOptions?.disciplines ??
+                            const <DisciplineOption>[]) {
+                      if (discipline.id == disciplineId) {
+                        return discipline.label;
+                      }
+                    }
+                    return disciplineId;
+                  }).toList();
 
                   return InkWell(
                     onTap: () {
@@ -94,14 +111,54 @@ class WorkoutHistoryScreen extends ConsumerWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  PersianDigits.toPersian(date),
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                    color: cTextPrimary,
-                                  ),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        PersianDigits.toPersian(date),
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                          color: cTextPrimary,
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                      plan.status == 'active'
+                                          ? context.tr.workoutStatusActive
+                                          : context.tr.workoutStatusArchived,
+                                      style: TextStyle(
+                                        color: plan.status == 'active'
+                                            ? cSuccess
+                                            : cTextSecondary,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
                                 ),
+                                if (disciplineLabels.isNotEmpty) ...[
+                                  Gap.v6(),
+                                  Text(
+                                    disciplineLabels.join('، '),
+                                    style: const TextStyle(
+                                      color: cTextSecondary,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ],
+                                if ((snapshot?.daysPerWeek ?? 0) > 0) ...[
+                                  Gap.v4(),
+                                  Text(
+                                    context.tr.workoutHistoryDays(
+                                      snapshot!.daysPerWeek,
+                                    ),
+                                    style: const TextStyle(
+                                      color: cTextSecondary,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ],
                                 if (plan.summary != null &&
                                     plan.summary!.trim().isNotEmpty) ...[
                                   Gap.v4(),

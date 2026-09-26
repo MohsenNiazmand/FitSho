@@ -172,7 +172,12 @@ class WorkoutProfileForm extends HookConsumerWidget {
                 controller: pageController,
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
-                  _buildDisciplinesStep(context, options, selectedDisciplines),
+                  _buildDisciplinesStep(
+                    context,
+                    options,
+                    selectedDisciplines,
+                    selectedStyles,
+                  ),
                   _buildLevelStylesStep(
                     context,
                     options,
@@ -255,6 +260,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
     BuildContext context,
     WorkoutOptions options,
     ValueNotifier<List<String>> selectedDisciplines,
+    ValueNotifier<Map<String, String>> selectedStyles,
   ) {
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -275,7 +281,13 @@ class WorkoutProfileForm extends HookConsumerWidget {
             onTap: () {
               final list = List<String>.from(selectedDisciplines.value);
               if (isSelected) {
-                list.remove(d.id);
+                final selection = removeWorkoutDisciplineSelection(
+                  disciplines: list,
+                  styles: selectedStyles.value,
+                  disciplineId: d.id,
+                );
+                selectedDisciplines.value = selection.disciplines;
+                selectedStyles.value = selection.styles;
               } else {
                 if (list.length >= options.maxDisciplines) {
                   BotToast.showText(
@@ -284,8 +296,8 @@ class WorkoutProfileForm extends HookConsumerWidget {
                   return;
                 }
                 list.add(d.id);
+                selectedDisciplines.value = list;
               }
-              selectedDisciplines.value = list;
             },
             child: Container(
               margin: const EdgeInsets.only(bottom: 12),

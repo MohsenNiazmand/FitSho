@@ -9,7 +9,10 @@ int? _parseNullableInt(dynamic value) {
   if (value is String) {
     final normalized = value
         .trim()
-        .replaceAllMapped(RegExp(r'[۰-۹]'), (match) => '۰۱۲۳۴۵۶۷۸۹'.indexOf(match.group(0)!).toString())
+        .replaceAllMapped(
+          RegExp(r'[۰-۹]'),
+          (match) => '۰۱۲۳۴۵۶۷۸۹'.indexOf(match.group(0)!).toString(),
+        )
         .replaceAll(RegExp(r'[^\d.-]'), '');
     return int.tryParse(normalized);
   }
@@ -32,7 +35,10 @@ double? _parseNullableDouble(dynamic value) {
   if (value is String) {
     final normalized = value
         .trim()
-        .replaceAllMapped(RegExp(r'[۰-۹]'), (match) => '۰۱۲۳۴۵۶۷۸۹'.indexOf(match.group(0)!).toString())
+        .replaceAllMapped(
+          RegExp(r'[۰-۹]'),
+          (match) => '۰۱۲۳۴۵۶۷۸۹'.indexOf(match.group(0)!).toString(),
+        )
         .replaceAll(RegExp(r'[^\d.-]'), '');
     return double.tryParse(normalized);
   }
@@ -197,10 +203,7 @@ class WorkoutOptionsModel {
 
 @JsonSerializable()
 class WorkoutOptionsEnvelope {
-  const WorkoutOptionsEnvelope({
-    required this.success,
-    required this.data,
-  });
+  const WorkoutOptionsEnvelope({required this.success, required this.data});
 
   factory WorkoutOptionsEnvelope.fromJson(Map<String, dynamic> json) =>
       _$WorkoutOptionsEnvelopeFromJson(json);
@@ -270,7 +273,9 @@ class WorkoutProfileEnvelope {
     if (data.containsKey('profile')) {
       return WorkoutProfileEnvelope(
         success: success,
-        profile: WorkoutProfileModel.fromJson(data['profile'] as Map<String, dynamic>),
+        profile: WorkoutProfileModel.fromJson(
+          data['profile'] as Map<String, dynamic>,
+        ),
         shouldRegeneratePlan: data['shouldRegeneratePlan'] as bool? ?? false,
       );
     } else {
@@ -394,10 +399,7 @@ class WorkoutDayModel {
 
 @JsonSerializable()
 class WorkoutNotesModel {
-  const WorkoutNotesModel({
-    required this.progression,
-    required this.safety,
-  });
+  const WorkoutNotesModel({required this.progression, required this.safety});
 
   factory WorkoutNotesModel.fromJson(Map<String, dynamic> json) =>
       _$WorkoutNotesModelFromJson(json);
@@ -406,6 +408,41 @@ class WorkoutNotesModel {
   final List<String> safety;
 
   Map<String, dynamic> toJson() => _$WorkoutNotesModelToJson(this);
+}
+
+@JsonSerializable()
+class WorkoutProfileSnapshotModel {
+  const WorkoutProfileSnapshotModel({
+    this.disciplines = const [],
+    this.styles = const {},
+    this.goal = '',
+    this.level = '',
+    this.daysPerWeek = 0,
+    this.sessionMinutes = 0,
+    this.location = '',
+    this.equipment = const [],
+    this.injuries = const [],
+    this.painLevel = 0,
+  });
+
+  factory WorkoutProfileSnapshotModel.fromJson(Map<String, dynamic> json) =>
+      _$WorkoutProfileSnapshotModelFromJson(json);
+
+  final List<String> disciplines;
+  final Map<String, String> styles;
+  final String goal;
+  final String level;
+  @JsonKey(fromJson: _parseInt)
+  final int daysPerWeek;
+  @JsonKey(fromJson: _parseInt)
+  final int sessionMinutes;
+  final String location;
+  final List<String> equipment;
+  final List<String> injuries;
+  @JsonKey(fromJson: _parseInt)
+  final int painLevel;
+
+  Map<String, dynamic> toJson() => _$WorkoutProfileSnapshotModelToJson(this);
 }
 
 @JsonSerializable()
@@ -418,6 +455,7 @@ class WorkoutPlanModel {
     required this.notes,
     required this.days,
     required this.createdAt,
+    this.profileSnapshot,
     this.remainingFullGenerations = 3,
     this.remainingExerciseSwaps = 5,
   });
@@ -432,6 +470,7 @@ class WorkoutPlanModel {
   final WorkoutNotesModel notes;
   final List<WorkoutDayModel> days;
   final DateTime createdAt;
+  final WorkoutProfileSnapshotModel? profileSnapshot;
 
   @JsonKey(name: 'remaining_full_generations', fromJson: _parseInt)
   final int remainingFullGenerations;
@@ -444,10 +483,7 @@ class WorkoutPlanModel {
 
 @JsonSerializable()
 class WorkoutPlanEnvelope {
-  const WorkoutPlanEnvelope({
-    required this.success,
-    required this.data,
-  });
+  const WorkoutPlanEnvelope({required this.success, required this.data});
 
   factory WorkoutPlanEnvelope.fromJson(Map<String, dynamic> json) =>
       _$WorkoutPlanEnvelopeFromJson(json);
@@ -499,10 +535,7 @@ class WorkoutPlanHistoryEnvelope {
 
 @JsonSerializable()
 class SwapExerciseRequest {
-  const SwapExerciseRequest({
-    required this.day,
-    required this.itemId,
-  });
+  const SwapExerciseRequest({required this.day, required this.itemId});
 
   factory SwapExerciseRequest.fromJson(Map<String, dynamic> json) =>
       _$SwapExerciseRequestFromJson(json);
@@ -524,7 +557,9 @@ class SwapExerciseEnvelope {
     final success = json['success'] as bool? ?? true;
     final data = json['data'] as Map<String, dynamic>;
 
-    final itemModel = WorkoutExerciseItemModel.fromJson(data['item'] as Map<String, dynamic>);
+    final itemModel = WorkoutExerciseItemModel.fromJson(
+      data['item'] as Map<String, dynamic>,
+    );
     final remainingSwaps = _parseInt(data['remaining_exercise_swaps']);
 
     return SwapExerciseEnvelope(

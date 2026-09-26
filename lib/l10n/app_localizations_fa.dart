@@ -1029,6 +1029,17 @@ class AppLocalizationsFa extends AppLocalizations {
   String get workoutHistoryEmpty => 'تاریخچه‌ای یافت نشد';
 
   @override
+  String workoutHistoryDays(int count) {
+    return '$count روز در هفته';
+  }
+
+  @override
+  String get workoutStatusActive => 'فعال';
+
+  @override
+  String get workoutStatusArchived => 'بایگانی‌شده';
+
+  @override
   String get workoutHistoryDeleteConfirmTitle => 'حذف برنامه تمرینی';
 
   @override

@@ -133,9 +133,23 @@ extension WorkoutDayModelX on WorkoutDayModel {
 
 extension WorkoutNotesModelX on WorkoutNotesModel {
   WorkoutNotes toEntity() {
-    return WorkoutNotes(
-      progression: progression,
-      safety: safety,
+    return WorkoutNotes(progression: progression, safety: safety);
+  }
+}
+
+extension WorkoutProfileSnapshotModelX on WorkoutProfileSnapshotModel {
+  WorkoutProfileSnapshot toEntity() {
+    return WorkoutProfileSnapshot(
+      disciplines: disciplines,
+      styles: styles,
+      goal: goal,
+      level: level,
+      daysPerWeek: daysPerWeek,
+      sessionMinutes: sessionMinutes,
+      location: location,
+      equipment: equipment,
+      injuries: injuries,
+      painLevel: painLevel,
     );
   }
 }
@@ -150,6 +164,7 @@ extension WorkoutPlanModelX on WorkoutPlanModel {
       notes: notes.toEntity(),
       days: days.map((e) => e.toEntity()).toList(),
       createdAt: createdAt,
+      profileSnapshot: profileSnapshot?.toEntity(),
       remainingFullGenerations: remainingFullGenerations,
       remainingExerciseSwaps: remainingExerciseSwaps,
     );
@@ -189,9 +204,23 @@ extension WorkoutDayX on WorkoutDay {
 
 extension WorkoutNotesX on WorkoutNotes {
   WorkoutNotesModel toModel() {
-    return WorkoutNotesModel(
-      progression: progression,
-      safety: safety,
+    return WorkoutNotesModel(progression: progression, safety: safety);
+  }
+}
+
+extension WorkoutProfileSnapshotX on WorkoutProfileSnapshot {
+  WorkoutProfileSnapshotModel toModel() {
+    return WorkoutProfileSnapshotModel(
+      disciplines: disciplines,
+      styles: styles,
+      goal: goal,
+      level: level,
+      daysPerWeek: daysPerWeek,
+      sessionMinutes: sessionMinutes,
+      location: location,
+      equipment: equipment,
+      injuries: injuries,
+      painLevel: painLevel,
     );
   }
 }
@@ -206,6 +235,7 @@ extension WorkoutPlanX on WorkoutPlan {
       notes: notes.toModel(),
       days: days.map((e) => e.toModel()).toList(),
       createdAt: createdAt,
+      profileSnapshot: profileSnapshot?.toModel(),
       remainingFullGenerations: remainingFullGenerations,
       remainingExerciseSwaps: remainingExerciseSwaps,
     );

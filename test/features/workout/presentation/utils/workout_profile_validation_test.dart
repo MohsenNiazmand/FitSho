@@ -3,6 +3,17 @@ import 'package:fitsho/features/workout/domain/entities/workout_entities.dart';
 import 'package:fitsho/features/workout/presentation/utils/workout_profile_validation.dart';
 
 void main() {
+  test('removing a discipline also removes its selected style', () {
+    final selection = removeWorkoutDisciplineSelection(
+      disciplines: ['bodybuilding', 'fitness'],
+      styles: {'bodybuilding': 'full_body', 'fitness': 'hiit'},
+      disciplineId: 'fitness',
+    );
+
+    expect(selection.disciplines, ['bodybuilding']);
+    expect(selection.styles, {'bodybuilding': 'full_body'});
+  });
+
   const options = WorkoutOptions(
     disciplines: [
       DisciplineOption(
