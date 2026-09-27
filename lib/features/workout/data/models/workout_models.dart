@@ -196,6 +196,9 @@ class WorkoutOptionsModel {
       locations: parsed.locations,
       equipment: parsed.equipment,
       injuries: parsed.injuries,
+      // Revision 2: separate injuryAreas and medicalConditions
+      injuryAreas: parsed.injuryAreas,
+      medicalConditions: parsed.medicalConditions,
       maxDisciplines: parsed.maxDisciplines,
       minDaysPerWeek: parsed.minDaysPerWeek,
       maxDaysPerWeek: parsed.maxDaysPerWeek,
