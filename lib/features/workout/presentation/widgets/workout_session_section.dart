@@ -62,6 +62,8 @@ class WorkoutSessionSection extends HookWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        Gap.v16(),
+
         // Horizontally scrollable Session tabs: Session 1 ... Session N
         if (sortedSessions.isNotEmpty)
           SingleChildScrollView(
