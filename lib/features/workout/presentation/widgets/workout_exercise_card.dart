@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fitsho/core/constants/colors.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
 import 'package:fitsho/core/utils/persian_digits.dart';
 import 'package:fitsho/features/workout/domain/entities/workout_entities.dart';
+import 'package:fitsho/features/workout/presentation/widgets/workout_exercise_details_sheet.dart';
 import 'package:fitsho/shared/presentation/widgets/gap.dart';
+import 'package:flutter/material.dart';
 
 class WorkoutExerciseCard extends StatelessWidget {
   const WorkoutExerciseCard({
@@ -46,7 +47,6 @@ class WorkoutExerciseCard extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: cSurface,
         borderRadius: BorderRadius.circular(16),
@@ -59,109 +59,162 @@ class WorkoutExerciseCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Column(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () => WorkoutExerciseDetailsSheet.show(context, exercise),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      exercise.name,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: cTextPrimary,
-                      ),
-                    ),
-                    Gap.v6(),
-                    Text(
-                      setsAndRepsText,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: cPrimary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              if (!readOnly && canSwap)
-                isSwapping
-                    ? const Padding(
-                        padding: EdgeInsets.all(8),
-                        child: SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
+                    if (exercise.gifUrl != null && exercise.gifUrl!.isNotEmpty)
+                      Container(
+                        width: 64,
+                        height: 64,
+                        margin: const EdgeInsets.only(left: 12),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: cSurfaceElevated,
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: CachedNetworkImage(
+                          imageUrl: exercise.gifUrl!,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => const Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                          errorWidget: (context, url, error) => const Icon(
+                            Icons.fitness_center,
+                            color: cTextSecondary,
+                          ),
                         ),
                       )
-                    : IconButton(
-                        icon: const Icon(
-                          Icons.swap_horiz_rounded,
-                          color: cPrimary,
+                    else
+                      Container(
+                        width: 64,
+                        height: 64,
+                        margin: const EdgeInsets.only(left: 12),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: cSurfaceElevated,
                         ),
-                        tooltip: context.tr.workoutSwapExercise,
-                        onPressed: onSwap,
+                        child: const Icon(
+                          Icons.fitness_center,
+                          color: cTextSecondary,
+                          size: 32,
+                        ),
                       ),
-            ],
-          ),
-          Gap.v12(),
-          Wrap(
-            spacing: 8,
-            runSpacing: 6,
-            children: [
-              _buildBadge(
-                context,
-                icon: Icons.timer_outlined,
-                label: context.tr.workoutRest(exercise.restSec),
-              ),
-              if (exercise.rpe != null)
-                _buildBadge(
-                  context,
-                  icon: Icons.fitness_center_outlined,
-                  label: context.tr.workoutRpe(
-                    PersianDigits.toPersian(
-                      exercise.rpe! % 1 == 0
-                          ? exercise.rpe!.toInt().toString()
-                          : exercise.rpe!.toString(),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            exercise.name,
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: cTextPrimary,
+                            ),
+                          ),
+                          Gap.v6(),
+                          Text(
+                            setsAndRepsText,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: cPrimary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+                    if (!readOnly && canSwap)
+                      isSwapping
+                          ? const Padding(
+                              padding: EdgeInsets.all(8),
+                              child: SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              ),
+                            )
+                          : IconButton(
+                              icon: const Icon(
+                                Icons.swap_horiz_rounded,
+                                color: cPrimary,
+                              ),
+                              tooltip: context.tr.workoutSwapExercise,
+                              onPressed: onSwap,
+                            ),
+                  ],
                 ),
-            ],
-          ),
-          if (hasNotes) ...[
-            Gap.v12(),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-              decoration: BoxDecoration(
-                color: cSecondaryContainer.withValues(alpha: 0.35),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Icon(
-                    Icons.info_outline_rounded,
-                    size: 16,
-                    color: cTextSecondary,
-                  ),
-                  Gap.h8(),
-                  Expanded(
-                    child: Text(
-                      exercise.notes!,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: cTextSecondary,
-                        height: 1.4,
+                Gap.v12(),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 6,
+                  children: [
+                    _buildBadge(
+                      context,
+                      icon: Icons.timer_outlined,
+                      label: context.tr.workoutRest(exercise.restSec),
+                    ),
+                    if (exercise.rpe != null)
+                      _buildBadge(
+                        context,
+                        icon: Icons.fitness_center_outlined,
+                        label: context.tr.workoutRpe(
+                          PersianDigits.toPersian(
+                            exercise.rpe! % 1 == 0
+                                ? exercise.rpe!.toInt().toString()
+                                : exercise.rpe!.toString(),
+                          ),
+                        ),
                       ),
+                  ],
+                ),
+                if (hasNotes) ...[
+                  Gap.v12(),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: cSecondaryContainer.withValues(alpha: 0.35),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(
+                          Icons.info_outline_rounded,
+                          size: 16,
+                          color: cTextSecondary,
+                        ),
+                        Gap.h8(),
+                        Expanded(
+                          child: Text(
+                            exercise.notes!,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: cTextSecondary,
+                              height: 1.4,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
-              ),
+              ],
             ),
-          ],
-        ],
+          ),
+        ),
       ),
     );
   }
