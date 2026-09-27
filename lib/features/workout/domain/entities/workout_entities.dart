@@ -157,6 +157,8 @@ class WorkoutExerciseItem {
     required this.itemId,
     required this.exerciseId,
     required this.name,
+    this.gifUrl,
+    this.videoUrl,
     required this.sets,
     this.reps,
     this.durationSec,
@@ -168,6 +170,8 @@ class WorkoutExerciseItem {
   final String itemId;
   final String exerciseId;
   final String name;
+  final String? gifUrl;
+  final String? videoUrl;
   final int sets;
   final String? reps;
   final int? durationSec;

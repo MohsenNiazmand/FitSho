@@ -423,6 +423,8 @@ class WorkoutExerciseItemModel {
     required this.itemId,
     required this.exerciseId,
     required this.name,
+    this.gifUrl,
+    this.videoUrl,
     required this.sets,
     this.reps,
     this.durationSec,
@@ -437,6 +439,8 @@ class WorkoutExerciseItemModel {
   final String itemId;
   final String exerciseId;
   final String name;
+  final String? gifUrl;
+  final String? videoUrl;
 
   @JsonKey(fromJson: _parseInt)
   final int sets;

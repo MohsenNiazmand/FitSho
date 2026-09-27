@@ -10,8 +10,8 @@ class AppConfig {
 
   static const String env = String.fromEnvironment(
     'ENV',
-    // defaultValue: 'dev',
-    defaultValue: 'prod',
+    defaultValue: 'dev',
+    // defaultValue: 'prod',
   );
 
   static const String apiBaseUrl = String.fromEnvironment(

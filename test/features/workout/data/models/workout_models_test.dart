@@ -407,6 +407,8 @@ void main() {
                   'itemId': 'i1',
                   'exerciseId': 'push_up',
                   'name': 'شنا',
+                  'gifUrl': 'https://example.com/pushup.gif',
+                  'videoUrl': 'https://example.com/pushup.mp4',
                   'sets': 3,
                   'reps': '12',
                   'restSec': 60,
@@ -443,6 +445,10 @@ void main() {
         expect(plan.sessions[0].sessionNumber, equals(1));
         expect(plan.sessions[1].sessionId, equals('session_2'));
         expect(plan.sessions[1].sessionNumber, equals(2));
+
+        expect(plan.sessions[0].main[0].gifUrl, equals('https://example.com/pushup.gif'));
+        expect(plan.sessions[0].main[0].videoUrl, equals('https://example.com/pushup.mp4'));
+        expect(plan.sessions[1].main[0].gifUrl, isNull);
 
         // No isRest / day fields exist in sessions
         expect(plan.sessions[0].title, equals('جلسه ۱'));
