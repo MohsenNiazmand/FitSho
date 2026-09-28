@@ -1,12 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
-import '../../error/failures.dart';
-import '../../metadata/default_catalog.dart';
-import '../../domain/entities/metadata_catalog.dart';
-import '../../domain/entities/metadata_item.dart';
-import '../../domain/repositories/metadata_repository.dart';
-import '../datasources/metadata_local_datasource.dart';
-import '../datasources/metadata_remote_datasource.dart';
+import 'package:fitsho/core/error/failures.dart';
+import 'package:fitsho/core/metadata/default_catalog.dart';
+import 'package:fitsho/core/metadata/domain/entities/metadata_catalog.dart';
+import 'package:fitsho/core/metadata/domain/entities/metadata_item.dart';
+import 'package:fitsho/core/metadata/domain/repositories/metadata_repository.dart';
+import 'package:fitsho/core/metadata/data/datasources/metadata_local_datasource.dart';
+import 'package:fitsho/core/metadata/data/datasources/metadata_remote_datasource.dart';
 
 class MetadataRepositoryImpl implements MetadataRepository {
   const MetadataRepositoryImpl({
@@ -25,24 +25,7 @@ class MetadataRepositoryImpl implements MetadataRepository {
     }
 
     // Fallback to static DefaultCatalog
-    final fallbackMap = <String, List<MetadataItem>>{};
-    DefaultCatalog.catalog.forEach((key, list) {
-      fallbackMap[key] = list.map((item) {
-        return MetadataItem(
-          key: item['key']?.toString() ?? '',
-          labelFa: item['labelFa']?.toString() ?? '',
-          labelEn: item['labelEn']?.toString() ?? '',
-          icon: item['icon']?.toString(),
-          order: (item['order'] as num?)?.toInt() ?? 0,
-        );
-      }).toList();
-    });
-
-    return MetadataCatalog(
-      version: DefaultCatalog.defaultVersion,
-      updatedAt: DateTime(2026, 1, 1),
-      catalog: fallbackMap,
-    );
+    return DefaultCatalog.asCatalog();
   }
 
   @override
@@ -74,6 +57,23 @@ class MetadataRepositoryImpl implements MetadataRepository {
       return right(null);
     } on DioException catch (e) {
       return left(ServerFailure(e.message ?? 'خطا در همگام‌سازی متادیتا'));
+    } catch (e) {
+      return left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, MetadataCatalog>> fetchFreshCatalog() async {
+    try {
+      final res = await remoteDatasource.fetchCatalog();
+      final entity = res.toEntity();
+      if (entity != null) {
+        await localDatasource.cacheCatalog(entity);
+        return right(entity);
+      }
+      return left(const ServerFailure('داده‌های کاتالوگ نامعتبر است'));
+    } on DioException catch (e) {
+      return left(ServerFailure(e.message ?? 'خطا در دریافت کاتالوگ'));
     } catch (e) {
       return left(ServerFailure(e.toString()));
     }

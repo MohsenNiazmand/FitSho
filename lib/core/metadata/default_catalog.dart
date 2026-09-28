@@ -1,3 +1,6 @@
+import 'domain/entities/metadata_catalog.dart';
+import 'domain/entities/metadata_item.dart';
+
 class DefaultCatalog {
   const DefaultCatalog._();
 
@@ -78,4 +81,24 @@ class DefaultCatalog {
       {'key': 'elite', 'labelFa': 'حرفه‌ای', 'labelEn': 'Elite', 'order': 4},
     ],
   };
+
+  static MetadataCatalog asCatalog() {
+    final map = <String, List<MetadataItem>>{};
+    catalog.forEach((key, list) {
+      map[key] = list.map((item) {
+        return MetadataItem(
+          key: item['key']?.toString() ?? '',
+          labelFa: item['labelFa']?.toString() ?? '',
+          labelEn: item['labelEn']?.toString() ?? '',
+          icon: item['icon']?.toString(),
+          order: (item['order'] as num?)?.toInt() ?? 0,
+        );
+      }).toList();
+    });
+    return MetadataCatalog(
+      version: defaultVersion,
+      updatedAt: DateTime(2026, 1, 1),
+      catalog: map,
+    );
+  }
 }

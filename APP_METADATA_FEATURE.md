@@ -156,7 +156,7 @@ class MetadataCatalog {
 
 ---
 
-### Phase 3: Riverpod Provider & Background Sync
+### Phase 3: Riverpod Provider & Background Sync (✅ Done)
 **هدف:** ایجاد provider سراسری برای دسترسی آسان به کاتالوگ در همه قسمت‌های اپ.
 
 **تسک‌ها:**

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:hive_ce/hive.dart';
 import 'package:fitsho/core/storage/hive_initializer.dart';
 import '../../domain/entities/metadata_catalog.dart';
 import '../../domain/entities/metadata_item.dart';
@@ -11,14 +12,23 @@ abstract class MetadataLocalDatasource {
 }
 
 class MetadataLocalDatasourceImpl implements MetadataLocalDatasource {
+  MetadataLocalDatasourceImpl({Box<dynamic>? metadataBox}) : _box = metadataBox;
+
+  final Box<dynamic>? _box;
+
   static const _catalogKey = 'cached_catalog_json';
   static const _versionKey = 'cached_metadata_version';
   static const _updatedAtKey = 'cached_metadata_updated_at';
 
+  Future<Box<dynamic>> _getBox() async {
+    if (_box != null && _box!.isOpen) return _box!;
+    return HiveInitializer.openMetadataBox();
+  }
+
   @override
   Future<MetadataCatalog?> getCachedCatalog() async {
     try {
-      final box = await HiveInitializer.openMetadataBox();
+      final box = await _getBox();
       final jsonString = box.get(_catalogKey) as String?;
       final version = box.get(_versionKey) as int?;
       final updatedAtString = box.get(_updatedAtKey) as String?;
@@ -61,7 +71,7 @@ class MetadataLocalDatasourceImpl implements MetadataLocalDatasource {
   @override
   Future<int?> getCachedVersion() async {
     try {
-      final box = await HiveInitializer.openMetadataBox();
+      final box = await _getBox();
       return box.get(_versionKey) as int?;
     } catch (_) {
       return null;
@@ -71,7 +81,7 @@ class MetadataLocalDatasourceImpl implements MetadataLocalDatasource {
   @override
   Future<void> cacheCatalog(MetadataCatalog catalog) async {
     try {
-      final box = await HiveInitializer.openMetadataBox();
+      final box = await _getBox();
       final serializableMap = <String, List<Map<String, dynamic>>>{};
 
       catalog.catalog.forEach((key, items) {
@@ -93,7 +103,7 @@ class MetadataLocalDatasourceImpl implements MetadataLocalDatasource {
   @override
   Future<void> clearCache() async {
     try {
-      final box = await HiveInitializer.openMetadataBox();
+      final box = await _getBox();
       await box.delete(_catalogKey);
       await box.delete(_versionKey);
       await box.delete(_updatedAtKey);
