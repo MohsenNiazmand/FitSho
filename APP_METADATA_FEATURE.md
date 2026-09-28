@@ -8,7 +8,7 @@
 ```
 اپ باز می‌شود
   ↓
-بررسی کش محلی (SharedPreferences)
+بررسی کش محلی (Hive_ce - metadata_box)
   ├─ کش وجود دارد → نمایش فوری کش به UI
   └─ کش ندارد → نمایش مقادیر Fallback به UI
   ↓
@@ -16,7 +16,7 @@
   ├─ نسخه جدید == نسخه کش → هیچ‌کاری نکن
   └─ نسخه جدید > نسخه کش → GET /api/v1/metadata
         ↓
-      ذخیره در کش + notify providers
+      ذخیره در کش Hive + notify providers
 ```
 
 ## Graceful Fallback
@@ -29,7 +29,7 @@
 
 ## فازهای توسعه
 
-### Phase 1: Default Catalog (Fallback Values)
+### Phase 1: Default Catalog (Fallback Values) (✅ Done)
 **هدف:** ایجاد فایل مقادیر ثابت به عنوان fallback در صورت نبود اینترنت.
 
 **تسک‌ها:**
@@ -145,11 +145,10 @@ class MetadataCatalog {
    - `fetchCatalog()` → GET /api/v1/metadata
 
 6. ایجاد `lib/core/metadata/data/datasources/metadata_local_datasource.dart`:
-   - ذخیره/بارگذاری catalog در `SharedPreferences` به صورت JSON
-   - ذخیره/بارگذاری شماره نسخه کش
+   - ذخیره/بارگذاری کاتالوگ و نسخه در دیتابیس `Hive_ce` (`metadata_box`)
 
 7. ایجاد `lib/core/metadata/data/repositories/metadata_repository_impl.dart`:
-   - منطق بررسی نسخه و تصمیم برای fetch یا استفاده از کش
+   - منطق بررسی نسخه و تصمیم برای fetch یا استفاده از کش Hive_ce
 
 8. اجرای `flutter pub run build_runner build --delete-conflicting-outputs`
 
@@ -165,70 +164,41 @@ class MetadataCatalog {
 1. ایجاد `lib/core/metadata/presentation/providers/metadata_provider.dart`:
 
 ```dart
-// Provider اصلی که در سراسر اپ استفاده می‌شود
 final metadataCatalogProvider = StateNotifierProvider<MetadataNotifier, MetadataCatalog>(...);
 
-// Helper providers برای دسترسی آسان به هر نوع
 final muscleGroupsProvider = Provider<List<MetadataItem>>((ref) =>
   ref.watch(metadataCatalogProvider).getByType('muscle_group'));
 
 final equipmentProvider = Provider<List<MetadataItem>>((ref) =>
   ref.watch(metadataCatalogProvider).getByType('equipment'));
-
-// ... برای هر ۸ نوع یک provider helper
 ```
 
 **MetadataNotifier:**
-- در constructor: بارگذاری از کش یا fallback → نمایش فوری
+- در constructor: بارگذاری از کش Hive_ce یا fallback → نمایش فوری
 - سپس: بررسی نسخه در background
-- اگر نسخه جدید بود: fetch کامل و بروزرسانی state
+- اگر نسخه جدید بود: fetch کامل و بروزرسانی state و کش Hive_ce
 - متد `refresh()` برای refresh دستی
 
-2. اضافه کردن مقداردهی اولیه در `main.dart` یا `app.dart` که `metadataCatalogProvider` هنگام startup خوانده شود
-
-3. نوشتن unit test
+2. نوشتن unit test
 
 **Commit Message:** `feat(metadata): implement metadata Riverpod provider with background sync`
 
 ---
 
 ### Phase 4: UI Integration
-**هدف:** استفاده از provider در قسمت‌های مختلف اپ که تا الان مقادیر hardcode داشتند.
+**هدف:** استفاده از provider در قسمت‌های مختلف اپ و مقادیر کاتالوگ.
 
 **تسک‌ها:**
 
-1. جستجو در کل پروژه برای مقادیر hardcode مثل `'chest'`, `'strength'`, `'beginner'` و جایگزینی با `ref.watch(muscleGroupsProvider)` و مشابه آن
-
-2. در فرم‌هایی که کاربر عضله یا دسته‌بندی انتخاب می‌کند: تبدیل TextField به `DropdownButtonFormField` که از provider پر می‌شود
-
-3. اضافه کردن `ForceUpdateDialog` در `main.dart`:
-   - بررسی `minAppVersion` از response بک‌اند
-   - اگر نسخه اپ کمتر بود، Dialog اجباری با لینک مستقیم به store
-
-4. نوشتن widget test برای dropdown که از metadata پر می‌شود
+1. پیوند به گزینه‌های تمرینی و حرکات
+2. بررسی سازگاری و تست ویجت
 
 **Commit Message:** `feat(metadata): integrate metadata catalog into exercise and workout forms`
 
 ---
 
-## نکات مهم Migration
-
-> [!IMPORTANT]
-> **برای کاربران نسخه‌های قدیمی:**
-> نسخه‌های قدیم اپ که این فیچر را ندارند از مقادیر hardcode خودشان استفاده می‌کنند.
-> تا زمانی که ساختار داده API تغییر نکند، نسخه‌های قدیم بدون مشکل کار می‌کنند.
-> فقط اگر یک نوع متادیتای جدید اضافه شود که نسخه قدیم آن را نمی‌شناسد ممکن است در UI آن مقدار نمایش داده نشود (graceful degradation).
-
-> [!WARNING]
-> **Force Update:**
-> اگر ساختار response API تغییر بنیادی کرد، فیلد `minAppVersion` را در response اضافه کنید.
-> اپ موبایل این مقدار را با `packageInfo.version` مقایسه می‌کند.
-> فقط در صورت ضرورت قطعی از این مکانیزم استفاده شود.
-
----
-
 ## وابستگی‌های جدید (pubspec.yaml)
-نیاز به package جدید نیست. از `SharedPreferences` (موجود) و `Riverpod` (موجود) استفاده می‌شود.
+نیاز به package جدید نیست. از `hive_ce_flutter` (موجود در پروژه) و `Riverpod` (موجود) استفاده می‌شود.
 
 ---
 *پس از اتمام هر فاز، کامیت انجام و (✅ Done) جلوی نام فاز قرار گیرد.*
