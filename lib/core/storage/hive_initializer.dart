@@ -10,6 +10,7 @@ class HiveInitializer {
   static const supplementsBoxName = 'supplements_box';
   static const todayMealLogsBoxName = 'today_meal_logs_box';
   static const lastMealLogBoxName = 'last_meal_log_box';
+  static const metadataBoxName = 'metadata_box';
 
   static Future<void> init() async {
     await Hive.initFlutter();
@@ -44,5 +45,9 @@ class HiveInitializer {
 
   static Future<Box<MealLog>> openLastMealLogBox() {
     return _openResilientBox<MealLog>(lastMealLogBoxName);
+  }
+
+  static Future<Box<dynamic>> openMetadataBox() {
+    return _openResilientBox<dynamic>(metadataBoxName);
   }
 }

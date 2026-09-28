@@ -107,7 +107,7 @@ class DefaultCatalog {
 
 ---
 
-### Phase 2: Domain & Data Layer
+### Phase 2: Domain & Data Layer (✅ Done)
 **هدف:** پیاده‌سازی entity، repository و data model.
 
 **تسک‌ها:**
