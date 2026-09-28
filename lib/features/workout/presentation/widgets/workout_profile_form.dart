@@ -8,6 +8,8 @@ import 'package:fitsho/config/theme/app_radius.dart';
 import 'package:fitsho/core/constants/colors.dart';
 import 'package:fitsho/core/error/failures.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
+import 'package:fitsho/core/metadata/domain/entities/metadata_catalog.dart';
+import 'package:fitsho/core/metadata/presentation/providers/metadata_provider.dart';
 import 'package:fitsho/core/utils/persian_digits.dart';
 import 'package:fitsho/core/utils/persian_input.dart';
 import 'package:fitsho/features/diet/presentation/widgets/ai_loading_dialog.dart';
@@ -39,6 +41,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final optionsAsync = ref.watch(workoutOptionsNotifierProvider);
     final profileAsync = ref.watch(workoutProfileNotifierProvider);
+    final metadataCatalog = ref.watch(metadataCatalogProvider);
 
     final selectedDisciplines = useState<List<String>>([]);
     final selectedStyles = useState<Map<String, String>>({});
@@ -246,6 +249,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
                     selectedDisciplines,
                     selectedLevel,
                     selectedStyles,
+                    metadataCatalog,
                   ),
                   _buildGoalStep(
                     context,
@@ -253,6 +257,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
                     selectedDisciplines,
                     primaryGoal,
                     secondaryGoal,
+                    metadataCatalog,
                   ),
                   _buildConditionsStep(
                     context,
@@ -265,6 +270,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
                     customDurationError,
                     location,
                     selectedEquipment,
+                    metadataCatalog,
                   ),
                   _buildInjuriesStep(
                     context,
@@ -274,6 +280,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
                     selectedMedicalConditions,
                     painLevel,
                     injuryNotesController,
+                    metadataCatalog,
                   ),
                 ],
               ),
@@ -421,6 +428,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
     ValueNotifier<List<String>> selectedDisciplines,
     ValueNotifier<String> selectedLevel,
     ValueNotifier<Map<String, String>> selectedStyles,
+    MetadataCatalog metadataCatalog,
   ) {
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -439,6 +447,8 @@ class WorkoutProfileForm extends HookConsumerWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: options.levels.map((lvl) {
+            final meta = metadataCatalog.findByKey('difficulty_level', lvl.id);
+            final levelLabel = meta?.labelFa ?? lvl.label;
             final isSelected = selectedLevel.value == lvl.id;
             return Expanded(
               child: GestureDetector(
@@ -464,7 +474,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        lvl.label,
+                        levelLabel,
                         style: TextStyle(
                           color: isSelected ? Colors.white : Colors.black87,
                           fontWeight: FontWeight.bold,
@@ -553,6 +563,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
     ValueNotifier<List<String>> selectedDisciplines,
     ValueNotifier<String?> primaryGoal,
     ValueNotifier<String?> secondaryGoal,
+    MetadataCatalog metadataCatalog,
   ) {
     final compatibleGoals = options.goals.where((g) {
       return g.compatibleDisciplines.any(
@@ -627,7 +638,8 @@ class WorkoutProfileForm extends HookConsumerWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      goal.label,
+                      metadataCatalog.findByKey('goal', goal.id)?.labelFa ??
+                          goal.label,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -695,6 +707,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
     ValueNotifier<String?> customDurationError,
     ValueNotifier<String> location,
     ValueNotifier<List<String>> selectedEquipment,
+    MetadataCatalog metadataCatalog,
   ) {
     int minDays = options.minDaysPerWeek;
     int maxDays = options.maxDaysPerWeek;
@@ -861,9 +874,11 @@ class WorkoutProfileForm extends HookConsumerWidget {
             spacing: 8,
             runSpacing: 4,
             children: options.equipment.map((eq) {
+              final meta = metadataCatalog.findByKey('equipment', eq.id);
+              final eqLabel = meta?.labelFa ?? eq.label;
               final isSelected = selectedEquipment.value.contains(eq.id);
               return FilterChip(
-                label: Text(eq.label),
+                label: Text(eqLabel),
                 selected: isSelected,
                 onSelected: (selected) {
                   final list = List<String>.from(selectedEquipment.value);
@@ -890,6 +905,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
     ValueNotifier<List<String>> selectedMedicalConditions,
     ValueNotifier<int> painLevel,
     TextEditingController injuryNotesController,
+    MetadataCatalog metadataCatalog,
   ) {
     final medicalOptions = options.medicalConditions.isNotEmpty
         ? options.medicalConditions
@@ -946,8 +962,10 @@ class WorkoutProfileForm extends HookConsumerWidget {
                       final isSelected = selectedInjuryAreas.value.contains(
                         inj.id,
                       );
+                      final meta = metadataCatalog.findByKey('injury_type', inj.id);
+                      final injLabel = meta?.labelFa ?? inj.label;
                       return FilterChip(
-                        label: Text(inj.label),
+                        label: Text(injLabel),
                         selected: isSelected,
                         onSelected: (selected) {
                           final list = List<String>.from(

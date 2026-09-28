@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:fitsho/core/constants/colors.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
+import 'package:fitsho/core/metadata/presentation/providers/metadata_provider.dart';
 import 'package:fitsho/core/utils/persian_digits.dart';
 import 'package:fitsho/features/workout/domain/entities/workout_entities.dart';
 import 'package:fitsho/features/workout/presentation/widgets/workout_exercise_card.dart';
 import 'package:fitsho/shared/presentation/widgets/gap.dart';
 
-class WorkoutSessionSection extends HookWidget {
+class WorkoutSessionSection extends HookConsumerWidget {
   const WorkoutSessionSection({
     required this.plan,
     this.initialSessionId,
@@ -26,8 +28,9 @@ class WorkoutSessionSection extends HookWidget {
   onSwapExercise;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final metadataCatalog = ref.watch(metadataCatalogProvider);
 
     // Sort sessions by sessionNumber
     final sortedSessions = useMemoized(() {
@@ -156,6 +159,8 @@ class WorkoutSessionSection extends HookWidget {
                 ),
               ),
               ...currentSession.focus.map((muscle) {
+                final item = metadataCatalog.findByKey('muscle_group', muscle);
+                final label = item?.labelFa ?? muscle;
                 return Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 8,
@@ -166,7 +171,7 @@ class WorkoutSessionSection extends HookWidget {
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
-                    muscle,
+                    label,
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: cPrimaryDark,
                       fontWeight: FontWeight.w600,

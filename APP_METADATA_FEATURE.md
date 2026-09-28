@@ -185,7 +185,7 @@ final equipmentProvider = Provider<List<MetadataItem>>((ref) =>
 
 ---
 
-### Phase 4: UI Integration
+### Phase 4: UI Integration (✅ Done)
 **هدف:** استفاده از provider در قسمت‌های مختلف اپ و مقادیر کاتالوگ.
 
 **تسک‌ها:**
