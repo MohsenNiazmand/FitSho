@@ -502,5 +502,27 @@ void main() {
         expect(plan.profileSnapshot, isNull);
       },
     );
+
+    test(
+      'WorkoutProfileModel.fromJson normalizes legacy pullup_bar to pull_up_bar',
+      () {
+        final json = {
+          'id': 'prof_1',
+          'userId': 'user_1',
+          'disciplines': ['bodybuilding'],
+          'level': 'intermediate',
+          'daysPerWeek': 3,
+          'sessionMinutes': 60,
+          'location': 'home',
+          'equipment': ['dumbbell', 'pullup_bar'],
+          'injuryAreas': ['knee'],
+          'painLevel': 0,
+        };
+
+        final profile = WorkoutProfileModel.fromJson(json);
+        expect(profile.equipment, contains('pull_up_bar'));
+        expect(profile.equipment, isNot(contains('pullup_bar')));
+      },
+    );
   });
 }

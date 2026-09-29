@@ -110,4 +110,32 @@ void main() {
 
     expect(isValid, isFalse);
   });
+
+  test('validates injury areas max 2 selection in step 4', () {
+    final validInjuries = isWorkoutProfileStepValid(
+      step: 4,
+      options: options,
+      selectedDisciplines: ['strength'],
+      selectedStyles: {'strength': 'beginner_style'},
+      selectedLevel: 'beginner',
+      primaryGoal: 'strength_goal',
+      daysPerWeek: 3,
+      sessionMinutes: 60,
+      injuryAreas: ['knee', 'lower_back'],
+    );
+    expect(validInjuries, isTrue);
+
+    final invalidInjuries = isWorkoutProfileStepValid(
+      step: 4,
+      options: options,
+      selectedDisciplines: ['strength'],
+      selectedStyles: {'strength': 'beginner_style'},
+      selectedLevel: 'beginner',
+      primaryGoal: 'strength_goal',
+      daysPerWeek: 3,
+      sessionMinutes: 60,
+      injuryAreas: ['knee', 'lower_back', 'shoulder'],
+    );
+    expect(invalidInjuries, isFalse);
+  });
 }

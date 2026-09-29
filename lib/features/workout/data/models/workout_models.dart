@@ -312,7 +312,9 @@ class WorkoutProfileModel {
       daysPerWeek: _parseInt(json['daysPerWeek']),
       sessionMinutes: _parseInt(json['sessionMinutes']),
       location: json['location'] as String? ?? '',
-      equipment: _parseStringList(json['equipment']),
+      equipment: _parseStringList(json['equipment'])
+          .map((e) => e == 'pullup_bar' ? 'pull_up_bar' : e)
+          .toList(),
       injuryAreas: injuryAreas,
       medicalConditions: medicalConditions,
       injuryNotes: json['injuryNotes'] as String?,
@@ -596,7 +598,9 @@ class WorkoutProfileSnapshotModel {
       daysPerWeek: _parseInt(json['daysPerWeek']),
       sessionMinutes: _parseInt(json['sessionMinutes']),
       location: json['location'] as String? ?? '',
-      equipment: _parseStringList(json['equipment']),
+      equipment: _parseStringList(json['equipment'])
+          .map((e) => e == 'pullup_bar' ? 'pull_up_bar' : e)
+          .toList(),
       injuryAreas: injuryAreas,
       medicalConditions: medicalConditions,
       painLevel: _parseInt(json['painLevel']),
