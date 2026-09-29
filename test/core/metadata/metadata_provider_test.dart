@@ -82,6 +82,16 @@ void main() {
     final patterns = container.read(movementPatternsProvider);
     expect(patterns, isNotEmpty);
     expect(patterns.any((p) => p.key == 'push'), isTrue);
+
+    final disciplines = container.read(disciplinesProvider);
+    expect(disciplines, isNotEmpty);
+    expect(disciplines.any((d) => d.key == 'bodybuilding'), isTrue);
+    expect(disciplines.any((d) => d.key == 'flexibility'), isTrue);
+
+    final locations = container.read(locationsProvider);
+    expect(locations, isNotEmpty);
+    expect(locations.any((l) => l.key == 'gym'), isTrue);
+    expect(locations.any((l) => l.key == 'home'), isTrue);
   });
 
   test('updates state when background sync returns a newer version', () async {

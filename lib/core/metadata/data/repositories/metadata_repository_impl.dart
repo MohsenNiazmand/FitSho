@@ -50,6 +50,7 @@ class MetadataRepositoryImpl implements MetadataRepository {
 
       final entity = res.toEntity();
       if (entity != null) {
+        await localDatasource.clearCache();
         await localDatasource.cacheCatalog(entity);
         return right(entity);
       }

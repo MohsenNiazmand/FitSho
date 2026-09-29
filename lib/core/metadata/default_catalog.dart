@@ -4,9 +4,20 @@ import 'domain/entities/metadata_item.dart';
 class DefaultCatalog {
   const DefaultCatalog._();
 
-  static const int defaultVersion = 1;
+  static const int defaultVersion = 2;
 
   static const Map<String, List<Map<String, dynamic>>> catalog = {
+    'discipline': [
+      {'key': 'bodybuilding', 'labelFa': 'بدنسازی', 'labelEn': 'Bodybuilding', 'order': 1},
+      {'key': 'fitness', 'labelFa': 'فیتنس و تناسب اندام', 'labelEn': 'Fitness', 'order': 2},
+      {'key': 'corrective', 'labelFa': 'حرکات اصلاحی', 'labelEn': 'Corrective', 'order': 3},
+      {'key': 'cardio', 'labelFa': 'کاردیو و سلامت قلب', 'labelEn': 'Cardio', 'order': 4},
+      {'key': 'flexibility', 'labelFa': 'انعطاف‌پذیری و تحرک‌پذیری', 'labelEn': 'Flexibility', 'order': 5},
+    ],
+    'location': [
+      {'key': 'gym', 'labelFa': 'باشگاه ورزشی', 'labelEn': 'Gym', 'order': 1},
+      {'key': 'home', 'labelFa': 'خانه', 'labelEn': 'Home', 'order': 2},
+    ],
     'muscle_group': [
       {'key': 'chest', 'labelFa': 'سینه', 'labelEn': 'Chest', 'order': 1, 'icon': 'chest'},
       {'key': 'back', 'labelFa': 'پشت', 'labelEn': 'Back', 'order': 2, 'icon': 'back'},

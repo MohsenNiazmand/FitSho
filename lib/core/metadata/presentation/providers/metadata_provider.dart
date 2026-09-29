@@ -87,3 +87,12 @@ final goalsProvider = Provider<List<MetadataItem>>((ref) {
 final difficultyLevelsProvider = Provider<List<MetadataItem>>((ref) {
   return ref.watch(metadataCatalogProvider).getByType('difficulty_level');
 });
+
+final disciplinesProvider = Provider<List<MetadataItem>>((ref) {
+  return ref.watch(metadataCatalogProvider).getByType('discipline');
+});
+
+final locationsProvider = Provider<List<MetadataItem>>((ref) {
+  return ref.watch(metadataCatalogProvider).getByType('location');
+});
+
