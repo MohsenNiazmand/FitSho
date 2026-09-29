@@ -427,6 +427,7 @@ class WorkoutExerciseItemModel {
     required this.name,
     this.gifUrl,
     this.videoUrl,
+    this.cue,
     required this.sets,
     this.reps,
     this.durationSec,
@@ -443,6 +444,7 @@ class WorkoutExerciseItemModel {
   final String name;
   final String? gifUrl;
   final String? videoUrl;
+  final String? cue;
 
   @JsonKey(fromJson: _parseInt)
   final int sets;

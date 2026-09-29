@@ -159,6 +159,7 @@ class WorkoutExerciseItem {
     required this.name,
     this.gifUrl,
     this.videoUrl,
+    this.cue,
     required this.sets,
     this.reps,
     this.durationSec,
@@ -172,6 +173,7 @@ class WorkoutExerciseItem {
   final String name;
   final String? gifUrl;
   final String? videoUrl;
+  final String? cue;
   final int sets;
   final String? reps;
   final int? durationSec;

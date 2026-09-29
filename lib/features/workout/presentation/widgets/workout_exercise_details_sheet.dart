@@ -44,6 +44,8 @@ class WorkoutExerciseDetailsSheet extends StatelessWidget {
 
     final hasNotes =
         exercise.notes != null && exercise.notes!.trim().isNotEmpty;
+    final hasCue =
+        exercise.cue != null && exercise.cue!.trim().isNotEmpty;
 
     return Container(
       decoration: const BoxDecoration(
@@ -144,9 +146,50 @@ class WorkoutExerciseDetailsSheet extends StatelessWidget {
                       ),
                   ],
                 ),
-                
+                if (hasCue) ...[
+                  Gap.v16(),
+                  Text(
+                    'راهنمای تکنیکی حرکت',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: cPrimary,
+                    ),
+                  ),
+                  Gap.v8(),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: cPrimary.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: cPrimary.withValues(alpha: 0.2),
+                      ),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(
+                          Icons.tips_and_updates_outlined,
+                          size: 20,
+                          color: cPrimary,
+                        ),
+                        Gap.h8(),
+                        Expanded(
+                          child: Text(
+                            exercise.cue!,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: cTextPrimary,
+                              height: 1.6,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
                 if (hasNotes) ...[
-                  Gap.v24(),
+                  Gap.v16(),
                   Text(
                     'نکات اجرا', // TODO: localize
                     style: theme.textTheme.titleMedium?.copyWith(

@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fitsho/core/error/failures.dart';
+import 'package:fitsho/core/metadata/default_catalog.dart';
+import 'package:fitsho/core/metadata/domain/entities/metadata_catalog.dart';
+import 'package:fitsho/core/metadata/domain/repositories/metadata_repository.dart';
+import 'package:fitsho/core/metadata/presentation/providers/metadata_provider.dart';
 import 'package:fitsho/features/workout/domain/entities/workout_entities.dart';
 import 'package:fitsho/features/workout/presentation/widgets/empty_exercise_pool_dialog.dart';
 import 'package:fitsho/features/workout/presentation/widgets/medical_referral_dialog.dart';
@@ -9,7 +14,23 @@ import 'package:fitsho/features/workout/presentation/widgets/medical_safety_warn
 import 'package:fitsho/features/workout/presentation/widgets/workout_exercise_card.dart';
 import 'package:fitsho/features/workout/presentation/widgets/workout_plan_header.dart';
 import 'package:fitsho/features/workout/presentation/widgets/workout_rest_day_view.dart';
+import 'package:fitsho/features/workout/presentation/widgets/workout_session_section.dart';
 import 'package:fitsho/l10n/app_localizations.dart';
+import 'package:fpdart/fpdart.dart';
+
+class _MockMetadataRepo implements MetadataRepository {
+  @override
+  Future<MetadataCatalog> getInitialCatalog() async => DefaultCatalog.asCatalog();
+
+  @override
+  Future<Either<Failure, int>> checkVersion() async => right(2);
+
+  @override
+  Future<Either<Failure, MetadataCatalog?>> syncCatalogIfNeeded(int currentVersion) async => right(null);
+
+  @override
+  Future<Either<Failure, MetadataCatalog>> fetchFreshCatalog() async => right(DefaultCatalog.asCatalog());
+}
 
 Widget _createTestWidget(Widget child) {
   return MaterialApp(
@@ -80,7 +101,7 @@ void main() {
     expect(find.text('روز استراحت و ریکاوری'), findsOneWidget);
   });
 
-  testWidgets('WorkoutExerciseCard displays exercise name and sets/reps', (
+  testWidgets('WorkoutExerciseCard displays exercise name, sets/reps, cue and notes', (
     WidgetTester tester,
   ) async {
     const item = WorkoutExerciseItem(
@@ -91,6 +112,7 @@ void main() {
       reps: '8-10',
       restSec: 120,
       rpe: 8,
+      cue: 'زانوها در راستای پنجه پا باشند',
       notes: 'دامنه حرکتی کامل حفظ شود',
     );
 
@@ -101,6 +123,8 @@ void main() {
 
     expect(find.text('اسکوات با هالتر'), findsOneWidget);
     expect(find.text('دامنه حرکتی کامل حفظ شود'), findsOneWidget);
+    expect(find.text('زانوها در راستای پنجه پا باشند'), findsOneWidget);
+    expect(find.byIcon(Icons.tips_and_updates_outlined), findsOneWidget);
     expect(find.byIcon(Icons.swap_horiz_rounded), findsOneWidget);
   });
 
@@ -127,5 +151,80 @@ void main() {
     expect(buttonFinder, findsOneWidget);
     final elevatedButton = tester.widget<ElevatedButton>(buttonFinder);
     expect(elevatedButton.onPressed, isNull);
+  });
+
+  testWidgets('WorkoutSessionSection renders visually distinct Warmup, Main, and Cooldown sections', (
+    WidgetTester tester,
+  ) async {
+    final plan = WorkoutPlan(
+      id: 'p1',
+      userId: 'u1',
+      status: 'active',
+      summary: 'برنامه تست',
+      notes: const WorkoutNotes(progression: '', safety: []),
+      sessions: [
+        const WorkoutSession(
+          sessionId: 'session_1',
+          sessionNumber: 1,
+          title: 'جلسه تمرینی ۱',
+          focus: ['chest'],
+          durationMin: 45,
+          warmup: [
+            WorkoutExerciseItem(
+              itemId: 'w1',
+              exerciseId: 'arm_circles',
+              name: 'دایره دست',
+              sets: 2,
+              durationSec: 30,
+              restSec: 30,
+            ),
+          ],
+          main: [
+            WorkoutExerciseItem(
+              itemId: 'm1',
+              exerciseId: 'bench_press',
+              name: 'پرس سینه',
+              sets: 3,
+              reps: '10',
+              restSec: 90,
+            ),
+          ],
+          cooldown: [
+            WorkoutExerciseItem(
+              itemId: 'c1',
+              exerciseId: 'chest_stretch',
+              name: 'کشش سینه',
+              sets: 2,
+              durationSec: 30,
+              restSec: 30,
+            ),
+          ],
+        ),
+      ],
+      createdAt: DateTime.now(),
+      remainingFullGenerations: 2,
+      remainingExerciseSwaps: 2,
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          metadataRepositoryProvider.overrideWithValue(_MockMetadataRepo()),
+        ],
+        child: _createTestWidget(
+          SingleChildScrollView(
+            child: WorkoutSessionSection(plan: plan),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('گرم کردن (پویایی)'), findsOneWidget);
+    expect(find.text('تمرین اصلی (تمرینات اصلی و تعادلی)'), findsOneWidget);
+    expect(find.text('سرد کردن (کشش و انعطاف)'), findsOneWidget);
+    expect(find.byIcon(Icons.whatshot_rounded), findsOneWidget);
+    expect(find.byIcon(Icons.fitness_center_rounded), findsWidgets);
+    expect(find.byIcon(Icons.self_improvement_rounded), findsOneWidget);
   });
 }

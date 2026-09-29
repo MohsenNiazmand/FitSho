@@ -44,6 +44,8 @@ class WorkoutExerciseCard extends StatelessWidget {
 
     final hasNotes =
         exercise.notes != null && exercise.notes!.trim().isNotEmpty;
+    final hasCue =
+        exercise.cue != null && exercise.cue!.trim().isNotEmpty;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -178,8 +180,45 @@ class WorkoutExerciseCard extends StatelessWidget {
                       ),
                   ],
                 ),
+                if (hasCue) ...[
+                  Gap.v8(),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: cPrimary.withValues(alpha: 0.07),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: cPrimary.withValues(alpha: 0.2),
+                      ),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(
+                          Icons.tips_and_updates_outlined,
+                          size: 15,
+                          color: cPrimary,
+                        ),
+                        Gap.h8(),
+                        Expanded(
+                          child: Text(
+                            exercise.cue!,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: cTextPrimary,
+                              height: 1.4,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
                 if (hasNotes) ...[
-                  Gap.v12(),
+                  Gap.v8(),
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 10,
