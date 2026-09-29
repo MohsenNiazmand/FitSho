@@ -3,7 +3,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:fitsho/features/workout/domain/entities/workout_entities.dart';
+import 'package:fitsho/features/workout/presentation/widgets/empty_exercise_pool_dialog.dart';
 import 'package:fitsho/features/workout/presentation/widgets/medical_referral_dialog.dart';
+import 'package:fitsho/features/workout/presentation/widgets/medical_safety_warning_card.dart';
 import 'package:fitsho/features/workout/presentation/widgets/workout_exercise_card.dart';
 import 'package:fitsho/features/workout/presentation/widgets/workout_plan_header.dart';
 import 'package:fitsho/features/workout/presentation/widgets/workout_rest_day_view.dart';
@@ -36,6 +38,36 @@ void main() {
 
     expect(find.text(testMessage), findsOneWidget);
     expect(find.byIcon(Icons.medical_services_rounded), findsOneWidget);
+  });
+
+  testWidgets('EmptyExercisePoolDialog displays title and guidance message', (
+    WidgetTester tester,
+  ) async {
+    const testMessage = 'امکان استخراج حرکات کافی با توجه به محدودیت‌ها وجود ندارد.';
+
+    await tester.pumpWidget(
+      _createTestWidget(const EmptyExercisePoolDialog(message: testMessage)),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('تنظیم شرایط تمرین'), findsOneWidget);
+    expect(find.text(testMessage), findsOneWidget);
+    expect(find.byIcon(Icons.tune_rounded), findsOneWidget);
+    expect(find.text('ویرایش پروفایل تمرین'), findsOneWidget);
+  });
+
+  testWidgets('MedicalSafetyWarningCard displays warning and health disclaimer', (
+    WidgetTester tester,
+  ) async {
+    const testMessage = 'پیام تست ایمنی پزشکی';
+
+    await tester.pumpWidget(
+      _createTestWidget(const MedicalSafetyWarningCard(customMessage: testMessage)),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text(testMessage), findsOneWidget);
+    expect(find.byIcon(Icons.health_and_safety_rounded), findsOneWidget);
   });
 
   testWidgets('WorkoutRestDayView displays rest title and description', (

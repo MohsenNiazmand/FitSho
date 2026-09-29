@@ -12,6 +12,7 @@ String failureMessage(BuildContext context, Failure failure) {
     NotFoundFailure() => failure.message,
     RateLimitFailure() => failure.message,
     MedicalReferralFailure() => failure.message,
+    EmptyExercisePoolFailure() => failure.message,
     ServerFailure() => failure.message.isNotEmpty
         ? failure.message
         : context.tr.genericError,

@@ -16,7 +16,9 @@ import 'package:fitsho/features/diet/presentation/widgets/ai_loading_dialog.dart
 import 'package:fitsho/features/workout/domain/entities/workout_entities.dart';
 import 'package:fitsho/features/workout/presentation/providers/workout_providers.dart';
 import 'package:fitsho/features/workout/presentation/utils/workout_profile_validation.dart';
+import 'package:fitsho/features/workout/presentation/widgets/empty_exercise_pool_dialog.dart';
 import 'package:fitsho/features/workout/presentation/widgets/medical_referral_dialog.dart';
+import 'package:fitsho/features/workout/presentation/widgets/medical_safety_warning_card.dart';
 import 'package:fitsho/shared/presentation/utils/toast_utils.dart';
 import 'package:fitsho/shared/presentation/widgets/app_primary_button.dart';
 import 'package:fitsho/shared/presentation/widgets/app_text_field.dart';
@@ -1048,29 +1050,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
         ],
         if (showWarning) ...[
           Gap.custom(height: 20),
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.amber.shade50,
-              border: Border.all(color: Colors.amber.shade300),
-              borderRadius: AppRadius.card,
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.warning_amber_rounded, color: Colors.amber),
-                Gap.h8(),
-                Expanded(
-                  child: Text(
-                    context.tr.workoutMedicalReferralWarning,
-                    style: TextStyle(
-                      color: Colors.amber.shade900,
-                      fontSize: 13,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          const MedicalSafetyWarningCard(),
         ],
       ],
     );
@@ -1106,6 +1086,8 @@ Future<void> _generatePlanAfterProfileSave(
   if (failure != null) {
     if (failure is MedicalReferralFailure) {
       await MedicalReferralDialog.show(context, failure.message);
+    } else if (failure is EmptyExercisePoolFailure) {
+      await EmptyExercisePoolDialog.show(context, failure.message);
     } else if (failure is RateLimitFailure) {
       showMessageToast(failure.message);
     } else {

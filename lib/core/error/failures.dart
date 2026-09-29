@@ -46,6 +46,13 @@ final class MedicalReferralFailure extends Failure {
   ]);
 }
 
+final class EmptyExercisePoolFailure extends Failure {
+  const EmptyExercisePoolFailure([
+    super.message =
+        'امکان استخراج حرکات کافی با توجه به محدودیت‌ها و آسیب‌دیدگی‌های انتخابی وجود ندارد.',
+  ]);
+}
+
 final class CacheFailure extends Failure {
   const CacheFailure([super.message = 'Local storage error']);
 }

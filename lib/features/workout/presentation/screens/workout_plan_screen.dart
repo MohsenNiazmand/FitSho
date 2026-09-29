@@ -14,6 +14,7 @@ import 'package:fitsho/features/diet/presentation/providers/diet_providers.dart'
 import 'package:fitsho/features/diet/presentation/widgets/ai_loading_dialog.dart';
 import 'package:fitsho/features/workout/domain/entities/workout_entities.dart';
 import 'package:fitsho/features/workout/presentation/providers/workout_providers.dart';
+import 'package:fitsho/features/workout/presentation/widgets/empty_exercise_pool_dialog.dart';
 import 'package:fitsho/features/workout/presentation/widgets/medical_referral_dialog.dart';
 import 'package:fitsho/features/workout/presentation/widgets/new_plan_choice_dialog.dart';
 import 'package:fitsho/features/workout/presentation/widgets/workout_session_section.dart';
@@ -49,6 +50,8 @@ class WorkoutPlanScreen extends HookConsumerWidget {
       if (failure != null) {
         if (failure is MedicalReferralFailure) {
           await MedicalReferralDialog.show(context, failure.message);
+        } else if (failure is EmptyExercisePoolFailure) {
+          await EmptyExercisePoolDialog.show(context, failure.message);
         } else if (failure is RateLimitFailure) {
           showMessageToast(failure.message);
         } else {

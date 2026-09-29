@@ -6,6 +6,7 @@ import 'package:fitsho/core/error/failures.dart';
 import 'package:fitsho/core/extensions/context_extensions.dart';
 import 'package:fitsho/features/diet/presentation/widgets/ai_loading_dialog.dart';
 import 'package:fitsho/features/workout/presentation/providers/workout_providers.dart';
+import 'package:fitsho/features/workout/presentation/widgets/empty_exercise_pool_dialog.dart';
 import 'package:fitsho/features/workout/presentation/widgets/medical_referral_dialog.dart';
 import 'package:fitsho/features/workout/presentation/widgets/workout_profile_form.dart';
 import 'package:fitsho/shared/presentation/utils/toast_utils.dart';
@@ -35,6 +36,8 @@ class WorkoutProfileEditScreen extends ConsumerWidget {
       AiLoadingDialog.hide(context);
       if (failure is MedicalReferralFailure) {
         await MedicalReferralDialog.show(context, failure.message);
+      } else if (failure is EmptyExercisePoolFailure) {
+        await EmptyExercisePoolDialog.show(context, failure.message);
       } else if (failure is RateLimitFailure) {
         showMessageToast(failure.message);
       } else if (failure != null) {

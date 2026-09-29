@@ -58,6 +58,12 @@ class ExceptionMapper {
         message ?? 'Consult a doctor/physiotherapist first',
       );
     }
+    if (code == 'EMPTY_EXERCISE_POOL') {
+      return EmptyExercisePoolFailure(
+        message ??
+            'امکان استخراج حرکات کافی با توجه به محدودیت‌ها و آسیب‌دیدگی‌های انتخابی وجود ندارد.',
+      );
+    }
     if (code == 'NO_ALTERNATIVE_EXERCISE') {
       return ValidationFailure(
         message ?? 'No alternative exercise found',
