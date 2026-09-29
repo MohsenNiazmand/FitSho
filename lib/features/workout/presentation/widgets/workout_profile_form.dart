@@ -445,20 +445,24 @@ class WorkoutProfileForm extends HookConsumerWidget {
           style: const TextStyle(fontWeight: FontWeight.w600),
         ),
         Gap.v8(),
-        // F11: Accessible equal-width selectable tiles with short title on line 1 and description on line 2
+        // F11: Accessible equal-width selectable tiles with short title on line 1 and description on line 2 (when selected)
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: options.levels.map((lvl) {
+          children: options.levels.where((lvl) => lvl.id != 'elite').map((lvl) {
             final meta = metadataCatalog.findByKey('difficulty_level', lvl.id);
             final levelLabel = meta?.labelFa ?? lvl.label;
             final isSelected = selectedLevel.value == lvl.id;
+            final levelDesc = _getLevelDescription(lvl.id, lvl.description);
+
             return Expanded(
               child: GestureDetector(
                 onTap: () => selectedLevel.value = lvl.id,
-                child: Container(
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeInOut,
                   margin: const EdgeInsets.symmetric(horizontal: 4),
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
+                    horizontal: 6,
                     vertical: 12,
                   ),
                   decoration: BoxDecoration(
@@ -484,16 +488,15 @@ class WorkoutProfileForm extends HookConsumerWidget {
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      if (lvl.description != null &&
-                          lvl.description!.isNotEmpty) ...[
-                        Gap.v4(),
+                      if (isSelected && levelDesc.isNotEmpty) ...[
+                        Gap.v6(),
                         Text(
-                          lvl.description!,
-                          style: TextStyle(
-                            color: isSelected
-                                ? Colors.white70
-                                : Colors.grey.shade600,
+                          levelDesc,
+                          style: const TextStyle(
+                            color: Colors.white,
                             fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                            height: 1.3,
                           ),
                           textAlign: TextAlign.center,
                           maxLines: 2,
@@ -1055,7 +1058,21 @@ class WorkoutProfileForm extends HookConsumerWidget {
       ],
     );
   }
+
+  String _getLevelDescription(String levelId, String? apiDesc) {
+    switch (levelId) {
+      case 'beginner':
+        return 'کمتر از ۶ ماه سابقه';
+      case 'intermediate':
+        return 'بین ۶ ماه تا ۲ سال سابقه';
+      case 'advanced':
+        return 'بیش از ۲ سال سابقه';
+      default:
+        return apiDesc ?? '';
+    }
+  }
 }
+
 
 Future<void> _maybePromptRegenerate(BuildContext context, WidgetRef ref) async {
   final confirmed = await showModalBottomSheet<bool>(
@@ -1138,3 +1155,5 @@ class _RegeneratePlanSheet extends StatelessWidget {
     );
   }
 }
+
+
