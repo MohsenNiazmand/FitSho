@@ -5,7 +5,9 @@ import 'package:fitsho/core/utils/persian_digits.dart';
 import 'package:fitsho/features/workout/domain/entities/workout_entities.dart';
 import 'package:fitsho/features/workout/presentation/widgets/workout_exercise_details_sheet.dart';
 import 'package:fitsho/shared/presentation/widgets/gap.dart';
+import 'package:fitsho/shared/presentation/widgets/static_gif_thumbnail.dart';
 import 'package:flutter/material.dart';
+
 
 class WorkoutExerciseCard extends StatelessWidget {
   const WorkoutExerciseCard({
@@ -84,19 +86,20 @@ class WorkoutExerciseCard extends StatelessWidget {
                           color: cSurfaceElevated,
                         ),
                         clipBehavior: Clip.antiAlias,
-                        child: CachedNetworkImage(
-                          imageUrl: exercise.gifUrl!,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => const Padding(
-                            padding: EdgeInsets.all(16.0),
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          ),
-                          errorWidget: (context, url, error) => const Icon(
-                            Icons.fitness_center,
-                            color: cTextSecondary,
+                        child: StaticGifThumbnail(
+                          image: CachedNetworkImageProvider(exercise.gifUrl!),
+                          showPlayBadge: true,
+                          errorWidget: const Center(
+                            child: Icon(
+                              Icons.fitness_center,
+                              color: cTextSecondary,
+                              size: 28,
+                            ),
                           ),
                         ),
+
                       )
+
                     else
                       Container(
                         width: 64,
