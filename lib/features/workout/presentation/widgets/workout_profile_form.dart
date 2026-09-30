@@ -67,7 +67,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
     final isSaving = useState(false);
 
     useEffect(() {
-      final profile = profileAsync.value;
+      final profile = profileAsync.valueOrNull;
       if (profile != null) {
         selectedDisciplines.value = List.from(profile.disciplines);
         selectedStyles.value = Map.from(profile.styles);
@@ -101,7 +101,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
         injuryNotesController.text = profile.injuryNotes ?? '';
       }
       return null;
-    }, [profileAsync.value, optionsAsync.value]);
+    }, [profileAsync.valueOrNull, optionsAsync.valueOrNull]);
 
     return optionsAsync.when(
       data: (options) {

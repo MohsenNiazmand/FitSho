@@ -91,7 +91,7 @@ InjuryOptionModel _$InjuryOptionModelFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String,
       label: json['label'] as String,
       description: json['description'] as String,
-      requiresReferral: json['requiresReferral'] as bool,
+      requiresReferral: json['requiresReferral'] as bool? ?? false,
       isAvailable: json['isAvailable'] as bool? ?? true,
     );
 

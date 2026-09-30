@@ -98,8 +98,9 @@ void main() {
 
         final envelope = WorkoutProfileEnvelope.fromJson(json);
         expect(envelope.success, isTrue);
-        expect(envelope.profile.id, equals('prof_1'));
-        expect(envelope.profile.daysPerWeek, equals(3));
+        expect(envelope.profile, isNotNull);
+        expect(envelope.profile!.id, equals('prof_1'));
+        expect(envelope.profile!.daysPerWeek, equals(3));
         expect(envelope.shouldRegeneratePlan, isTrue);
       },
     );

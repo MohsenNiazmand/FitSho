@@ -1,4 +1,5 @@
 import 'package:fpdart/fpdart.dart';
+import 'package:fitsho/core/error/exceptions.dart';
 import 'package:fitsho/core/error/failures.dart';
 import 'package:fitsho/core/utils/repository_guard.dart';
 import 'package:fitsho/features/workout/data/datasources/workout_local_data_source.dart';
@@ -57,10 +58,14 @@ class WorkoutRepositoryImpl implements WorkoutRepository {
   Future<Either<Failure, WorkoutProfile?>> getProfile() async {
     final result = await guard(() async {
       final envelope = await _api.getProfile();
-      await _localDataSource.saveProfile(envelope.profile);
-      return envelope.profile.toEntity(
-        shouldRegeneratePlan: envelope.shouldRegeneratePlan,
-      );
+      if (envelope.profile != null) {
+        await _localDataSource.saveProfile(envelope.profile!);
+        return envelope.profile!.toEntity(
+          shouldRegeneratePlan: envelope.shouldRegeneratePlan,
+        );
+      }
+      await _localDataSource.removeCachedProfile();
+      return null;
     });
 
     return result.fold((failure) async {
@@ -112,11 +117,13 @@ class WorkoutRepositoryImpl implements WorkoutRepository {
       );
 
       final envelope = await _api.upsertProfile(request);
-      await _localDataSource.saveProfile(envelope.profile);
-
-      return envelope.profile.toEntity(
-        shouldRegeneratePlan: envelope.shouldRegeneratePlan,
-      );
+      if (envelope.profile != null) {
+        await _localDataSource.saveProfile(envelope.profile!);
+        return envelope.profile!.toEntity(
+          shouldRegeneratePlan: envelope.shouldRegeneratePlan,
+        );
+      }
+      throw ServerException('Updated profile was null');
     });
   }
 

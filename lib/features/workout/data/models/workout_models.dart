@@ -149,7 +149,7 @@ class InjuryOptionModel {
     required this.id,
     required this.label,
     required this.description,
-    required this.requiresReferral,
+    this.requiresReferral = false,
     this.isAvailable = true,
   });
 
@@ -159,7 +159,9 @@ class InjuryOptionModel {
   final String id;
   final String label;
   final String description;
+  @JsonKey(defaultValue: false)
   final bool requiresReferral;
+  @JsonKey(defaultValue: true)
   final bool isAvailable;
 
   Map<String, dynamic> toJson() => _$InjuryOptionModelToJson(this);
@@ -351,20 +353,31 @@ class WorkoutProfileModel {
 class WorkoutProfileEnvelope {
   const WorkoutProfileEnvelope({
     required this.success,
-    required this.profile,
+    this.profile,
     this.shouldRegeneratePlan = false,
   });
 
   factory WorkoutProfileEnvelope.fromJson(Map<String, dynamic> json) {
     final success = json['success'] as bool? ?? true;
-    final data = json['data'] as Map<String, dynamic>;
+    final dynamic rawData = json['data'];
 
-    if (data.containsKey('profile')) {
+    if (rawData == null || rawData is! Map<String, dynamic>) {
       return WorkoutProfileEnvelope(
         success: success,
-        profile: WorkoutProfileModel.fromJson(
-          data['profile'] as Map<String, dynamic>,
-        ),
+        profile: null,
+        shouldRegeneratePlan: false,
+      );
+    }
+
+    final data = rawData;
+
+    if (data.containsKey('profile')) {
+      final profileData = data['profile'];
+      return WorkoutProfileEnvelope(
+        success: success,
+        profile: profileData is Map<String, dynamic>
+            ? WorkoutProfileModel.fromJson(profileData)
+            : null,
         shouldRegeneratePlan: data['shouldRegeneratePlan'] as bool? ?? false,
       );
     } else {
@@ -377,7 +390,7 @@ class WorkoutProfileEnvelope {
   }
 
   final bool success;
-  final WorkoutProfileModel profile;
+  final WorkoutProfileModel? profile;
   final bool shouldRegeneratePlan;
 }
 
