@@ -1346,6 +1346,12 @@ abstract class AppLocalizations {
   /// **'A new version of FitSho is available. Would you like to update?'**
   String get optionalUpdateMessage;
 
+  /// No description provided for @updateWhatsNew.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s new:'**
+  String get updateWhatsNew;
+
   /// No description provided for @updateNow.
   ///
   /// In en, this message translates to:

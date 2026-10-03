@@ -28,7 +28,10 @@ class SplashScreen extends HookConsumerWidget {
               showDialog<void>(
                 context: context,
                 barrierDismissible: false,
-                builder: (_) => ForceUpdateDialog(updateUrl: info.updateUrl!),
+                builder: (_) => ForceUpdateDialog(
+                  updateUrl: info.updateUrl!,
+                  releaseNotes: info.releaseNotes,
+                ),
               );
             });
           } else if (info.status == VersionStatus.updateAvailable) {
@@ -36,7 +39,10 @@ class SplashScreen extends HookConsumerWidget {
               await showDialog<void>(
                 context: context,
                 builder: (_) =>
-                    OptionalUpdateDialog(updateUrl: info.updateUrl!),
+                    OptionalUpdateDialog(
+                  updateUrl: info.updateUrl!,
+                  releaseNotes: info.releaseNotes,
+                ),
               );
               if (context.mounted) {
                 await ref.read(authStateProvider.notifier).checkSession();

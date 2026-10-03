@@ -683,6 +683,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'A new version of FitSho is available. Would you like to update?';
 
   @override
+  String get updateWhatsNew => 'What\'s new:';
+
+  @override
   String get updateNow => 'Update now';
 
   @override

@@ -682,6 +682,9 @@ class AppLocalizationsFa extends AppLocalizations {
       'نسخه جدید اپلیکیشن فیت‌شو منتشر شده است. مایل به بروزرسانی هستید؟';
 
   @override
+  String get updateWhatsNew => 'تغییرات این نسخه:';
+
+  @override
   String get updateNow => 'بروزرسانی';
 
   @override
