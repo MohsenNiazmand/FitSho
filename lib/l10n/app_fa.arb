@@ -547,6 +547,7 @@
       }
     }
   },
+  "workoutIncompatibleStyleResetToast": "سبک انتخاب‌شده برای این سطح مناسب نیست، لطفاً دوباره انتخاب کنید",
   "workoutMinutesCount": "{count} دقیقه",
   "@workoutMinutesCount": {
     "placeholders": {

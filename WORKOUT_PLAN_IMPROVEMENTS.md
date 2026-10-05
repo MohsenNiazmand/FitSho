@@ -23,7 +23,7 @@ Users report that for some bodybuilding programs the number of training days can
 |-------|-------|--------------------|--------|
 | FA1 | Single source of truth for allowed day range + auto-sync `daysPerWeek` | none | ☑ |
 | FA2 | Day chips: `Wrap`, single-option hint | none | ☑ |
-| FA3 | Reset incompatible style when level changes | none | ☐ |
+| FA3 | Reset incompatible style when level changes | none | ☑ |
 | FA4 | `recommendedDays` badge | B12 (nullable, safe without it) | ☐ |
 | FA5 | Remove `elite` handling | B13 | ☐ |
 | FA6 | Tests, l10n, release notes | all | ☐ |
@@ -109,8 +109,8 @@ one day count.
 **Tests:** helper keeps valid styles, removes invalid ones, reports removed disciplines; a level change from `intermediate` to `beginner` removes `bro_split`.
 
 **Checklist**
-- [ ] Helper + wiring + toast
-- [ ] Tests green
+- [x] Helper + wiring + toast
+- [x] Tests green
 
 **Commit message**
 ```

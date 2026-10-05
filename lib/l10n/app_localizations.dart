@@ -1904,6 +1904,12 @@ abstract class AppLocalizations {
   /// **'This style is designed for exactly {count} days per week.'**
   String workoutFixedDaysHint(int count);
 
+  /// No description provided for @workoutIncompatibleStyleResetToast.
+  ///
+  /// In en, this message translates to:
+  /// **'The selected style is not suitable for this level, please select again.'**
+  String get workoutIncompatibleStyleResetToast;
+
   /// No description provided for @workoutMinutesCount.
   ///
   /// In en, this message translates to:

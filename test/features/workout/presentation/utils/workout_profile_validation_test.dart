@@ -63,7 +63,7 @@ void main() {
         description: 'اسپلیت ۵ روزه',
         minDays: 5,
         maxDays: 5,
-        levels: ['advanced'],
+        levels: ['intermediate', 'advanced'],
         recommendedDays: 5,
       ),
     ],
@@ -308,6 +308,43 @@ void main() {
         sessionMinutes: 60,
       );
       expect(isSyncedValid, isTrue);
+    });
+  });
+
+  group('pruneStylesForLevel', () {
+    test('keeps valid styles when compatible with new level', () {
+      final result = pruneStylesForLevel(
+        options: options,
+        styles: {'bodybuilding': 'full_body'},
+        level: 'intermediate',
+      );
+      expect(result.styles, {'bodybuilding': 'full_body'});
+      expect(result.removedDisciplineIds, isEmpty);
+    });
+
+    test('removes invalid styles and reports removed discipline IDs', () {
+      final result = pruneStylesForLevel(
+        options: options,
+        styles: {
+          'bodybuilding': 'bro_split',
+          'strength': 'beginner_style',
+        },
+        level: 'beginner',
+      );
+      // bro_split is only intermediate/advanced -> removed
+      // beginner_style is beginner -> kept
+      expect(result.styles, {'strength': 'beginner_style'});
+      expect(result.removedDisciplineIds, ['bodybuilding']);
+    });
+
+    test('a level change from intermediate to beginner removes bro_split', () {
+      final result = pruneStylesForLevel(
+        options: options,
+        styles: {'bodybuilding': 'bro_split'},
+        level: 'beginner',
+      );
+      expect(result.styles, isEmpty);
+      expect(result.removedDisciplineIds, ['bodybuilding']);
     });
   });
 }

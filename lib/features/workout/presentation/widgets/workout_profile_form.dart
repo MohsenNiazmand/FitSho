@@ -503,7 +503,19 @@ class WorkoutProfileForm extends HookConsumerWidget {
             return Expanded(
               child: GestureDetector(
                 onTap: () {
+                  if (selectedLevel.value == lvl.id) return;
                   selectedLevel.value = lvl.id;
+                  final result = pruneStylesForLevel(
+                    options: options,
+                    styles: selectedStyles.value,
+                    level: lvl.id,
+                  );
+                  if (result.removedDisciplineIds.isNotEmpty) {
+                    selectedStyles.value = result.styles;
+                    showMessageToast(
+                      context.tr.workoutIncompatibleStyleResetToast,
+                    );
+                  }
                   onSyncDays?.call();
                 },
                 child: AnimatedContainer(

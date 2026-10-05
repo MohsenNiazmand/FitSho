@@ -58,6 +58,35 @@ int syncDaysPerWeek({
   return currentDays.clamp(min, max);
 }
 
+({Map<String, String> styles, List<String> removedDisciplineIds})
+pruneStylesForLevel({
+  required WorkoutOptions options,
+  required Map<String, String> styles,
+  required String level,
+}) {
+  final updatedStyles = Map<String, String>.from(styles);
+  final removedDisciplineIds = <String>[];
+
+  styles.forEach((disciplineId, styleId) {
+    final isCompatible = options.styles.any(
+      (style) =>
+          style.id == styleId &&
+          style.disciplineId == disciplineId &&
+          style.isAvailable &&
+          style.levels.contains(level),
+    );
+    if (!isCompatible) {
+      updatedStyles.remove(disciplineId);
+      removedDisciplineIds.add(disciplineId);
+    }
+  });
+
+  return (
+    styles: updatedStyles,
+    removedDisciplineIds: removedDisciplineIds,
+  );
+}
+
 bool isWorkoutProfileStepValid({
   required int step,
   required WorkoutOptions options,

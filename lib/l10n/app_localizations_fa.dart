@@ -1018,6 +1018,10 @@ class AppLocalizationsFa extends AppLocalizations {
   }
 
   @override
+  String get workoutIncompatibleStyleResetToast =>
+      'سبک انتخاب‌شده برای این سطح مناسب نیست، لطفاً دوباره انتخاب کنید';
+
+  @override
   String workoutMinutesCount(int count) {
     return '$count دقیقه';
   }

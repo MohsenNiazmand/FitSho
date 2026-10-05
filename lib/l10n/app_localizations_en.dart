@@ -1018,6 +1018,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get workoutIncompatibleStyleResetToast =>
+      'The selected style is not suitable for this level, please select again.';
+
+  @override
   String workoutMinutesCount(int count) {
     return '$count min';
   }

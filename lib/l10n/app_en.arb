@@ -561,6 +561,7 @@
       }
     }
   },
+  "workoutIncompatibleStyleResetToast": "The selected style is not suitable for this level, please select again.",
   "workoutMinutesCount": "{count} min",
   "@workoutMinutesCount": {
     "placeholders": {
