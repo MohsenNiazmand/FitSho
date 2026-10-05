@@ -7,7 +7,7 @@ part of 'delete_account_provider.dart';
 // **************************************************************************
 
 String _$deleteAccountNotifierHash() =>
-    r'8e539459ab38c5aba10b164c467133ebb4d4341a';
+    r'f091fff1a688126991f3c409ea8627267a1ef00b';
 
 /// See also [DeleteAccountNotifier].
 @ProviderFor(DeleteAccountNotifier)

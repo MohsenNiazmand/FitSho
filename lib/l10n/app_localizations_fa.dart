@@ -682,6 +682,9 @@ class AppLocalizationsFa extends AppLocalizations {
       'نسخه جدید اپلیکیشن فیت‌شو منتشر شده است. مایل به بروزرسانی هستید؟';
 
   @override
+  String get updateWhatsNew => 'تغییرات این نسخه:';
+
+  @override
   String get updateNow => 'بروزرسانی';
 
   @override
@@ -814,5 +817,308 @@ class AppLocalizationsFa extends AppLocalizations {
   @override
   String appVersion(String version) {
     return 'نسخه $version';
+  }
+
+  @override
+  String get workoutOnboardingTitle => 'ساخت پروفایل تمرینی';
+
+  @override
+  String get workoutStepDisciplines => 'انتخاب رشته';
+
+  @override
+  String get workoutStepStyleLevel => 'سطح و سبک';
+
+  @override
+  String get workoutStepGoal => 'هدف تمرینی';
+
+  @override
+  String get workoutStepConditions => 'شرایط و تجهیزات';
+
+  @override
+  String get workoutStepInjuries => 'آسیب‌دیدگی و سلامت';
+
+  @override
+  String get workoutMaxDisciplinesWarning =>
+      'حداکثر می‌توانید ۲ رشته انتخاب کنید.';
+
+  @override
+  String get workoutMedicalReferralWarning =>
+      'با توجه به شرایط آسیب یا درد شدید، لطفاً پیش از شروع تمرین با پزشک یا فیزیوتراپیست مشورت کنید.';
+
+  @override
+  String get workoutNoInjuries => 'آسیب‌دیدگی ندارم';
+
+  @override
+  String get workoutPainLevel => 'سطح درد (۰ تا ۱۰):';
+
+  @override
+  String get workoutInjuryNotes => 'توضیحات تکمیلی آسیب (اختیاری)';
+
+  @override
+  String get workoutDaysPerWeek => 'روزهای تمرین در هفته:';
+
+  @override
+  String get workoutSessionMinutes => 'مدت زمان جلسه (دقیقه):';
+
+  @override
+  String get workoutLocation => 'مکان تمرین:';
+
+  @override
+  String get workoutEquipment => 'تجهیزات در دسترس:';
+
+  @override
+  String get workoutSaveProfile => 'ذخیره و ادامه';
+
+  @override
+  String get workoutTabTitle => 'تمرین';
+
+  @override
+  String get workoutGeneratePlan => 'ساخت برنامه تمرینی';
+
+  @override
+  String workoutRemainingGenerations(int count) {
+    return '$count بار تا پایان هفته';
+  }
+
+  @override
+  String workoutRemainingSwaps(int count) {
+    return '$count تعویض باقی‌مانده امروز';
+  }
+
+  @override
+  String get workoutNeedDietFirst =>
+      'برای دسترسی به برنامه تمرینی، ابتدا باید پروفایل تغذیه خود را تکمیل کنید.';
+
+  @override
+  String get workoutGoToDietOnboarding => 'تکمیل پروفایل تغذیه';
+
+  @override
+  String get workoutNoPlanYet => 'هنوز برنامه تمرینی ثبت نشده است';
+
+  @override
+  String get workoutNoPlanYetSubtitle =>
+      'با ثبت اطلاعات و سوابق تمرینی خود، برنامه تمرینی اختصاصی هوشمند دریافت کنید.';
+
+  @override
+  String get workoutNewPlan => 'برنامه جدید';
+
+  @override
+  String get workoutProgressionNotes => 'نکات پیشرفت';
+
+  @override
+  String get workoutSafetyNotes => 'نکات ایمنی';
+
+  @override
+  String get workoutWarmup => 'گرم کردن';
+
+  @override
+  String get workoutMain => 'تمرین اصلی';
+
+  @override
+  String get workoutCooldown => 'سرد کردن';
+
+  @override
+  String get workoutRestDay => 'روز استراحت و ریکاوری';
+
+  @override
+  String get workoutRestDayDesc =>
+      'امروز روز ریکاوری و بازسازی عضلات است. استراحت کافی، خواب مناسب و آب‌رسانی به بدن را جدی بگیرید.';
+
+  @override
+  String workoutSetsReps(int sets, String reps) {
+    return '$sets ست × $reps تکرار';
+  }
+
+  @override
+  String workoutSetsDuration(int sets, int sec) {
+    return '$sets ست × $sec ثانیه';
+  }
+
+  @override
+  String workoutRest(int sec) {
+    return 'استراحت: $sec ثانیه';
+  }
+
+  @override
+  String workoutRpe(String rpe) {
+    return 'فشار (RPE): $rpe';
+  }
+
+  @override
+  String get workoutSwapExercise => 'تعویض حرکت';
+
+  @override
+  String get workoutMedicalReferralTitle => 'نیاز به ارجاع پزشکی';
+
+  @override
+  String get workoutMedicalReferralDialogGotIt => 'متوجه شدم';
+
+  @override
+  String get workoutGeneratingPlanTitle =>
+      'در حال ساخت برنامه تمرینی هوشمند...';
+
+  @override
+  String get workoutGeneratingPlanMessage =>
+      'برنامه تمرینی اختصاصی شما بر اساس سطح، اهداف و شرایط بدنی در حال تنظیم است.';
+
+  @override
+  String get workoutToday => 'امروز';
+
+  @override
+  String get workoutFocusMuscles => 'عضلات هدف:';
+
+  @override
+  String workoutDuration(int minutes) {
+    return '$minutes دقیقه';
+  }
+
+  @override
+  String get workoutEditProfile => 'ویرایش پروفایل تمرینی';
+
+  @override
+  String get workoutProfileSaved => 'پروفایل تمرینی با موفقیت ذخیره شد';
+
+  @override
+  String get workoutRestShort => 'استراحت';
+
+  @override
+  String workoutSetsOnly(int sets) {
+    return '$sets ست';
+  }
+
+  @override
+  String get workoutWeeklyGenerationsTitle => 'تولید هفتگی';
+
+  @override
+  String get workoutDailySwapsTitle => 'تعویض روزانه';
+
+  @override
+  String get workoutSelectDisciplinesHint =>
+      'لطفاً ۱ یا ۲ رشته ورزشی مورد علاقه خود را انتخاب کنید:';
+
+  @override
+  String get workoutFitnessLevelLabel => 'سطح آمادگی جسمانی:';
+
+  @override
+  String workoutDisciplineStyleLabel(String discipline) {
+    return 'سبک $discipline:';
+  }
+
+  @override
+  String get workoutSelectGoalHint => 'هدف اصلی خود را انتخاب کنید:';
+
+  @override
+  String workoutDaysCount(int count) {
+    return '$count روز';
+  }
+
+  @override
+  String workoutMinutesCount(int count) {
+    return '$count دقیقه';
+  }
+
+  @override
+  String get workoutInjuriesLabel => 'آسیب‌ها یا نواحی دردناک:';
+
+  @override
+  String workoutExerciseSwappedSuccess(int remaining) {
+    return 'حرکت با موفقیت تعویض شد. $remaining تعویض دیگر باقی مانده است.';
+  }
+
+  @override
+  String get workoutHistoryTitle => 'تاریخچه برنامه‌های تمرینی';
+
+  @override
+  String get workoutHistoryEmpty => 'تاریخچه‌ای یافت نشد';
+
+  @override
+  String workoutHistoryDays(int count) {
+    return '$count روز در هفته';
+  }
+
+  @override
+  String get workoutStatusActive => 'فعال';
+
+  @override
+  String get workoutStatusArchived => 'بایگانی‌شده';
+
+  @override
+  String get workoutHistoryDeleteConfirmTitle => 'حذف برنامه تمرینی';
+
+  @override
+  String get workoutHistoryDeleteConfirmBody =>
+      'آیا از حذف این برنامه تمرینی اطمینان دارید؟';
+
+  @override
+  String get workoutHistoryDeleteConfirmConfirm => 'حذف';
+
+  @override
+  String get workoutHistoryDeleteConfirmCancel => 'انصراف';
+
+  @override
+  String get workoutHistoryDeleteSuccess => 'برنامه با موفقیت حذف شد';
+
+  @override
+  String get workoutPlanDetailTitle => 'جزئیات برنامه تمرینی';
+
+  @override
+  String get workoutRegeneratePromptTitle => 'برنامه تمرینی به‌روزرسانی شود؟';
+
+  @override
+  String get workoutRegeneratePromptBody =>
+      'مشخصات شما تغییر کرد. می‌خواهید برنامه تمرینی بر اساس اطلاعات جدید دوباره ساخته شود؟';
+
+  @override
+  String get workoutRegenerateConfirm => 'بله، بازتولید کن';
+
+  @override
+  String get workoutRegenerateDismiss => 'فعلاً نه';
+
+  @override
+  String get workoutPlanRegenerated => 'برنامه تمرینی جدید با موفقیت ساخته شد';
+
+  @override
+  String workoutSessionTitle(int number) {
+    return 'جلسه $number';
+  }
+
+  @override
+  String get workoutNewPlanChoiceTitle => 'نحوه ساخت برنامه جدید';
+
+  @override
+  String get workoutNewPlanChoiceUseCurrent =>
+      'استفاده از اطلاعات فعلی و ساخت برنامه جدید';
+
+  @override
+  String get workoutNewPlanChoiceEdit => 'ویرایش مشخصات و ساخت برنامه';
+
+  @override
+  String get workoutPrimaryGoalLabel => 'هدف اصلی (الزامی):';
+
+  @override
+  String get workoutSecondaryGoalLabel => 'هدف ثانویه (اختیاری):';
+
+  @override
+  String get workoutGoalPrimaryTag => 'هدف اصلی';
+
+  @override
+  String get workoutGoalSecondaryTag => 'هدف ثانویه';
+
+  @override
+  String get workoutInjuryAreasLabel => 'نواحی آسیب‌دیده (حداکثر ۲ ناحیه):';
+
+  @override
+  String get workoutMedicalConditionsLabel => 'شرایط پزشکی:';
+
+  @override
+  String get workoutMaxInjuryAreasWarning =>
+      'حداکثر می‌توانید ۲ ناحیه آسیب انتخاب کنید.';
+
+  @override
+  String get workoutCustomDurationLabel => 'مدت زمان دلخواه (دقیقه):';
+
+  @override
+  String workoutCustomDurationInvalid(int min, int max) {
+    return 'لطفاً عددی بین $min تا $max وارد کنید';
   }
 }

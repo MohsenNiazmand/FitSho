@@ -7,6 +7,8 @@ import 'package:fitsho/features/auth/domain/usecases/delete_account_usecase.dart
 import 'package:fitsho/features/auth/presentation/providers/auth_state_provider.dart';
 import 'package:fitsho/features/diet/data/datasources/diet_local_data_source.dart';
 import 'package:fitsho/features/diet/presentation/providers/diet_providers.dart';
+import 'package:fitsho/features/workout/data/datasources/workout_local_data_source.dart';
+import 'package:fitsho/features/workout/presentation/providers/workout_providers.dart';
 
 part 'delete_account_provider.g.dart';
 
@@ -34,6 +36,7 @@ class DeleteAccountNotifier extends _$DeleteAccountNotifier {
         },
         (_) async {
           await getIt<DietLocalDataSource>().clearCache();
+          await getIt<WorkoutLocalDataSource>().clear();
           _resetCachedProviders();
           ref.read(authStateProvider.notifier).setUnauthenticated();
           state = const AsyncValue.data(null);
@@ -54,6 +57,10 @@ class DeleteAccountNotifier extends _$DeleteAccountNotifier {
       ..invalidate(todayMealLogsNotifierProvider)
       ..invalidate(complianceStatsNotifierProvider)
       ..invalidate(mealSlotsNotifierProvider)
-      ..invalidate(supplementsNotifierProvider);
+      ..invalidate(supplementsNotifierProvider)
+      ..invalidate(workoutOptionsNotifierProvider)
+      ..invalidate(workoutProfileNotifierProvider)
+      ..invalidate(workoutPlanNotifierProvider)
+      ..invalidate(workoutHistoryNotifierProvider);
   }
 }

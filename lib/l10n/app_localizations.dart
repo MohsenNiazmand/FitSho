@@ -1346,6 +1346,12 @@ abstract class AppLocalizations {
   /// **'A new version of FitSho is available. Would you like to update?'**
   String get optionalUpdateMessage;
 
+  /// No description provided for @updateWhatsNew.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s new:'**
+  String get updateWhatsNew;
+
   /// No description provided for @updateNow.
   ///
   /// In en, this message translates to:
@@ -1561,6 +1567,528 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Version {version}'**
   String appVersion(String version);
+
+  /// No description provided for @workoutOnboardingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout Profile Setup'**
+  String get workoutOnboardingTitle;
+
+  /// No description provided for @workoutStepDisciplines.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Disciplines'**
+  String get workoutStepDisciplines;
+
+  /// No description provided for @workoutStepStyleLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Level & Style'**
+  String get workoutStepStyleLevel;
+
+  /// No description provided for @workoutStepGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout Goal'**
+  String get workoutStepGoal;
+
+  /// No description provided for @workoutStepConditions.
+  ///
+  /// In en, this message translates to:
+  /// **'Conditions & Equipment'**
+  String get workoutStepConditions;
+
+  /// No description provided for @workoutStepInjuries.
+  ///
+  /// In en, this message translates to:
+  /// **'Injuries & Health'**
+  String get workoutStepInjuries;
+
+  /// No description provided for @workoutMaxDisciplinesWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'You can select a maximum of 2 disciplines.'**
+  String get workoutMaxDisciplinesWarning;
+
+  /// No description provided for @workoutMedicalReferralWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Due to severe pain or injury, please consult a physician before starting exercise.'**
+  String get workoutMedicalReferralWarning;
+
+  /// No description provided for @workoutNoInjuries.
+  ///
+  /// In en, this message translates to:
+  /// **'No injuries'**
+  String get workoutNoInjuries;
+
+  /// No description provided for @workoutPainLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Pain level (0 to 10):'**
+  String get workoutPainLevel;
+
+  /// No description provided for @workoutInjuryNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Injury notes (optional)'**
+  String get workoutInjuryNotes;
+
+  /// No description provided for @workoutDaysPerWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Days per week:'**
+  String get workoutDaysPerWeek;
+
+  /// No description provided for @workoutSessionMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Session minutes:'**
+  String get workoutSessionMinutes;
+
+  /// No description provided for @workoutLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout location:'**
+  String get workoutLocation;
+
+  /// No description provided for @workoutEquipment.
+  ///
+  /// In en, this message translates to:
+  /// **'Available equipment:'**
+  String get workoutEquipment;
+
+  /// No description provided for @workoutSaveProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Save & Continue'**
+  String get workoutSaveProfile;
+
+  /// No description provided for @workoutTabTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout'**
+  String get workoutTabTitle;
+
+  /// No description provided for @workoutGeneratePlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate Workout Plan'**
+  String get workoutGeneratePlan;
+
+  /// No description provided for @workoutRemainingGenerations.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} generations left this week'**
+  String workoutRemainingGenerations(int count);
+
+  /// No description provided for @workoutRemainingSwaps.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} swaps left today'**
+  String workoutRemainingSwaps(int count);
+
+  /// No description provided for @workoutNeedDietFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Please complete your diet profile first to access workout features.'**
+  String get workoutNeedDietFirst;
+
+  /// No description provided for @workoutGoToDietOnboarding.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete Diet Profile'**
+  String get workoutGoToDietOnboarding;
+
+  /// No description provided for @workoutNoPlanYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No workout plan yet'**
+  String get workoutNoPlanYet;
+
+  /// No description provided for @workoutNoPlanYetSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate a personalized workout plan tailored to your fitness goals.'**
+  String get workoutNoPlanYetSubtitle;
+
+  /// No description provided for @workoutNewPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'New Plan'**
+  String get workoutNewPlan;
+
+  /// No description provided for @workoutProgressionNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Progression Notes'**
+  String get workoutProgressionNotes;
+
+  /// No description provided for @workoutSafetyNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Safety Notes'**
+  String get workoutSafetyNotes;
+
+  /// No description provided for @workoutWarmup.
+  ///
+  /// In en, this message translates to:
+  /// **'Warm-up'**
+  String get workoutWarmup;
+
+  /// No description provided for @workoutMain.
+  ///
+  /// In en, this message translates to:
+  /// **'Main Workout'**
+  String get workoutMain;
+
+  /// No description provided for @workoutCooldown.
+  ///
+  /// In en, this message translates to:
+  /// **'Cool-down'**
+  String get workoutCooldown;
+
+  /// No description provided for @workoutRestDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Rest & Recovery Day'**
+  String get workoutRestDay;
+
+  /// No description provided for @workoutRestDayDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Today is dedicated to muscle recovery. Ensure adequate rest, sleep, and hydration.'**
+  String get workoutRestDayDesc;
+
+  /// No description provided for @workoutSetsReps.
+  ///
+  /// In en, this message translates to:
+  /// **'{sets} sets × {reps} reps'**
+  String workoutSetsReps(int sets, String reps);
+
+  /// No description provided for @workoutSetsDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'{sets} sets × {sec}s'**
+  String workoutSetsDuration(int sets, int sec);
+
+  /// No description provided for @workoutRest.
+  ///
+  /// In en, this message translates to:
+  /// **'Rest: {sec}s'**
+  String workoutRest(int sec);
+
+  /// No description provided for @workoutRpe.
+  ///
+  /// In en, this message translates to:
+  /// **'RPE: {rpe}'**
+  String workoutRpe(String rpe);
+
+  /// No description provided for @workoutSwapExercise.
+  ///
+  /// In en, this message translates to:
+  /// **'Swap Exercise'**
+  String get workoutSwapExercise;
+
+  /// No description provided for @workoutMedicalReferralTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical Referral Required'**
+  String get workoutMedicalReferralTitle;
+
+  /// No description provided for @workoutMedicalReferralDialogGotIt.
+  ///
+  /// In en, this message translates to:
+  /// **'I Understand'**
+  String get workoutMedicalReferralDialogGotIt;
+
+  /// No description provided for @workoutGeneratingPlanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Generating Workout Plan...'**
+  String get workoutGeneratingPlanTitle;
+
+  /// No description provided for @workoutGeneratingPlanMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your customized workout plan is being prepared based on your health and goals.'**
+  String get workoutGeneratingPlanMessage;
+
+  /// No description provided for @workoutToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get workoutToday;
+
+  /// No description provided for @workoutFocusMuscles.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus Muscles:'**
+  String get workoutFocusMuscles;
+
+  /// No description provided for @workoutDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min'**
+  String workoutDuration(int minutes);
+
+  /// No description provided for @workoutEditProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Workout Profile'**
+  String get workoutEditProfile;
+
+  /// No description provided for @workoutProfileSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout profile saved successfully'**
+  String get workoutProfileSaved;
+
+  /// No description provided for @workoutRestShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Rest'**
+  String get workoutRestShort;
+
+  /// No description provided for @workoutSetsOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'{sets} sets'**
+  String workoutSetsOnly(int sets);
+
+  /// No description provided for @workoutWeeklyGenerationsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly Generations'**
+  String get workoutWeeklyGenerationsTitle;
+
+  /// No description provided for @workoutDailySwapsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Swaps'**
+  String get workoutDailySwapsTitle;
+
+  /// No description provided for @workoutSelectDisciplinesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select 1 or 2 disciplines you prefer:'**
+  String get workoutSelectDisciplinesHint;
+
+  /// No description provided for @workoutFitnessLevelLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Fitness level:'**
+  String get workoutFitnessLevelLabel;
+
+  /// No description provided for @workoutDisciplineStyleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{discipline} style:'**
+  String workoutDisciplineStyleLabel(String discipline);
+
+  /// No description provided for @workoutSelectGoalHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your primary goal:'**
+  String get workoutSelectGoalHint;
+
+  /// No description provided for @workoutDaysCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days'**
+  String workoutDaysCount(int count);
+
+  /// No description provided for @workoutMinutesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} min'**
+  String workoutMinutesCount(int count);
+
+  /// No description provided for @workoutInjuriesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Injuries or painful areas:'**
+  String get workoutInjuriesLabel;
+
+  /// No description provided for @workoutExerciseSwappedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise swapped successfully. {remaining} swaps left today.'**
+  String workoutExerciseSwappedSuccess(int remaining);
+
+  /// No description provided for @workoutHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout History'**
+  String get workoutHistoryTitle;
+
+  /// No description provided for @workoutHistoryEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No workout history found'**
+  String get workoutHistoryEmpty;
+
+  /// No description provided for @workoutHistoryDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days per week'**
+  String workoutHistoryDays(int count);
+
+  /// No description provided for @workoutStatusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get workoutStatusActive;
+
+  /// No description provided for @workoutStatusArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived'**
+  String get workoutStatusArchived;
+
+  /// No description provided for @workoutHistoryDeleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Workout Plan'**
+  String get workoutHistoryDeleteConfirmTitle;
+
+  /// No description provided for @workoutHistoryDeleteConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this workout plan?'**
+  String get workoutHistoryDeleteConfirmBody;
+
+  /// No description provided for @workoutHistoryDeleteConfirmConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get workoutHistoryDeleteConfirmConfirm;
+
+  /// No description provided for @workoutHistoryDeleteConfirmCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get workoutHistoryDeleteConfirmCancel;
+
+  /// No description provided for @workoutHistoryDeleteSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan deleted successfully'**
+  String get workoutHistoryDeleteSuccess;
+
+  /// No description provided for @workoutPlanDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout Plan Details'**
+  String get workoutPlanDetailTitle;
+
+  /// No description provided for @workoutRegeneratePromptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update your workout plan?'**
+  String get workoutRegeneratePromptTitle;
+
+  /// No description provided for @workoutRegeneratePromptBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your details have changed. Would you like to regenerate your workout plan based on the new information?'**
+  String get workoutRegeneratePromptBody;
+
+  /// No description provided for @workoutRegenerateConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, regenerate'**
+  String get workoutRegenerateConfirm;
+
+  /// No description provided for @workoutRegenerateDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get workoutRegenerateDismiss;
+
+  /// No description provided for @workoutPlanRegenerated.
+  ///
+  /// In en, this message translates to:
+  /// **'A new workout plan was generated successfully'**
+  String get workoutPlanRegenerated;
+
+  /// No description provided for @workoutSessionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Session {number}'**
+  String workoutSessionTitle(int number);
+
+  /// No description provided for @workoutNewPlanChoiceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How would you like to create a new plan?'**
+  String get workoutNewPlanChoiceTitle;
+
+  /// No description provided for @workoutNewPlanChoiceUseCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Use current details & generate new plan'**
+  String get workoutNewPlanChoiceUseCurrent;
+
+  /// No description provided for @workoutNewPlanChoiceEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit workout details first'**
+  String get workoutNewPlanChoiceEdit;
+
+  /// No description provided for @workoutPrimaryGoalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary Goal (Required):'**
+  String get workoutPrimaryGoalLabel;
+
+  /// No description provided for @workoutSecondaryGoalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Secondary Goal (Optional):'**
+  String get workoutSecondaryGoalLabel;
+
+  /// No description provided for @workoutGoalPrimaryTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary Goal'**
+  String get workoutGoalPrimaryTag;
+
+  /// No description provided for @workoutGoalSecondaryTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Secondary Goal'**
+  String get workoutGoalSecondaryTag;
+
+  /// No description provided for @workoutInjuryAreasLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Injury Areas (Max 2):'**
+  String get workoutInjuryAreasLabel;
+
+  /// No description provided for @workoutMedicalConditionsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical Conditions:'**
+  String get workoutMedicalConditionsLabel;
+
+  /// No description provided for @workoutMaxInjuryAreasWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'You can select at most 2 injury areas.'**
+  String get workoutMaxInjuryAreasWarning;
+
+  /// No description provided for @workoutCustomDurationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom duration (minutes):'**
+  String get workoutCustomDurationLabel;
+
+  /// No description provided for @workoutCustomDurationInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a value between {min} and {max}'**
+  String workoutCustomDurationInvalid(int min, int max);
 }
 
 class _AppLocalizationsDelegate

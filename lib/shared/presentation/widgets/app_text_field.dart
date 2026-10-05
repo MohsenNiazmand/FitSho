@@ -9,6 +9,7 @@ class AppTextField extends StatelessWidget {
     this.labelText,
     this.label,
     this.hintText,
+    this.errorText,
     this.prefixIcon,
     this.suffixIcon,
     this.keyboardType,
@@ -31,6 +32,7 @@ class AppTextField extends StatelessWidget {
   final String? labelText;
   final Widget? label;
   final String? hintText;
+  final String? errorText;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final TextInputType? keyboardType;
@@ -51,6 +53,7 @@ class AppTextField extends StatelessWidget {
       labelText: labelText,
       label: label,
       hintText: hintText,
+      errorText: errorText,
       prefixIcon: prefixIcon,
       suffixIcon: suffixIcon,
       alignLabelWithHint: alignLabelWithHint,

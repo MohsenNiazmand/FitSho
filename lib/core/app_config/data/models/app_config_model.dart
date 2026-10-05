@@ -23,6 +23,7 @@ class AppConfigModel {
     required this.minSupportedVersion,
     required this.forceUpdate,
     required this.updateUrl,
+    this.releaseNotes = const [],
   });
 
   factory AppConfigModel.fromJson(Map<String, dynamic> json) =>
@@ -32,4 +33,5 @@ class AppConfigModel {
   final String minSupportedVersion;
   final bool forceUpdate;
   final String updateUrl;
+  final List<String> releaseNotes;
 }

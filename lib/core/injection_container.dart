@@ -34,6 +34,15 @@ import 'package:fitsho/features/preferences/domain/usecases/delete_preferences_u
 import 'package:fitsho/features/preferences/domain/usecases/get_preferences_usecase.dart';
 import 'package:fitsho/features/preferences/domain/usecases/save_preferences_usecase.dart';
 
+import 'package:fitsho/features/workout/data/datasources/workout_local_data_source.dart';
+import 'package:fitsho/features/workout/data/repositories/workout_repository_impl.dart';
+import 'package:fitsho/features/workout/data/services/workout_api.dart';
+import 'package:fitsho/features/workout/domain/repositories/workout_repository.dart';
+import 'package:fitsho/core/metadata/data/datasources/metadata_local_datasource.dart';
+import 'package:fitsho/core/metadata/data/datasources/metadata_remote_datasource.dart';
+import 'package:fitsho/core/metadata/data/repositories/metadata_repository_impl.dart';
+import 'package:fitsho/core/metadata/domain/repositories/metadata_repository.dart';
+
 final GetIt getIt = GetIt.instance;
 
 Future<void> initializeDependencies() async {
@@ -43,6 +52,7 @@ Future<void> initializeDependencies() async {
   final supplementsBox = await HiveInitializer.openSupplementsBox();
   final todayMealLogsBox = await HiveInitializer.openTodayMealLogsBox();
   final lastMealLogBox = await HiveInitializer.openLastMealLogBox();
+  final metadataBox = await HiveInitializer.openMetadataBox();
   final sharedPreferences = await SharedPreferences.getInstance();
 
   getIt
@@ -56,6 +66,9 @@ Future<void> initializeDependencies() async {
         lastMealLogBox: lastMealLogBox,
         prefs: sharedPreferences,
       ),
+    )
+    ..registerLazySingleton<WorkoutLocalDataSource>(
+      () => WorkoutLocalDataSourceImpl(sharedPreferences),
     )
     ..registerLazySingleton<Logger>(
       () => Logger(
@@ -85,11 +98,30 @@ Future<void> initializeDependencies() async {
     ..registerLazySingleton<AppConfigApi>(() => AppConfigApi(getIt()))
     ..registerLazySingleton<PreferenceApi>(() => PreferenceApi(getIt()))
     ..registerLazySingleton<DietApi>(() => DietApi(getIt()))
+    ..registerLazySingleton<WorkoutApi>(() => WorkoutApi(getIt()))
+    ..registerLazySingleton<MetadataRemoteDatasource>(
+      () => MetadataRemoteDatasource(getIt()),
+    )
+    ..registerLazySingleton<MetadataLocalDatasource>(
+      () => MetadataLocalDatasourceImpl(metadataBox: metadataBox),
+    )
+    ..registerLazySingleton<MetadataRepository>(
+      () => MetadataRepositoryImpl(
+        remoteDatasource: getIt(),
+        localDatasource: getIt(),
+      ),
+    )
     ..registerLazySingleton<AppConfigRepository>(
       () => AppConfigRepositoryImpl(getIt()),
     )
     ..registerLazySingleton<DietRepository>(
       () => DietRepositoryImpl(getIt(), getIt()),
+    )
+    ..registerLazySingleton<WorkoutRepository>(
+      () => WorkoutRepositoryImpl(
+        api: getIt(),
+        localDataSource: getIt(),
+      ),
     )
     ..registerLazySingleton<AuthRepository>(
       () => AuthRepositoryImpl(

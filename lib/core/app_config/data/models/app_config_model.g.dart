@@ -18,4 +18,9 @@ AppConfigModel _$AppConfigModelFromJson(Map<String, dynamic> json) =>
       minSupportedVersion: json['minSupportedVersion'] as String,
       forceUpdate: json['forceUpdate'] as bool,
       updateUrl: json['updateUrl'] as String,
+      releaseNotes:
+          (json['releaseNotes'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
     );

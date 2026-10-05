@@ -5,13 +5,27 @@ import 'package:fitsho/core/extensions/context_extensions.dart';
 import 'package:fitsho/shared/presentation/widgets/gap.dart';
 
 class AiLoadingDialog extends StatelessWidget {
-  const AiLoadingDialog({super.key});
+  const AiLoadingDialog({
+    this.title,
+    this.message,
+    super.key,
+  });
 
-  static Future<void> show(BuildContext context) {
+  final String? title;
+  final String? message;
+
+  static Future<void> show(
+    BuildContext context, {
+    String? title,
+    String? message,
+  }) {
     return showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => const AiLoadingDialog(),
+      builder: (context) => AiLoadingDialog(
+        title: title,
+        message: message,
+      ),
     );
   }
 
@@ -40,7 +54,7 @@ class AiLoadingDialog extends StatelessWidget {
               ),
               Gap.v24(),
               Text(
-                context.tr.aiGeneratingPlanTitle,
+                title ?? context.tr.aiGeneratingPlanTitle,
                 textAlign: TextAlign.center,
                 style: theme.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
@@ -48,7 +62,7 @@ class AiLoadingDialog extends StatelessWidget {
               ),
               Gap.v12(),
               Text(
-                context.tr.aiGeneratingPlanMessage,
+                message ?? context.tr.aiGeneratingPlanMessage,
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,

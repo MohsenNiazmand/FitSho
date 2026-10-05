@@ -16,10 +16,12 @@ class AppVersionInfo {
   const AppVersionInfo({
     required this.status,
     this.updateUrl,
+    this.releaseNotes = const [],
   });
 
   final VersionStatus status;
   final String? updateUrl;
+  final List<String> releaseNotes;
 }
 
 @riverpod
@@ -42,6 +44,7 @@ class AppVersionCheck extends _$AppVersionCheck {
           return AppVersionInfo(
             status: VersionStatus.forceUpdate,
             updateUrl: config.updateUrl,
+            releaseNotes: config.releaseNotes,
           );
         }
 
@@ -49,6 +52,7 @@ class AppVersionCheck extends _$AppVersionCheck {
           return AppVersionInfo(
             status: VersionStatus.updateAvailable,
             updateUrl: config.updateUrl,
+            releaseNotes: config.releaseNotes,
           );
         }
 

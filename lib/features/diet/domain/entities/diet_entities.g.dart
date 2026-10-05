@@ -240,8 +240,8 @@ class DietPlanAdapter extends TypeAdapter<DietPlan> {
       days: (fields[3] as List).cast<DietDay>(),
       createdAt: fields[4] as DateTime,
       shouldRegeneratePlan: fields[5] == null ? false : fields[5] as bool,
-      remainingFullGenerations: fields[6] as int?,
-      remainingMealSwaps: fields[7] as int?,
+      remainingFullGenerations: (fields[6] as num?)?.toInt(),
+      remainingMealSwaps: (fields[7] as num?)?.toInt(),
     );
   }
 

@@ -292,6 +292,7 @@
   "forceUpdateMessage": "برای ادامه‌ی استفاده باید اپلیکیشن را به آخرین نسخه بروزرسانی کنید.",
   "optionalUpdateTitle": "نسخه جدید موجود است",
   "optionalUpdateMessage": "نسخه جدید اپلیکیشن فیت‌شو منتشر شده است. مایل به بروزرسانی هستید؟",
+  "updateWhatsNew": "تغییرات این نسخه:",
   "updateNow": "بروزرسانی",
   "later": "بعداً",
   "skip": "رد کردن",
@@ -404,6 +405,207 @@
     "placeholders": {
       "version": {
         "type": "String"
+      }
+    }
+  },
+  "workoutOnboardingTitle": "ساخت پروفایل تمرینی",
+  "workoutStepDisciplines": "انتخاب رشته",
+  "workoutStepStyleLevel": "سطح و سبک",
+  "workoutStepGoal": "هدف تمرینی",
+  "workoutStepConditions": "شرایط و تجهیزات",
+  "workoutStepInjuries": "آسیب‌دیدگی و سلامت",
+  "workoutMaxDisciplinesWarning": "حداکثر می‌توانید ۲ رشته انتخاب کنید.",
+  "workoutMedicalReferralWarning": "با توجه به شرایط آسیب یا درد شدید، لطفاً پیش از شروع تمرین با پزشک یا فیزیوتراپیست مشورت کنید.",
+  "workoutNoInjuries": "آسیب‌دیدگی ندارم",
+  "workoutPainLevel": "سطح درد (۰ تا ۱۰):",
+  "workoutInjuryNotes": "توضیحات تکمیلی آسیب (اختیاری)",
+  "workoutDaysPerWeek": "روزهای تمرین در هفته:",
+  "workoutSessionMinutes": "مدت زمان جلسه (دقیقه):",
+  "workoutLocation": "مکان تمرین:",
+  "workoutEquipment": "تجهیزات در دسترس:",
+  "workoutSaveProfile": "ذخیره و ادامه",
+  "workoutTabTitle": "تمرین",
+  "workoutGeneratePlan": "ساخت برنامه تمرینی",
+  "workoutRemainingGenerations": "{count} بار تا پایان هفته",
+  "@workoutRemainingGenerations": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutRemainingSwaps": "{count} تعویض باقی‌مانده امروز",
+  "@workoutRemainingSwaps": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutNeedDietFirst": "برای دسترسی به برنامه تمرینی، ابتدا باید پروفایل تغذیه خود را تکمیل کنید.",
+  "workoutGoToDietOnboarding": "تکمیل پروفایل تغذیه",
+  "workoutNoPlanYet": "هنوز برنامه تمرینی ثبت نشده است",
+  "workoutNoPlanYetSubtitle": "با ثبت اطلاعات و سوابق تمرینی خود، برنامه تمرینی اختصاصی هوشمند دریافت کنید.",
+  "workoutNewPlan": "برنامه جدید",
+  "workoutProgressionNotes": "نکات پیشرفت",
+  "workoutSafetyNotes": "نکات ایمنی",
+  "workoutWarmup": "گرم کردن",
+  "workoutMain": "تمرین اصلی",
+  "workoutCooldown": "سرد کردن",
+  "workoutRestDay": "روز استراحت و ریکاوری",
+  "workoutRestDayDesc": "امروز روز ریکاوری و بازسازی عضلات است. استراحت کافی، خواب مناسب و آب‌رسانی به بدن را جدی بگیرید.",
+  "workoutSetsReps": "{sets} ست × {reps} تکرار",
+  "@workoutSetsReps": {
+    "placeholders": {
+      "sets": {
+        "type": "int"
+      },
+      "reps": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutSetsDuration": "{sets} ست × {sec} ثانیه",
+  "@workoutSetsDuration": {
+    "placeholders": {
+      "sets": {
+        "type": "int"
+      },
+      "sec": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutRest": "استراحت: {sec} ثانیه",
+  "@workoutRest": {
+    "placeholders": {
+      "sec": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutRpe": "فشار (RPE): {rpe}",
+  "@workoutRpe": {
+    "placeholders": {
+      "rpe": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutSwapExercise": "تعویض حرکت",
+  "workoutMedicalReferralTitle": "نیاز به ارجاع پزشکی",
+  "workoutMedicalReferralDialogGotIt": "متوجه شدم",
+  "workoutGeneratingPlanTitle": "در حال ساخت برنامه تمرینی هوشمند...",
+  "workoutGeneratingPlanMessage": "برنامه تمرینی اختصاصی شما بر اساس سطح، اهداف و شرایط بدنی در حال تنظیم است.",
+  "workoutToday": "امروز",
+  "workoutFocusMuscles": "عضلات هدف:",
+  "workoutDuration": "{minutes} دقیقه",
+  "@workoutDuration": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutEditProfile": "ویرایش پروفایل تمرینی",
+  "workoutProfileSaved": "پروفایل تمرینی با موفقیت ذخیره شد",
+  "workoutRestShort": "استراحت",
+  "workoutSetsOnly": "{sets} ست",
+  "@workoutSetsOnly": {
+    "placeholders": {
+      "sets": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutWeeklyGenerationsTitle": "تولید هفتگی",
+  "workoutDailySwapsTitle": "تعویض روزانه",
+  "workoutSelectDisciplinesHint": "لطفاً ۱ یا ۲ رشته ورزشی مورد علاقه خود را انتخاب کنید:",
+  "workoutFitnessLevelLabel": "سطح آمادگی جسمانی:",
+  "workoutDisciplineStyleLabel": "سبک {discipline}:",
+  "@workoutDisciplineStyleLabel": {
+    "placeholders": {
+      "discipline": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutSelectGoalHint": "هدف اصلی خود را انتخاب کنید:",
+  "workoutDaysCount": "{count} روز",
+  "@workoutDaysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutMinutesCount": "{count} دقیقه",
+  "@workoutMinutesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutInjuriesLabel": "آسیب‌ها یا نواحی دردناک:",
+  "workoutExerciseSwappedSuccess": "حرکت با موفقیت تعویض شد. {remaining} تعویض دیگر باقی مانده است.",
+  "@workoutExerciseSwappedSuccess": {
+    "placeholders": {
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutHistoryTitle": "تاریخچه برنامه‌های تمرینی",
+  "workoutHistoryEmpty": "تاریخچه‌ای یافت نشد",
+  "workoutHistoryDays": "{count} روز در هفته",
+  "@workoutHistoryDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutStatusActive": "فعال",
+  "workoutStatusArchived": "بایگانی‌شده",
+  "workoutHistoryDeleteConfirmTitle": "حذف برنامه تمرینی",
+  "workoutHistoryDeleteConfirmBody": "آیا از حذف این برنامه تمرینی اطمینان دارید؟",
+  "workoutHistoryDeleteConfirmConfirm": "حذف",
+  "workoutHistoryDeleteConfirmCancel": "انصراف",
+  "workoutHistoryDeleteSuccess": "برنامه با موفقیت حذف شد",
+  "workoutPlanDetailTitle": "جزئیات برنامه تمرینی",
+  "workoutRegeneratePromptTitle": "برنامه تمرینی به‌روزرسانی شود؟",
+  "workoutRegeneratePromptBody": "مشخصات شما تغییر کرد. می‌خواهید برنامه تمرینی بر اساس اطلاعات جدید دوباره ساخته شود؟",
+  "workoutRegenerateConfirm": "بله، بازتولید کن",
+  "workoutRegenerateDismiss": "فعلاً نه",
+  "workoutPlanRegenerated": "برنامه تمرینی جدید با موفقیت ساخته شد",
+  "workoutSessionTitle": "جلسه {number}",
+  "@workoutSessionTitle": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutNewPlanChoiceTitle": "نحوه ساخت برنامه جدید",
+  "workoutNewPlanChoiceUseCurrent": "استفاده از اطلاعات فعلی و ساخت برنامه جدید",
+  "workoutNewPlanChoiceEdit": "ویرایش مشخصات و ساخت برنامه",
+  "workoutPrimaryGoalLabel": "هدف اصلی (الزامی):",
+  "workoutSecondaryGoalLabel": "هدف ثانویه (اختیاری):",
+  "workoutGoalPrimaryTag": "هدف اصلی",
+  "workoutGoalSecondaryTag": "هدف ثانویه",
+  "workoutInjuryAreasLabel": "نواحی آسیب‌دیده (حداکثر ۲ ناحیه):",
+  "workoutMedicalConditionsLabel": "شرایط پزشکی:",
+  "workoutMaxInjuryAreasWarning": "حداکثر می‌توانید ۲ ناحیه آسیب انتخاب کنید.",
+  "workoutCustomDurationLabel": "مدت زمان دلخواه (دقیقه):",
+  "workoutCustomDurationInvalid": "لطفاً عددی بین {min} تا {max} وارد کنید",
+  "@workoutCustomDurationInvalid": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
       }
     }
   }
