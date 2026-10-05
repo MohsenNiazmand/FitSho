@@ -365,4 +365,97 @@ void main() {
       expect(find.text('پیشنهادی'), findsNothing);
     },
   );
+
+  testWidgets(
+    'level selector renders exactly three level tiles without elite',
+    (tester) async {
+      const optionsWith3Levels = WorkoutOptions(
+        disciplines: [
+          DisciplineOption(
+            id: 'bodybuilding',
+            label: 'بدنسازی',
+            description: 'بدنسازی',
+          ),
+        ],
+        styles: [
+          StyleOption(
+            id: 'full_body',
+            disciplineId: 'bodybuilding',
+            label: 'فول بادی',
+            description: 'تمام بدن',
+            minDays: 2,
+            maxDays: 4,
+            levels: ['beginner', 'intermediate', 'advanced'],
+          ),
+        ],
+        goals: [
+          GoalOption(
+            id: 'muscle',
+            label: 'عضله سازی',
+            compatibleDisciplines: ['bodybuilding'],
+          ),
+        ],
+        levels: [
+          WorkoutOptionItem(id: 'beginner', label: 'مبتدی'),
+          WorkoutOptionItem(id: 'intermediate', label: 'متوسط'),
+          WorkoutOptionItem(id: 'advanced', label: 'پیشرفته'),
+        ],
+        sessionMinutes: [30, 60],
+        locations: [],
+        equipment: [],
+        injuries: [],
+        maxDisciplines: 2,
+        minDaysPerWeek: 2,
+        maxDaysPerWeek: 6,
+      );
+
+      const profile = WorkoutProfile(
+        id: 'prof_step1',
+        userId: 'user_1',
+        disciplines: ['bodybuilding'],
+        styles: {'bodybuilding': 'full_body'},
+        primaryGoal: 'muscle',
+        level: 'beginner',
+        daysPerWeek: 3,
+        sessionMinutes: 60,
+        location: 'gym',
+        equipment: [],
+        injuryAreas: [],
+        medicalConditions: [],
+        painLevel: 0,
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            metadataRepositoryProvider.overrideWithValue(_MockMetadataRepo()),
+            workoutOptionsNotifierProvider.overrideWith(
+              () => _MockWorkoutOptionsNotifier(optionsWith3Levels),
+            ),
+            workoutProfileNotifierProvider.overrideWith(
+              () => _MockWorkoutProfileNotifier(profile),
+            ),
+          ],
+          child: const MaterialApp(
+            localizationsDelegates: [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: [Locale('fa'), Locale('en')],
+            locale: Locale('fa'),
+            home: Scaffold(
+              body: WorkoutProfileForm(initialStep: 1),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('مبتدی'), findsOneWidget);
+      expect(find.text('متوسط'), findsOneWidget);
+      expect(find.text('پیشرفته'), findsOneWidget);
+    },
+  );
 }

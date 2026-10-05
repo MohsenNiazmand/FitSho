@@ -62,13 +62,24 @@ extension InjuryOptionModelX on InjuryOptionModel {
   }
 }
 
+/// Migration safety fallback: maps deprecated 'elite' level to 'advanced'.
+String _sanitizeLevel(String level) {
+  if (level == 'elite') {
+    return 'advanced';
+  }
+  return level;
+}
+
 extension WorkoutOptionsModelX on WorkoutOptionsModel {
   WorkoutOptions toEntity() {
     return WorkoutOptions(
       disciplines: disciplines.map((e) => e.toEntity()).toList(),
       styles: styles.map((e) => e.toEntity()).toList(),
       goals: goals.map((e) => e.toEntity()).toList(),
-      levels: levels.map((e) => e.toEntity()).toList(),
+      levels: levels
+          .where((e) => e.id != 'elite')
+          .map((e) => e.toEntity())
+          .toList(),
       sessionMinutes: sessionMinutes,
       locations: locations.map((e) => e.toEntity()).toList(),
       equipment: equipment.map((e) => e.toEntity()).toList(),
@@ -93,7 +104,7 @@ extension WorkoutProfileModelX on WorkoutProfileModel {
       styles: styles,
       primaryGoal: primaryGoal,
       secondaryGoal: secondaryGoal,
-      level: level,
+      level: _sanitizeLevel(level),
       daysPerWeek: daysPerWeek,
       sessionMinutes: sessionMinutes,
       location: location,
@@ -154,7 +165,7 @@ extension WorkoutProfileSnapshotModelX on WorkoutProfileSnapshotModel {
       styles: styles,
       primaryGoal: primaryGoal,
       secondaryGoal: secondaryGoal,
-      level: level,
+      level: _sanitizeLevel(level),
       daysPerWeek: daysPerWeek,
       sessionMinutes: sessionMinutes,
       location: location,

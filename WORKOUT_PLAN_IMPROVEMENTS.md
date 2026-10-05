@@ -25,7 +25,7 @@ Users report that for some bodybuilding programs the number of training days can
 | FA2 | Day chips: `Wrap`, single-option hint | none | ☑ |
 | FA3 | Reset incompatible style when level changes | none | ☑ |
 | FA4 | `recommendedDays` badge | B12 (nullable, safe without it) | ☑ |
-| FA5 | Remove `elite` handling | B13 | ☐ |
+| FA5 | Remove `elite` handling | B13 | ☑ |
 | FA6 | Tests, l10n, release notes | all | ☐ |
 
 **Release order:** deploy the backend (B12–B13) first, then publish the app version containing these phases. Users on the current app version already get the new day ranges from the backend; FA1 fixes the stuck-validation behavior they may still see until they update.
@@ -162,9 +162,9 @@ app keeps working against backends that do not send it.
 **Tests:** mapper converts `elite` → `advanced`; level selector renders exactly three tiles; no remaining `elite` references (`grep -rn elite lib test` shows only the mapper fallback).
 
 **Checklist**
-- [ ] UI filter and default catalog cleaned
-- [ ] Mapper fallback + test
-- [ ] Docs updated
+- [x] UI filter and default catalog cleaned
+- [x] Mapper fallback + test
+- [x] Docs updated
 
 **Commit message**
 ```

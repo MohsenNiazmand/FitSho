@@ -625,5 +625,46 @@ void main() {
       final entityWithout = modelWithout.toEntity();
       expect(entityWithout.recommendedDays, isNull);
     });
+
+    test(
+      'WorkoutProfileModel.toEntity converts deprecated elite level to advanced',
+      () {
+        const profileModel = WorkoutProfileModel(
+          id: 'p1',
+          userId: 'u1',
+          disciplines: ['bodybuilding'],
+          styles: {'bodybuilding': 'full_body'},
+          primaryGoal: 'muscle',
+          level: 'elite',
+          daysPerWeek: 4,
+          sessionMinutes: 60,
+          location: 'gym',
+          equipment: ['dumbbell'],
+          injuryAreas: [],
+          medicalConditions: [],
+          painLevel: 0,
+        );
+        final entity = profileModel.toEntity();
+        expect(entity.level, 'advanced');
+      },
+    );
+
+    test(
+      'WorkoutProfileSnapshotModel.toEntity converts deprecated elite level to advanced',
+      () {
+        const snapshotModel = WorkoutProfileSnapshotModel(
+          disciplines: ['bodybuilding'],
+          styles: {'bodybuilding': 'full_body'},
+          primaryGoal: 'muscle',
+          level: 'elite',
+          daysPerWeek: 4,
+          sessionMinutes: 60,
+          location: 'gym',
+          equipment: ['dumbbell'],
+        );
+        final entity = snapshotModel.toEntity();
+        expect(entity.level, 'advanced');
+      },
+    );
   });
 }

@@ -494,7 +494,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
         // F11: Accessible equal-width selectable tiles with short title on line 1 and description on line 2 (when selected)
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: options.levels.where((lvl) => lvl.id != 'elite').map((lvl) {
+          children: options.levels.map((lvl) {
             final meta = metadataCatalog.findByKey('difficulty_level', lvl.id);
             final levelLabel = meta?.labelFa ?? lvl.label;
             final isSelected = selectedLevel.value == lvl.id;
@@ -1169,7 +1169,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
       case 'advanced':
         return 'بیش از ۲ سال سابقه';
       default:
-        return apiDesc ?? '';
+        return '';
     }
   }
 }
