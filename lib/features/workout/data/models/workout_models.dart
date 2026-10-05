@@ -101,6 +101,7 @@ class StyleOptionModel {
     required this.maxDays,
     required this.levels,
     this.isAvailable = true,
+    this.recommendedDays,
   });
 
   factory StyleOptionModel.fromJson(Map<String, dynamic> json) =>
@@ -119,6 +120,9 @@ class StyleOptionModel {
 
   final List<String> levels;
   final bool isAvailable;
+
+  @JsonKey(fromJson: _parseNullableInt)
+  final int? recommendedDays;
 
   Map<String, dynamic> toJson() => _$StyleOptionModelToJson(this);
 }

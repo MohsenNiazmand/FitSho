@@ -562,6 +562,7 @@
     }
   },
   "workoutIncompatibleStyleResetToast": "The selected style is not suitable for this level, please select again.",
+  "workoutRecommendedBadge": "Recommended",
   "workoutMinutesCount": "{count} min",
   "@workoutMinutesCount": {
     "placeholders": {

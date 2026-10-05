@@ -24,7 +24,7 @@ Users report that for some bodybuilding programs the number of training days can
 | FA1 | Single source of truth for allowed day range + auto-sync `daysPerWeek` | none | ☑ |
 | FA2 | Day chips: `Wrap`, single-option hint | none | ☑ |
 | FA3 | Reset incompatible style when level changes | none | ☑ |
-| FA4 | `recommendedDays` badge | B12 (nullable, safe without it) | ☐ |
+| FA4 | `recommendedDays` badge | B12 (nullable, safe without it) | ☑ |
 | FA5 | Remove `elite` handling | B13 | ☐ |
 | FA6 | Tests, l10n, release notes | all | ☐ |
 
@@ -135,9 +135,9 @@ change and tell the user why.
 **Tests:** model parsing with and without the field; mapper; chip shows the badge only when the value is present and within range.
 
 **Checklist**
-- [ ] Model/entity/mapper updated, build_runner executed
-- [ ] Badge UI + l10n
-- [ ] Tests green
+- [x] Model/entity/mapper updated, build_runner executed
+- [x] Badge UI + l10n
+- [x] Tests green
 
 **Commit message**
 ```

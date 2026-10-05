@@ -1,5 +1,6 @@
-import 'package:flutter_test/flutter_test.dart';
+import 'package:fitsho/features/workout/data/mappers/workout_mappers.dart';
 import 'package:fitsho/features/workout/data/models/workout_models.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('Workout Models JSON Parsing Tests', () {
@@ -525,5 +526,104 @@ void main() {
         expect(profile.equipment, isNot(contains('pullup_bar')));
       },
     );
+  });
+
+  group('StyleOptionModel recommendedDays parsing and mapping', () {
+    test('parses recommendedDays when present as int or string', () {
+      final jsonWithInt = {
+        'id': 'full_body',
+        'disciplineId': 'bodybuilding',
+        'label': 'فول بادی',
+        'description': 'سبک فول بادی',
+        'minDays': 2,
+        'maxDays': 4,
+        'levels': ['beginner'],
+        'recommendedDays': 3,
+      };
+      final model1 = StyleOptionModel.fromJson(jsonWithInt);
+      expect(model1.recommendedDays, 3);
+
+      final jsonWithString = {
+        'id': 'full_body',
+        'disciplineId': 'bodybuilding',
+        'label': 'فول بادی',
+        'description': 'سبک فول بادی',
+        'minDays': 2,
+        'maxDays': 4,
+        'levels': ['beginner'],
+        'recommendedDays': '3',
+      };
+      final model2 = StyleOptionModel.fromJson(jsonWithString);
+      expect(model2.recommendedDays, 3);
+    });
+
+    test('defaults recommendedDays to null when absent or null in json', () {
+      final jsonWithout = {
+        'id': 'full_body',
+        'disciplineId': 'bodybuilding',
+        'label': 'فول بادی',
+        'description': 'سبک فول بادی',
+        'minDays': 2,
+        'maxDays': 4,
+        'levels': ['beginner'],
+      };
+      final model = StyleOptionModel.fromJson(jsonWithout);
+      expect(model.recommendedDays, isNull);
+
+      final jsonWithNull = {
+        'id': 'full_body',
+        'disciplineId': 'bodybuilding',
+        'label': 'فول بادی',
+        'description': 'سبک فول بادی',
+        'minDays': 2,
+        'maxDays': 4,
+        'levels': ['beginner'],
+        'recommendedDays': null,
+      };
+      final modelNull = StyleOptionModel.fromJson(jsonWithNull);
+      expect(modelNull.recommendedDays, isNull);
+    });
+
+    test('toJson includes recommendedDays', () {
+      const model = StyleOptionModel(
+        id: 'full_body',
+        disciplineId: 'bodybuilding',
+        label: 'فول بادی',
+        description: 'توضیحات',
+        minDays: 2,
+        maxDays: 4,
+        levels: ['beginner'],
+        recommendedDays: 3,
+      );
+      final json = model.toJson();
+      expect(json['recommendedDays'], 3);
+    });
+
+    test('toEntity maps recommendedDays correctly', () {
+      const modelWith = StyleOptionModel(
+        id: 'full_body',
+        disciplineId: 'bodybuilding',
+        label: 'فول بادی',
+        description: 'توضیحات',
+        minDays: 2,
+        maxDays: 4,
+        levels: ['beginner'],
+        recommendedDays: 3,
+      );
+      final entityWith = modelWith.toEntity();
+      expect(entityWith.recommendedDays, 3);
+
+      const modelWithout = StyleOptionModel(
+        id: 'full_body',
+        disciplineId: 'bodybuilding',
+        label: 'فول بادی',
+        description: 'توضیحات',
+        minDays: 2,
+        maxDays: 4,
+        levels: ['beginner'],
+      );
+      final entityWithout = modelWithout.toEntity();
+      expect(entityWithout.recommendedDays, isNull);
+    });
   });
 }

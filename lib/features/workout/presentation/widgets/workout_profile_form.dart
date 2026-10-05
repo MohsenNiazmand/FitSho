@@ -785,6 +785,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
     );
     final minDays = range.min;
     final maxDays = range.max;
+    final recommendedDays = range.recommended;
 
     void updateSessionMinutes(int val) {
       if (val >= options.minSessionMinutes &&
@@ -819,6 +820,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
           children: List.generate(maxDays - minDays + 1, (i) {
             final day = minDays + i;
             final isSelected = daysPerWeek.value == day;
+            final isRecommended = recommendedDays == day;
             return GestureDetector(
               onTap: () => daysPerWeek.value = day,
               child: Container(
@@ -832,12 +834,42 @@ class WorkoutProfileForm extends HookConsumerWidget {
                       : Colors.grey.shade100,
                   borderRadius: AppRadius.button,
                 ),
-                child: Text(
-                  context.tr.workoutDaysCount(day),
-                  style: TextStyle(
-                    color: isSelected ? Colors.white : Colors.black87,
-                    fontWeight: FontWeight.bold,
-                  ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      context.tr.workoutDaysCount(day),
+                      style: TextStyle(
+                        color: isSelected ? Colors.white : Colors.black87,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    if (isRecommended) ...[
+                      const SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? Colors.white.withOpacity(0.25)
+                              : const Color(0xFFEEF2FF),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          context.tr.workoutRecommendedBadge,
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: isSelected
+                                ? Colors.white
+                                : const Color(0xFF6366F1),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
               ),
             );

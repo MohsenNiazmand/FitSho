@@ -1910,6 +1910,12 @@ abstract class AppLocalizations {
   /// **'The selected style is not suitable for this level, please select again.'**
   String get workoutIncompatibleStyleResetToast;
 
+  /// No description provided for @workoutRecommendedBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended'**
+  String get workoutRecommendedBadge;
+
   /// No description provided for @workoutMinutesCount.
   ///
   /// In en, this message translates to:

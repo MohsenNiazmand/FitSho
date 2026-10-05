@@ -1022,6 +1022,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'The selected style is not suitable for this level, please select again.';
 
   @override
+  String get workoutRecommendedBadge => 'Recommended';
+
+  @override
   String workoutMinutesCount(int count) {
     return '$count min';
   }

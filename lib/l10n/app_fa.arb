@@ -548,6 +548,7 @@
     }
   },
   "workoutIncompatibleStyleResetToast": "سبک انتخاب‌شده برای این سطح مناسب نیست، لطفاً دوباره انتخاب کنید",
+  "workoutRecommendedBadge": "پیشنهادی",
   "workoutMinutesCount": "{count} دقیقه",
   "@workoutMinutesCount": {
     "placeholders": {

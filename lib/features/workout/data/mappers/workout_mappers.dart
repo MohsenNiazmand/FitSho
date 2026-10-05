@@ -34,6 +34,7 @@ extension StyleOptionModelX on StyleOptionModel {
       maxDays: maxDays,
       levels: levels,
       isAvailable: isAvailable,
+      recommendedDays: recommendedDays,
     );
   }
 }

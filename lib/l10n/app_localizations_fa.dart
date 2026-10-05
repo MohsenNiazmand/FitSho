@@ -1022,6 +1022,9 @@ class AppLocalizationsFa extends AppLocalizations {
       'سبک انتخاب‌شده برای این سطح مناسب نیست، لطفاً دوباره انتخاب کنید';
 
   @override
+  String get workoutRecommendedBadge => 'پیشنهادی';
+
+  @override
   String workoutMinutesCount(int count) {
     return '$count دقیقه';
   }

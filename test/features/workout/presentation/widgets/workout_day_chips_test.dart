@@ -262,4 +262,107 @@ void main() {
       );
     },
   );
+
+  testWidgets(
+    'shows recommended badge on matching chip only when within range',
+    (tester) async {
+      const optionsWithRec = WorkoutOptions(
+        disciplines: [
+          DisciplineOption(
+            id: 'bodybuilding',
+            label: 'بدنسازی',
+            description: 'بدنسازی',
+          ),
+        ],
+        styles: [
+          StyleOption(
+            id: 'full_body',
+            disciplineId: 'bodybuilding',
+            label: 'فول بادی',
+            description: 'تمام بدن',
+            minDays: 2,
+            maxDays: 4,
+            levels: ['beginner'],
+            recommendedDays: 3,
+          ),
+        ],
+        goals: [
+          GoalOption(
+            id: 'muscle',
+            label: 'عضله سازی',
+            compatibleDisciplines: ['bodybuilding'],
+          ),
+        ],
+        levels: [
+          WorkoutOptionItem(id: 'beginner', label: 'مبتدی'),
+        ],
+        sessionMinutes: [30, 60],
+        locations: [],
+        equipment: [],
+        injuries: [],
+        maxDisciplines: 2,
+        minDaysPerWeek: 2,
+        maxDaysPerWeek: 6,
+      );
+
+      const profile = WorkoutProfile(
+        id: 'prof_3',
+        userId: 'user_1',
+        disciplines: ['bodybuilding'],
+        styles: {'bodybuilding': 'full_body'},
+        primaryGoal: 'muscle',
+        level: 'beginner',
+        daysPerWeek: 2,
+        sessionMinutes: 60,
+        location: 'gym',
+        equipment: [],
+        injuryAreas: [],
+        medicalConditions: [],
+        painLevel: 0,
+      );
+
+      await tester.pumpWidget(
+        _buildTestApp(
+          options: optionsWithRec,
+          profile: profile,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Exactly one recommended badge should be present (on chip 3)
+      expect(find.text('پیشنهادی'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'does not show recommended badge when recommendedDays is null or out of range',
+    (tester) async {
+      // optionsWith5Days has recommendedDays = null
+      const profile = WorkoutProfile(
+        id: 'prof_4',
+        userId: 'user_1',
+        disciplines: ['bodybuilding'],
+        styles: {'bodybuilding': 'full_body'},
+        primaryGoal: 'muscle',
+        level: 'beginner',
+        daysPerWeek: 2,
+        sessionMinutes: 60,
+        location: 'gym',
+        equipment: [],
+        injuryAreas: [],
+        medicalConditions: [],
+        painLevel: 0,
+      );
+
+      await tester.pumpWidget(
+        _buildTestApp(
+          options: optionsWith5Days,
+          profile: profile,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('پیشنهادی'), findsNothing);
+    },
+  );
 }
