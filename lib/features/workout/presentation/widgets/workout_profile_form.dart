@@ -66,6 +66,28 @@ class WorkoutProfileForm extends HookConsumerWidget {
     final currentStep = useState(0);
     final isSaving = useState(false);
 
+    void syncDays({
+      WorkoutOptions? opts,
+      List<String>? disciplines,
+      Map<String, String>? styles,
+      String? level,
+    }) {
+      final targetOptions = opts ?? optionsAsync.valueOrNull;
+      if (targetOptions == null) return;
+      final range = allowedWorkoutDaysRange(
+        options: targetOptions,
+        disciplines: disciplines ?? selectedDisciplines.value,
+        styles: styles ?? selectedStyles.value,
+        level: level ?? selectedLevel.value,
+      );
+      daysPerWeek.value = syncDaysPerWeek(
+        currentDays: daysPerWeek.value,
+        min: range.min,
+        max: range.max,
+        recommended: range.recommended,
+      );
+    }
+
     useEffect(() {
       final profile = profileAsync.valueOrNull;
       if (profile != null) {
@@ -76,18 +98,19 @@ class WorkoutProfileForm extends HookConsumerWidget {
         selectedLevel.value = profile.level;
         daysPerWeek.value = profile.daysPerWeek;
         final options = optionsAsync.valueOrNull;
-        if (options != null && profile.disciplines.length == 1) {
-          final styleId = profile.styles[profile.disciplines.single];
-          for (final style in options.styles) {
-            if (style.id == styleId &&
-                style.disciplineId == profile.disciplines.single) {
-              daysPerWeek.value = profile.daysPerWeek.clamp(
-                style.minDays,
-                style.maxDays,
-              );
-              break;
-            }
-          }
+        if (options != null) {
+          final range = allowedWorkoutDaysRange(
+            options: options,
+            disciplines: profile.disciplines,
+            styles: profile.styles,
+            level: profile.level,
+          );
+          daysPerWeek.value = syncDaysPerWeek(
+            currentDays: profile.daysPerWeek,
+            min: range.min,
+            max: range.max,
+            recommended: range.recommended,
+          );
         }
         sessionMinutes.value = profile.sessionMinutes;
         customDurationController.text = profile.sessionMinutes.toString();
@@ -99,9 +122,23 @@ class WorkoutProfileForm extends HookConsumerWidget {
             profile.injuryAreas.isEmpty && profile.medicalConditions.isEmpty;
         painLevel.value = profile.painLevel;
         injuryNotesController.text = profile.injuryNotes ?? '';
+      } else {
+        final options = optionsAsync.valueOrNull;
+        if (options != null) {
+          syncDays(opts: options);
+        }
       }
       return null;
     }, [profileAsync.valueOrNull, optionsAsync.valueOrNull]);
+
+    useEffect(() {
+      syncDays();
+      return null;
+    }, [
+      selectedDisciplines.value,
+      selectedStyles.value,
+      selectedLevel.value,
+    ]);
 
     return optionsAsync.when(
       data: (options) {
@@ -244,6 +281,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
                     options,
                     selectedDisciplines,
                     selectedStyles,
+                    onSyncDays: syncDays,
                   ),
                   _buildLevelStylesStep(
                     context,
@@ -252,6 +290,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
                     selectedLevel,
                     selectedStyles,
                     metadataCatalog,
+                    onSyncDays: syncDays,
                   ),
                   _buildGoalStep(
                     context,
@@ -266,6 +305,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
                     options,
                     selectedDisciplines,
                     selectedStyles,
+                    selectedLevel,
                     daysPerWeek,
                     sessionMinutes,
                     customDurationController,
@@ -335,8 +375,9 @@ class WorkoutProfileForm extends HookConsumerWidget {
     BuildContext context,
     WorkoutOptions options,
     ValueNotifier<List<String>> selectedDisciplines,
-    ValueNotifier<Map<String, String>> selectedStyles,
-  ) {
+    ValueNotifier<Map<String, String>> selectedStyles, {
+    VoidCallback? onSyncDays,
+  }) {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -363,6 +404,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
                 );
                 selectedDisciplines.value = selection.disciplines;
                 selectedStyles.value = selection.styles;
+                onSyncDays?.call();
               } else {
                 if (list.length >= options.maxDisciplines) {
                   BotToast.showText(
@@ -372,6 +414,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
                 }
                 list.add(d.id);
                 selectedDisciplines.value = list;
+                onSyncDays?.call();
               }
             },
             child: Container(
@@ -430,8 +473,9 @@ class WorkoutProfileForm extends HookConsumerWidget {
     ValueNotifier<List<String>> selectedDisciplines,
     ValueNotifier<String> selectedLevel,
     ValueNotifier<Map<String, String>> selectedStyles,
-    MetadataCatalog metadataCatalog,
-  ) {
+    MetadataCatalog metadataCatalog, {
+    VoidCallback? onSyncDays,
+  }) {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -456,7 +500,10 @@ class WorkoutProfileForm extends HookConsumerWidget {
 
             return Expanded(
               child: GestureDetector(
-                onTap: () => selectedLevel.value = lvl.id,
+                onTap: () {
+                  selectedLevel.value = lvl.id;
+                  onSyncDays?.call();
+                },
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   curve: Curves.easeInOut,
@@ -551,6 +598,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
                       map[dId] = style.id;
                     }
                     selectedStyles.value = map;
+                    onSyncDays?.call();
                   },
                 );
               }),
@@ -706,6 +754,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
     WorkoutOptions options,
     ValueNotifier<List<String>> selectedDisciplines,
     ValueNotifier<Map<String, String>> selectedStyles,
+    ValueNotifier<String> selectedLevel,
     ValueNotifier<int> daysPerWeek,
     ValueNotifier<int> sessionMinutes,
     TextEditingController customDurationController,
@@ -714,17 +763,14 @@ class WorkoutProfileForm extends HookConsumerWidget {
     ValueNotifier<List<String>> selectedEquipment,
     MetadataCatalog metadataCatalog,
   ) {
-    int minDays = options.minDaysPerWeek;
-    int maxDays = options.maxDaysPerWeek;
-    if (selectedDisciplines.value.length == 1) {
-      final dId = selectedDisciplines.value.first;
-      final sId = selectedStyles.value[dId];
-      if (sId != null) {
-        final style = options.styles.firstWhere((s) => s.id == sId);
-        minDays = style.minDays;
-        maxDays = style.maxDays;
-      }
-    }
+    final range = allowedWorkoutDaysRange(
+      options: options,
+      disciplines: selectedDisciplines.value,
+      styles: selectedStyles.value,
+      level: selectedLevel.value,
+    );
+    final minDays = range.min;
+    final maxDays = range.max;
 
     void updateSessionMinutes(int val) {
       if (val >= options.minSessionMinutes &&
