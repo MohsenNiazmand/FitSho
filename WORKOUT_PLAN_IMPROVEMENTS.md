@@ -26,7 +26,7 @@ Users report that for some bodybuilding programs the number of training days can
 | FA3 | Reset incompatible style when level changes | none | ☑ |
 | FA4 | `recommendedDays` badge | B12 (nullable, safe without it) | ☑ |
 | FA5 | Remove `elite` handling | B13 | ☑ |
-| FA6 | Tests, l10n, release notes | all | ☐ |
+| FA6 | Tests, l10n, release notes | all | ☑ |
 
 **Release order:** deploy the backend (B12–B13) first, then publish the app version containing these phases. Users on the current app version already get the new day ranges from the backend; FA1 fixes the stuck-validation behavior they may still see until they update.
 
@@ -191,6 +191,16 @@ cached data never shows an unknown level.
   6. Edit an existing profile saved before the update.
 - Update `WORKOUT_FEATURE.md` and `UI_REDESIGN_CHECKLIST.md` if they describe the days/levels behavior.
 - Prepare store release notes (fa + en): "Training days per week are now more flexible for every program; improved workout plans."
+
+**Checklist**
+- [x] L10n and code generation validated
+- [x] Full test suite and analyze green
+- [x] Feature documentation and release notes added
+
+### Store Release Notes
+
+- **fa**: تعداد روزهای تمرین در هفته اکنون برای هر برنامه انعطاف‌پذیرتر شده است؛ بهبود برنامه‌های تمرینی.
+- **en**: Training days per week are now more flexible for every program; improved workout plans.
 
 **Commit message**
 ```
