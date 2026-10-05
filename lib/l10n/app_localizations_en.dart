@@ -1013,6 +1013,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String workoutFixedDaysHint(int count) {
+    return 'This style is designed for exactly $count days per week.';
+  }
+
+  @override
   String workoutMinutesCount(int count) {
     return '$count min';
   }

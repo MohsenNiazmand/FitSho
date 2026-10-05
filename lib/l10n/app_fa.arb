@@ -539,6 +539,14 @@
       }
     }
   },
+  "workoutFixedDaysHint": "این سبک تمرینی فقط با {count} روز در هفته طراحی شده است",
+  "@workoutFixedDaysHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "workoutMinutesCount": "{count} دقیقه",
   "@workoutMinutesCount": {
     "placeholders": {

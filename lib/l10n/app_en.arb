@@ -553,6 +553,14 @@
       }
     }
   },
+  "workoutFixedDaysHint": "This style is designed for exactly {count} days per week.",
+  "@workoutFixedDaysHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "workoutMinutesCount": "{count} min",
   "@workoutMinutesCount": {
     "placeholders": {

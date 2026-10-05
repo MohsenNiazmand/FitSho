@@ -33,11 +33,13 @@ class WorkoutProfileForm extends HookConsumerWidget {
     this.isEditing = false,
     this.skipRegeneratePrompt = false,
     this.onProfileSaved,
+    this.initialStep = 0,
   });
 
   final bool isEditing;
   final bool skipRegeneratePrompt;
   final Future<void> Function()? onProfileSaved;
+  final int initialStep;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -62,8 +64,8 @@ class WorkoutProfileForm extends HookConsumerWidget {
     final painLevel = useState<int>(0);
     final injuryNotesController = useTextEditingController();
 
-    final pageController = usePageController();
-    final currentStep = useState(0);
+    final pageController = usePageController(initialPage: initialStep);
+    final currentStep = useState(initialStep);
     final isSaving = useState(false);
 
     void syncDays({
@@ -799,10 +801,9 @@ class WorkoutProfileForm extends HookConsumerWidget {
           style: const TextStyle(fontWeight: FontWeight.w600),
         ),
         Gap.v8(),
-        Row(
-          // alignment: WrapAlignment.center,
-          // spacing: 8,
-          // runSpacing: 8,
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
           children: List.generate(maxDays - minDays + 1, (i) {
             final day = minDays + i;
             final isSelected = daysPerWeek.value == day;
@@ -830,6 +831,16 @@ class WorkoutProfileForm extends HookConsumerWidget {
             );
           }),
         ),
+        if (minDays == maxDays) ...[
+          Gap.v8(),
+          Text(
+            context.tr.workoutFixedDaysHint(minDays),
+            style: TextStyle(
+              color: Colors.grey.shade600,
+              fontSize: 12,
+            ),
+          ),
+        ],
         Gap.custom(height: 20),
         Text(
           context.tr.workoutSessionMinutes,

@@ -22,7 +22,7 @@ Users report that for some bodybuilding programs the number of training days can
 | Phase | Title | Backend dependency | Status |
 |-------|-------|--------------------|--------|
 | FA1 | Single source of truth for allowed day range + auto-sync `daysPerWeek` | none | ☑ |
-| FA2 | Day chips: `Wrap`, single-option hint | none | ☐ |
+| FA2 | Day chips: `Wrap`, single-option hint | none | ☑ |
 | FA3 | Reset incompatible style when level changes | none | ☐ |
 | FA4 | `recommendedDays` badge | B12 (nullable, safe without it) | ☐ |
 | FA5 | Remove `elite` handling | B13 | ☐ |
@@ -82,9 +82,9 @@ validator, and re-sync the value whenever discipline, style or level changes.
 **Tests:** widget test rendering 5 chips at a narrow width (e.g. 320 px) and with text scale 1.5 without overflow; single-option case shows the hint.
 
 **Checklist**
-- [ ] `Wrap` layout
-- [ ] Hint text + l10n keys (fa + en)
-- [ ] Widget tests green
+- [x] `Wrap` layout
+- [x] Hint text + l10n keys (fa + en)
+- [x] Widget tests green
 
 **Commit message**
 ```

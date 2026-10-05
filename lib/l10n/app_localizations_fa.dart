@@ -1013,6 +1013,11 @@ class AppLocalizationsFa extends AppLocalizations {
   }
 
   @override
+  String workoutFixedDaysHint(int count) {
+    return 'این سبک تمرینی فقط با $count روز در هفته طراحی شده است';
+  }
+
+  @override
   String workoutMinutesCount(int count) {
     return '$count دقیقه';
   }
