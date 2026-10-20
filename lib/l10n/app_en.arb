@@ -553,6 +553,16 @@
       }
     }
   },
+  "workoutFixedDaysHint": "This style is designed for exactly {count} days per week.",
+  "@workoutFixedDaysHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutIncompatibleStyleResetToast": "The selected style is not suitable for this level, please select again.",
+  "workoutRecommendedBadge": "Recommended",
   "workoutMinutesCount": "{count} min",
   "@workoutMinutesCount": {
     "placeholders": {

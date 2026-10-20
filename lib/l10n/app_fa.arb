@@ -539,6 +539,16 @@
       }
     }
   },
+  "workoutFixedDaysHint": "این سبک تمرینی فقط با {count} روز در هفته طراحی شده است",
+  "@workoutFixedDaysHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutIncompatibleStyleResetToast": "سبک انتخاب‌شده برای این سطح مناسب نیست، لطفاً دوباره انتخاب کنید",
+  "workoutRecommendedBadge": "پیشنهادی",
   "workoutMinutesCount": "{count} دقیقه",
   "@workoutMinutesCount": {
     "placeholders": {

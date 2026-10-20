@@ -12,6 +12,81 @@ removeWorkoutDisciplineSelection({
   return (disciplines: updatedDisciplines, styles: updatedStyles);
 }
 
+({int min, int max, int? recommended}) allowedWorkoutDaysRange({
+  required WorkoutOptions options,
+  required List<String> disciplines,
+  required Map<String, String> styles,
+  required String level,
+}) {
+  if (disciplines.length == 1) {
+    final disciplineId = disciplines.single;
+    final styleId = styles[disciplineId];
+    if (styleId != null && styleId.isNotEmpty) {
+      for (final style in options.styles) {
+        if (style.id == styleId &&
+            style.disciplineId == disciplineId &&
+            style.isAvailable &&
+            style.levels.contains(level)) {
+          return (
+            min: style.minDays,
+            max: style.maxDays,
+            recommended: style.recommendedDays,
+          );
+        }
+      }
+    }
+  }
+  return (
+    min: options.minDaysPerWeek,
+    max: options.maxDaysPerWeek,
+    recommended: null,
+  );
+}
+
+int syncDaysPerWeek({
+  required int currentDays,
+  required int min,
+  required int max,
+  int? recommended,
+}) {
+  if (currentDays >= min && currentDays <= max) {
+    return currentDays;
+  }
+  if (recommended != null && recommended >= min && recommended <= max) {
+    return recommended;
+  }
+  return currentDays.clamp(min, max);
+}
+
+({Map<String, String> styles, List<String> removedDisciplineIds})
+pruneStylesForLevel({
+  required WorkoutOptions options,
+  required Map<String, String> styles,
+  required String level,
+}) {
+  final updatedStyles = Map<String, String>.from(styles);
+  final removedDisciplineIds = <String>[];
+
+  styles.forEach((disciplineId, styleId) {
+    final isCompatible = options.styles.any(
+      (style) =>
+          style.id == styleId &&
+          style.disciplineId == disciplineId &&
+          style.isAvailable &&
+          style.levels.contains(level),
+    );
+    if (!isCompatible) {
+      updatedStyles.remove(disciplineId);
+      removedDisciplineIds.add(disciplineId);
+    }
+  });
+
+  return (
+    styles: updatedStyles,
+    removedDisciplineIds: removedDisciplineIds,
+  );
+}
+
 bool isWorkoutProfileStepValid({
   required int step,
   required WorkoutOptions options,
@@ -19,9 +94,9 @@ bool isWorkoutProfileStepValid({
   required Map<String, String> selectedStyles,
   required String selectedLevel,
   required String? primaryGoal,
-  String? secondaryGoal,
   required int daysPerWeek,
   required int sessionMinutes,
+  String? secondaryGoal,
   List<String> injuryAreas = const [],
   List<String> medicalConditions = const [],
 }) {
@@ -73,22 +148,13 @@ bool isWorkoutProfileStepValid({
 
       return true;
     case 3:
-      var minDays = options.minDaysPerWeek;
-      var maxDays = options.maxDaysPerWeek;
-      if (selectedDisciplines.length == 1) {
-        final styleId = selectedStyles[selectedDisciplines.single];
-        for (final style in options.styles) {
-          if (style.id == styleId &&
-              style.disciplineId == selectedDisciplines.single &&
-              style.isAvailable &&
-              style.levels.contains(selectedLevel)) {
-            minDays = style.minDays;
-            maxDays = style.maxDays;
-            break;
-          }
-        }
-      }
-      final isDaysValid = daysPerWeek >= minDays && daysPerWeek <= maxDays;
+      final range = allowedWorkoutDaysRange(
+        options: options,
+        disciplines: selectedDisciplines,
+        styles: selectedStyles,
+        level: selectedLevel,
+      );
+      final isDaysValid = daysPerWeek >= range.min && daysPerWeek <= range.max;
       final isMinutesValid =
           sessionMinutes >= options.minSessionMinutes &&
           sessionMinutes <= options.maxSessionMinutes;

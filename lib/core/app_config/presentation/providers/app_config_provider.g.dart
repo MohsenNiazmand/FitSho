@@ -6,7 +6,7 @@ part of 'app_config_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$appVersionCheckHash() => r'68b2aadb4492b0a84d52bb766741f46d0c5d975c';
+String _$appVersionCheckHash() => r'e82e7d1a9fd531fb88faedff8f9246ed85c12ed7';
 
 /// See also [AppVersionCheck].
 @ProviderFor(AppVersionCheck)

@@ -97,7 +97,6 @@ class DefaultCatalog {
       {'key': 'beginner', 'labelFa': 'مبتدی', 'labelEn': 'Beginner'},
       {'key': 'intermediate', 'labelFa': 'متوسط', 'labelEn': 'Intermediate'},
       {'key': 'advanced', 'labelFa': 'پیشرفته', 'labelEn': 'Advanced'},
-      {'key': 'elite', 'labelFa': 'حرفه‌ای', 'labelEn': 'Elite'},
     ],
   };
 }

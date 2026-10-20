@@ -1013,6 +1013,18 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String workoutFixedDaysHint(int count) {
+    return 'This style is designed for exactly $count days per week.';
+  }
+
+  @override
+  String get workoutIncompatibleStyleResetToast =>
+      'The selected style is not suitable for this level, please select again.';
+
+  @override
+  String get workoutRecommendedBadge => 'Recommended';
+
+  @override
   String workoutMinutesCount(int count) {
     return '$count min';
   }

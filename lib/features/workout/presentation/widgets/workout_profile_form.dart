@@ -33,11 +33,13 @@ class WorkoutProfileForm extends HookConsumerWidget {
     this.isEditing = false,
     this.skipRegeneratePrompt = false,
     this.onProfileSaved,
+    this.initialStep = 0,
   });
 
   final bool isEditing;
   final bool skipRegeneratePrompt;
   final Future<void> Function()? onProfileSaved;
+  final int initialStep;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -62,9 +64,31 @@ class WorkoutProfileForm extends HookConsumerWidget {
     final painLevel = useState<int>(0);
     final injuryNotesController = useTextEditingController();
 
-    final pageController = usePageController();
-    final currentStep = useState(0);
+    final pageController = usePageController(initialPage: initialStep);
+    final currentStep = useState(initialStep);
     final isSaving = useState(false);
+
+    void syncDays({
+      WorkoutOptions? opts,
+      List<String>? disciplines,
+      Map<String, String>? styles,
+      String? level,
+    }) {
+      final targetOptions = opts ?? optionsAsync.valueOrNull;
+      if (targetOptions == null) return;
+      final range = allowedWorkoutDaysRange(
+        options: targetOptions,
+        disciplines: disciplines ?? selectedDisciplines.value,
+        styles: styles ?? selectedStyles.value,
+        level: level ?? selectedLevel.value,
+      );
+      daysPerWeek.value = syncDaysPerWeek(
+        currentDays: daysPerWeek.value,
+        min: range.min,
+        max: range.max,
+        recommended: range.recommended,
+      );
+    }
 
     useEffect(() {
       final profile = profileAsync.valueOrNull;
@@ -76,18 +100,19 @@ class WorkoutProfileForm extends HookConsumerWidget {
         selectedLevel.value = profile.level;
         daysPerWeek.value = profile.daysPerWeek;
         final options = optionsAsync.valueOrNull;
-        if (options != null && profile.disciplines.length == 1) {
-          final styleId = profile.styles[profile.disciplines.single];
-          for (final style in options.styles) {
-            if (style.id == styleId &&
-                style.disciplineId == profile.disciplines.single) {
-              daysPerWeek.value = profile.daysPerWeek.clamp(
-                style.minDays,
-                style.maxDays,
-              );
-              break;
-            }
-          }
+        if (options != null) {
+          final range = allowedWorkoutDaysRange(
+            options: options,
+            disciplines: profile.disciplines,
+            styles: profile.styles,
+            level: profile.level,
+          );
+          daysPerWeek.value = syncDaysPerWeek(
+            currentDays: profile.daysPerWeek,
+            min: range.min,
+            max: range.max,
+            recommended: range.recommended,
+          );
         }
         sessionMinutes.value = profile.sessionMinutes;
         customDurationController.text = profile.sessionMinutes.toString();
@@ -99,9 +124,23 @@ class WorkoutProfileForm extends HookConsumerWidget {
             profile.injuryAreas.isEmpty && profile.medicalConditions.isEmpty;
         painLevel.value = profile.painLevel;
         injuryNotesController.text = profile.injuryNotes ?? '';
+      } else {
+        final options = optionsAsync.valueOrNull;
+        if (options != null) {
+          syncDays(opts: options);
+        }
       }
       return null;
     }, [profileAsync.valueOrNull, optionsAsync.valueOrNull]);
+
+    useEffect(() {
+      syncDays();
+      return null;
+    }, [
+      selectedDisciplines.value,
+      selectedStyles.value,
+      selectedLevel.value,
+    ]);
 
     return optionsAsync.when(
       data: (options) {
@@ -244,6 +283,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
                     options,
                     selectedDisciplines,
                     selectedStyles,
+                    onSyncDays: syncDays,
                   ),
                   _buildLevelStylesStep(
                     context,
@@ -252,6 +292,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
                     selectedLevel,
                     selectedStyles,
                     metadataCatalog,
+                    onSyncDays: syncDays,
                   ),
                   _buildGoalStep(
                     context,
@@ -266,6 +307,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
                     options,
                     selectedDisciplines,
                     selectedStyles,
+                    selectedLevel,
                     daysPerWeek,
                     sessionMinutes,
                     customDurationController,
@@ -335,8 +377,9 @@ class WorkoutProfileForm extends HookConsumerWidget {
     BuildContext context,
     WorkoutOptions options,
     ValueNotifier<List<String>> selectedDisciplines,
-    ValueNotifier<Map<String, String>> selectedStyles,
-  ) {
+    ValueNotifier<Map<String, String>> selectedStyles, {
+    VoidCallback? onSyncDays,
+  }) {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -363,6 +406,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
                 );
                 selectedDisciplines.value = selection.disciplines;
                 selectedStyles.value = selection.styles;
+                onSyncDays?.call();
               } else {
                 if (list.length >= options.maxDisciplines) {
                   BotToast.showText(
@@ -372,6 +416,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
                 }
                 list.add(d.id);
                 selectedDisciplines.value = list;
+                onSyncDays?.call();
               }
             },
             child: Container(
@@ -430,8 +475,9 @@ class WorkoutProfileForm extends HookConsumerWidget {
     ValueNotifier<List<String>> selectedDisciplines,
     ValueNotifier<String> selectedLevel,
     ValueNotifier<Map<String, String>> selectedStyles,
-    MetadataCatalog metadataCatalog,
-  ) {
+    MetadataCatalog metadataCatalog, {
+    VoidCallback? onSyncDays,
+  }) {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -448,7 +494,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
         // F11: Accessible equal-width selectable tiles with short title on line 1 and description on line 2 (when selected)
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: options.levels.where((lvl) => lvl.id != 'elite').map((lvl) {
+          children: options.levels.map((lvl) {
             final meta = metadataCatalog.findByKey('difficulty_level', lvl.id);
             final levelLabel = meta?.labelFa ?? lvl.label;
             final isSelected = selectedLevel.value == lvl.id;
@@ -456,7 +502,22 @@ class WorkoutProfileForm extends HookConsumerWidget {
 
             return Expanded(
               child: GestureDetector(
-                onTap: () => selectedLevel.value = lvl.id,
+                onTap: () {
+                  if (selectedLevel.value == lvl.id) return;
+                  selectedLevel.value = lvl.id;
+                  final result = pruneStylesForLevel(
+                    options: options,
+                    styles: selectedStyles.value,
+                    level: lvl.id,
+                  );
+                  if (result.removedDisciplineIds.isNotEmpty) {
+                    selectedStyles.value = result.styles;
+                    showMessageToast(
+                      context.tr.workoutIncompatibleStyleResetToast,
+                    );
+                  }
+                  onSyncDays?.call();
+                },
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   curve: Curves.easeInOut,
@@ -551,6 +612,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
                       map[dId] = style.id;
                     }
                     selectedStyles.value = map;
+                    onSyncDays?.call();
                   },
                 );
               }),
@@ -706,6 +768,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
     WorkoutOptions options,
     ValueNotifier<List<String>> selectedDisciplines,
     ValueNotifier<Map<String, String>> selectedStyles,
+    ValueNotifier<String> selectedLevel,
     ValueNotifier<int> daysPerWeek,
     ValueNotifier<int> sessionMinutes,
     TextEditingController customDurationController,
@@ -714,17 +777,15 @@ class WorkoutProfileForm extends HookConsumerWidget {
     ValueNotifier<List<String>> selectedEquipment,
     MetadataCatalog metadataCatalog,
   ) {
-    int minDays = options.minDaysPerWeek;
-    int maxDays = options.maxDaysPerWeek;
-    if (selectedDisciplines.value.length == 1) {
-      final dId = selectedDisciplines.value.first;
-      final sId = selectedStyles.value[dId];
-      if (sId != null) {
-        final style = options.styles.firstWhere((s) => s.id == sId);
-        minDays = style.minDays;
-        maxDays = style.maxDays;
-      }
-    }
+    final range = allowedWorkoutDaysRange(
+      options: options,
+      disciplines: selectedDisciplines.value,
+      styles: selectedStyles.value,
+      level: selectedLevel.value,
+    );
+    final minDays = range.min;
+    final maxDays = range.max;
+    final recommendedDays = range.recommended;
 
     void updateSessionMinutes(int val) {
       if (val >= options.minSessionMinutes &&
@@ -753,13 +814,13 @@ class WorkoutProfileForm extends HookConsumerWidget {
           style: const TextStyle(fontWeight: FontWeight.w600),
         ),
         Gap.v8(),
-        Row(
-          // alignment: WrapAlignment.center,
-          // spacing: 8,
-          // runSpacing: 8,
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
           children: List.generate(maxDays - minDays + 1, (i) {
             final day = minDays + i;
             final isSelected = daysPerWeek.value == day;
+            final isRecommended = recommendedDays == day;
             return GestureDetector(
               onTap: () => daysPerWeek.value = day,
               child: Container(
@@ -773,17 +834,57 @@ class WorkoutProfileForm extends HookConsumerWidget {
                       : Colors.grey.shade100,
                   borderRadius: AppRadius.button,
                 ),
-                child: Text(
-                  context.tr.workoutDaysCount(day),
-                  style: TextStyle(
-                    color: isSelected ? Colors.white : Colors.black87,
-                    fontWeight: FontWeight.bold,
-                  ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      context.tr.workoutDaysCount(day),
+                      style: TextStyle(
+                        color: isSelected ? Colors.white : Colors.black87,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    if (isRecommended) ...[
+                      const SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? Colors.white.withOpacity(0.25)
+                              : const Color(0xFFEEF2FF),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          context.tr.workoutRecommendedBadge,
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: isSelected
+                                ? Colors.white
+                                : const Color(0xFF6366F1),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
               ),
             );
           }),
         ),
+        if (minDays == maxDays) ...[
+          Gap.v8(),
+          Text(
+            context.tr.workoutFixedDaysHint(minDays),
+            style: TextStyle(
+              color: Colors.grey.shade600,
+              fontSize: 12,
+            ),
+          ),
+        ],
         Gap.custom(height: 20),
         Text(
           context.tr.workoutSessionMinutes,
@@ -1068,7 +1169,7 @@ class WorkoutProfileForm extends HookConsumerWidget {
       case 'advanced':
         return 'بیش از ۲ سال سابقه';
       default:
-        return apiDesc ?? '';
+        return '';
     }
   }
 }

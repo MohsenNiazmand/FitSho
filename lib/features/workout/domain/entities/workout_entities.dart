@@ -36,6 +36,7 @@ class StyleOption {
     required this.maxDays,
     required this.levels,
     this.isAvailable = true,
+    this.recommendedDays,
   });
 
   final String id;
@@ -46,6 +47,7 @@ class StyleOption {
   final int maxDays;
   final List<String> levels;
   final bool isAvailable;
+  final int? recommendedDays;
 }
 
 class GoalOption {

@@ -1013,6 +1013,18 @@ class AppLocalizationsFa extends AppLocalizations {
   }
 
   @override
+  String workoutFixedDaysHint(int count) {
+    return 'این سبک تمرینی فقط با $count روز در هفته طراحی شده است';
+  }
+
+  @override
+  String get workoutIncompatibleStyleResetToast =>
+      'سبک انتخاب‌شده برای این سطح مناسب نیست، لطفاً دوباره انتخاب کنید';
+
+  @override
+  String get workoutRecommendedBadge => 'پیشنهادی';
+
+  @override
   String workoutMinutesCount(int count) {
     return '$count دقیقه';
   }

@@ -54,6 +54,7 @@ StyleOptionModel _$StyleOptionModelFromJson(Map<String, dynamic> json) =>
           .map((e) => e as String)
           .toList(),
       isAvailable: json['isAvailable'] as bool? ?? true,
+      recommendedDays: _parseNullableInt(json['recommendedDays']),
     );
 
 Map<String, dynamic> _$StyleOptionModelToJson(StyleOptionModel instance) =>
@@ -66,6 +67,7 @@ Map<String, dynamic> _$StyleOptionModelToJson(StyleOptionModel instance) =>
       'maxDays': instance.maxDays,
       'levels': instance.levels,
       'isAvailable': instance.isAvailable,
+      'recommendedDays': instance.recommendedDays,
     };
 
 GoalOptionModel _$GoalOptionModelFromJson(Map<String, dynamic> json) =>

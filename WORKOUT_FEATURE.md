@@ -25,7 +25,8 @@ The feature has not been released. These requirements intentionally replace the 
 - Swap request body is `{ "sessionId": "session_1", "itemId": "..." }`; the route remains `POST /workout-plans/:id/swap-exercise`. Replace the item inside the matching session in state and cache.
 - Workout profile uses `primaryGoal` (required) and `secondaryGoal` (nullable, at most one). The secondary goal is lower priority. Both must be compatible with at least one selected discipline. The server response and plan `profileSnapshot` use these exact keys.
 - Profile uses `injuryAreas` (0–2 body-region ids) and `medicalConditions` (zero or more ids) separately. `painLevel` remains one overall 0–10 rating for the selected affected areas; high pain and referral-required medical conditions still block generation server-side. `injuryNotes` remains optional Persian text.
-- Options levels have `{ id, label, description, isAvailable }`; `label` is only the short level name. Options also provide `minSessionMinutes: 10` and `maxSessionMinutes: 180`. `sessionMinutes` remains the suggested chip list; any integer in the inclusive min/max range is valid.
+- Options levels have `{ id, label, description, isAvailable }`; `label` is only the short level name (`beginner`, `intermediate`, `advanced`; `elite` removed). Options also provide `minSessionMinutes: 10` and `maxSessionMinutes: 180`. `sessionMinutes` remains the suggested chip list; any integer in the inclusive min/max range is valid.
+- Style options include nullable `recommendedDays` (integer) to highlight the recommended training days per week. `daysPerWeek` options are rendered via `Wrap` and dynamically clamped/synced to the selected style's allowed range; if a style only supports a single day count (`minDays == maxDays`), an explanatory hint is displayed. Switching levels automatically prunes incompatible selected styles with user feedback.
 - `bodybuilding` and `fitness` are allowed together. They represent complementary modalities; when both are selected, the profile contains one style for each and the generated plan must visibly cover both styles. Do not add a mutual-exclusion rule.
 
 ### Revision phases
@@ -210,3 +211,18 @@ Deliverables: [x] notifier [x] screens [x] delete flow.
 - Tests: mappers, notifier swap logic, wizard validation.
 - Update README «Development Progress» section with the workout feature.
 Deliverables: [x] edit profile + regenerate prompt [x] empty/loading/error states & refresh [x] auth cache reset [x] unit tests [x] docs.
+
+---
+
+## Revision 3 — Flexible Days-per-Week & Level Harmonization (Phases FA1–FA6) ☑
+
+1. **Flexible Days Per Week (FA1)**: Automatically syncs and clamps `daysPerWeek` to the selected style's allowed range (`minDays..maxDays`). Prefers `recommendedDays` when the previous value falls out of range, falling back to min or max.
+2. **Day Chips Layout & Single-Day Hints (FA2)**: Day selection chips now use a responsive `Wrap` layout to prevent clipping on small screens (320px) with high font scales (1.5x). If a style has fixed days (`minDays == maxDays`), an explanatory hint is displayed.
+3. **Style Compatibility Pruning (FA3)**: When a user changes their fitness level, styles incompatible with the newly selected level are automatically pruned with clear snackbar/toast feedback so validation never fails silently.
+4. **Recommended Days Badge (FA4)**: Optional `recommendedDays` received from options metadata is highlighted with a «پیشنهادی» / "Recommended" badge on the matching day chip.
+5. **Elite Level Deprecation (FA5)**: The `elite` level is removed from client choices, leaving 3 intuitive levels (`beginner`, `intermediate`, `advanced`). Any older cached profile or snapshot with `elite` is safely converted to `advanced` in the data mappers.
+6. **Tests & L10n (FA6)**: Complete localization in Persian and English; full unit and widget test coverage for the flexible workflow.
+
+### Store Release Notes
+- **FA**: روزهای تمرین در هفته برای هر برنامه انعطاف‌پذیرتر شد؛ بهبود کیفیت و تنوع برنامه‌های تمرینی.
+- **EN**: Training days per week are now more flexible for every program; improved workout plans.
